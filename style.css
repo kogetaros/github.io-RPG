@@ -233,6 +233,7 @@ body {
 
 .input {
   padding: 5px;
+  width: 75%;
   border-color: rgb(229, 229, 229);
   border-radius: 5px;
   font-family: 'DotGothic16', monospace;
