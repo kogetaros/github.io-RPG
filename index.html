@@ -12,7 +12,7 @@
 <body id="body">
     <div>
         <div id="startMenu" style="display: block;">
-            <img class="title" src="img/タイトル画面.png" alt="背景" width='100%' height='400px'>
+            <img class="title" src="タイトル画面.png" alt="背景" width='100%' height='400px'>
             <div class="titleBlock">
                 <input id="playerInput" class="input" type="text" placeholder="名前を入力">
                 <button class="startBtn" onclick="playGames()">ゲームスタート</button>
@@ -131,8 +131,8 @@
     </div>
     <div id="map" style="display: none;">
         <div class="map animate__animated animate__fadeIn">
-            <img src="img/map/MAP.png" alt="MAP" width="100%" height="550px">
-            <img id="kumo" style="transform: scaleY(-1); display: block;" class="kumo" src="img/map/kumo.png" alt="雲"
+            <img src="map/MAP.png" alt="MAP" width="100%" height="550px">
+            <img id="kumo" style="transform: scaleY(-1); display: block;" class="kumo" src="map/kumo.png" alt="雲"
                 width="53%" height="110%">
             <div>
                 <button class="castle" onclick="castleShow()">ダイヤモンド<br>&emsp;マーメイド城</button> <button class="stage1"
@@ -167,7 +167,7 @@
         </div>
     </div>
     <div id="castle" style="display: none;">
-        <img class="castleMenu animate__animated animate__fadeIn" src="img/map/castle.png" alt="背景" width='100%'
+        <img class="castleMenu animate__animated animate__fadeIn" src="map/castle.png" alt="背景" width='100%'
             height='550px'>
         <div class="castleMenuResult">
             <button class="startBtn" onclick="itemshop()">アイテム屋へ</button>
@@ -178,23 +178,23 @@
         <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
     </div>
     <div id="itemshop" style="display: none;">
-        <img class="animate__animated animate__fadeIn" src="img/map/アイテム屋.png" alt="背景" width='100%' height='550px'>
+        <img class="animate__animated animate__fadeIn" src="map/アイテム屋.png" alt="背景" width='100%' height='550px'>
         <div class="castleMenuResult">
-            <img src="img/items1/治癒のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+            <img src="items1/治癒のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
                 onclick="buyHpPotion()">治癒のポーション<br>1000ゴールド</button>
             <br>
             <br>
-            <img src="img/items1/力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+            <img src="items1/力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
                 onclick="buyPwPotion()">力のポーション<br>5000ゴールド</button>
             <br>
             <br>
-            <img src="img/items1/体力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+            <img src="items1/体力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
                 onclick="buyHpUpPotion()">体力のポーション<br>3000ゴールド</button>
         </div>
         <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
     </div>
     <div id="weaponshop" style="display: none;">
-        <img class="shopMenu animate__animated animate__fadeIn" src="img/map/鍛冶屋.png" alt="背景" width='100%' height='550px'>
+        <img class="shopMenu animate__animated animate__fadeIn" src="map/鍛冶屋.png" alt="背景" width='100%' height='550px'>
         <div class="castleMenuResult">
             <button class="startBtn">武器1&emsp;400ゴールド</button>
             <br>
@@ -204,7 +204,7 @@
         <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
     </div>
     <div id="menu" class="menu" style="display: none;">
-        <img class="animate__animated animate__fadeIn" src="img/menu/playerMenu.png" alt="背景" width='100%' height='550px'>
+        <img class="animate__animated animate__fadeIn" src="menu/playerMenu.png" alt="背景" width='100%' height='550px'>
         <div class="status animate__animated animate__fadeIn">
             <p>プレイヤー: <span id="Name"></span><br><br>
                 レベル : <span id="Level"></span>&emsp;&emsp;&emsp;HP: <span id="HP"></span>&emsp;&emsp;&emsp;攻撃力 : <span
@@ -215,16 +215,16 @@
         <div class="bug animate__animated animate__fadeIn">
             <div>持ち物</div>
             <div class="items">
-                <div id="hpPotion" style="display: none;"><img src="img/items1/治癒のポーション.png" alt="ポーション" width="15px"
+                <div id="hpPotion" style="display: none;"><img src="items1/治癒のポーション.png" alt="ポーション" width="15px"
                         height="15px" style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
-                <div id="pwPotion" style="display: none;"><img src="img/items1/力のポーション.png" alt="ポーション" width="15px"
+                <div id="pwPotion" style="display: none;"><img src="items1/力のポーション.png" alt="ポーション" width="15px"
                         height="15px" style="vertical-align: middle;">力のポーション × <span id="have2"></span></div>
-                <div id="hpupPotion" style="display: none;"><img src="img/items1/体力のポーション.png" alt="ポーション" width="15px"
+                <div id="hpupPotion" style="display: none;"><img src="items1/体力のポーション.png" alt="ポーション" width="15px"
                         height="15px" style="vertical-align: middle;">体力のポーション × <span id="have3"></span></div>
                 <div id="no" style="display: block;">なし</div>
             </div>
         </div>
-        <img class="player animate__animated animate__fadeIn" src="img/menu/勇者.png" alt="勇者" width="200px" height="200px">
+        <img class="player animate__animated animate__fadeIn" src="menu/勇者.png" alt="勇者" width="200px" height="200px">
         <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
     </div>
     <div id="restartMenu" class="resultScreen" style="display: none;">
