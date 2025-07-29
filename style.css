@@ -1,14 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
 /* iPhoneのSafariに適用されるスタイル */
-@media only screen and (max-device-width: 414px) and (-webkit-min-device-pixel-ratio: 2) {
-/* 画面幅が414px以下でかつRetinaディスプレイの場合に適用 */
-/* ここにスタイルを追加 */
-.wpcf7 input[type="text"],
-.wpcf7 input[type="tel"],
-.wpcf7 input[type="email"],
-.wpcf7 textarea {
-max-width: 100%;
-}
+/* ▼ スマホ画面用のフォーム調整 */
+@media only screen and (max-width: 414px) {
+  form input[type="text"],
+  form input[type="tel"],
+  form input[type="email"],
+  form textarea {
+    width: 100%;         /* 横幅いっぱいに広げる */
+    max-width: 100%;     /* はみ出さない */
+    box-sizing: border-box; /* paddingやborderを含めて幅を計算 */
+    font-size: 16px;     /* スマホでも見やすい文字サイズ */
+    margin-bottom: 10px; /* フィールド間の余白 */
+  }
 }
 
 body {
