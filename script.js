@@ -1425,7 +1425,7 @@ function usePotion() {
         attackBtn.disabled = false;
         defendBtn.disabled = false;
         itemsBtn.disabled = false;
-    } else if (enemy.name === 'アビスドラゴン' || enemy.name === 'アビスバード' || enemy.name === 'アビスユニコーン') {
+    } else if (enemy.name === 'グリムヴェイル' || enemy.name === 'ノクタリオン' || enemy.name === 'ルーナリス') {
         alert(enemy.name + "の神秘的な力でポーションが使えない");
         attackBtn.disabled = false;
         defendBtn.disabled = false;
