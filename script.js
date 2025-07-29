@@ -1588,6 +1588,8 @@ function endGame(result) {
         flg.castle = false;
         flg.extra1 = false;
         flg.extra1Win = false;
+        flg.extra2 = false;
+        flg.extra2Win = false;
         flg.stageLastWin = false;
         displaySessionLogs();
         end();
@@ -1736,6 +1738,8 @@ function titleGame() {
     flg.castle = false;
     flg.extra1 = false;
     flg.extra1Win = false;
+    flg.extra2 = false;
+    flg.extra2Win = false;
     updatePointsDisplay();
     //Start画面に遷移
     let sectionIds = [];
