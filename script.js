@@ -724,7 +724,7 @@ function generateEnemy1() {
                 enemy.level = 1;
                 enemy.points = 60;
                 area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='60px'>";
+                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='180px'>";
                 slime()
                 break;
             case 'ゴブリン':
@@ -736,7 +736,7 @@ function generateEnemy1() {
                 enemy.level = 3;
                 enemy.points = 80;
                 area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゴブリン.png' alt='背景' width='100%' height='100px'>";
+                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゴブリン.png' alt='背景' width='100%' height='180px'>";
                 break;
             case 'ゲベロペ':
                 enemy.name = 'ゲベロペ';
@@ -747,7 +747,7 @@ function generateEnemy1() {
                 enemy.level = 10;
                 enemy.points = 200;
                 area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゲベロペ.png' alt='背景' width='100%' height='1s50px'>";
+                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゲベロペ.png' alt='背景' width='100%' height='220px'>";
                 break;
             default:
                 break;
@@ -771,7 +771,7 @@ function generateEnemy1() {
                 enemy.level = 1;
                 enemy.points = 100;
                 area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='60px'>";
+                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='180px'>";
                 break;
             default:
                 break;
@@ -1915,7 +1915,7 @@ function slime() {
         enemy.level = 30;
         enemy.points = 350;
         area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
-        monster.innerHTML = "<img class='move-left-right' src='stage1/レッドスライム.png' alt='背景' width='100%' height='50px'>";
+        monster.innerHTML = "<img class='move-left-right' src='stage1/レッドスライム.png' alt='背景' width='100%' height='200px'>";
     }
 }
 
