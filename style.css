@@ -1,16 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-/* iPhoneのSafariに適用されるスタイル */
+
 /* ▼ スマホ画面用のフォーム調整 */
 @media only screen and (max-width: 414px) {
   form input[type="text"],
   form input[type="tel"],
   form input[type="email"],
   form textarea {
-    width: 100%;         /* 横幅いっぱいに広げる */
-    max-width: 100%;     /* はみ出さない */
-    box-sizing: border-box; /* paddingやborderを含めて幅を計算 */
-    font-size: 16px;     /* スマホでも見やすい文字サイズ */
-    margin-bottom: 10px; /* フィールド間の余白 */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* はみ出し防止 */
+    font-size: 16px;
+    /* Safariの強制ズーム防止 */
+    --webkit-appearance: none;
+    /* Safari独自の装飾をリセット */
+    margin: 0;
+    padding: 10px;
   }
 }
 
