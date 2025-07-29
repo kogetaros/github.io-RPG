@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <link rel="stylesheet" href="style.css">
+    <title>勇者伝説RPG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body id="body">
+    <div>
+        <div id="startMenu" style="display: block;">
+            <img class="title" src="img/タイトル画面.png" alt="背景" width='100%' height='400px'>
+            <div class="titleBlock">
+                <input id="playerInput" class="input" type="text" placeholder="名前を入力">
+                <button class="startBtn" onclick="playGames()">ゲームスタート</button>
+                <button class="startBtn" onclick="showInstructions()">操作方法を見る</button>
+                <button class="startBtn" onclick="showEnemyList()">敵一覧を見る</button>
+            </div>
+            <div id="instructionsPanel" class="panel" style="display: none;">
+                <div style="font-size: 10px;">
+                    ◆ ゲーム操作の説明 ◆
+                    <br>
+                    <br>
+                    🔰 ゲームの流れ：
+                    1. 名前を入力して「ゲーム開始」ボタンを押します
+                    2. ステージを選択します
+                    2. 敵がランダムに登場します
+                    2. ボスモンスターを倒すと次のステージに進むことができます
+                    3. 下記3つの行動から選択してターンを進めます
+                    <br>
+                    <br>
+                    🎮 プレイヤーの行動：
+                    🗡 こうげき：敵にダメージを与える。時々「会心の一撃」で大ダメージ！
+                    🛡 まもる：敵の攻撃を避けやすくなり、回避成功時は少し回復します
+                    🍷 ポーション：HPが1/4回復（1回のみ使用可能）
+                    <br>
+                    <br>
+                    👾 敵の行動：
+                    敵は毎ターン攻撃を仕掛けてきます。
+                    稀に「痛恨の一撃」で大ダメージを受けることも…
+                    <br>
+                    <br>
+                    📜 その他の機能：
+                    - 敵を倒すたびに経験値を取得し、レベルが上がっていきます
+                    - レベルが上がることで、能力が上昇します
+                    - 戦闘ログがリアルタイムで表示されます
+                    - プレイ履歴はセッションログとして記録されます
+                    - 戦闘後は「マップへ戻る」や「再戦」ができます
+                    <br>
+                    <br>
+                    <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
+                </div>
+            </div>
+            <div id="enemyListPanel" class="panel" style="display: none;">
+                <div style="font-size: 10px;">
+                    ◆ 敵の種類一覧 ◆
+                    <br>
+                    <br>
+                    🟢 スライム：
+                    HP: 50 / 攻撃力: 10
+                    基本的な魔物。初心者向け。
+                    <br>
+                    <br>
+                    🟠 スケルトン：
+                    HP: 80 / 攻撃力: 15
+                    素早く攻撃力も高い中級魔物。
+                    <br>
+                    <br>
+                    🟠 ゾンビ：
+                    HP: 110 / 攻撃力: 17
+                    HPと攻撃力も高い中級魔物。
+                    <br>
+                    <br>
+                    🔴 ドラゴン：
+                    HP: 150 / 攻撃力: 20
+                    強力なボス級魔物。
+                    <br>
+                    <br>
+                    👾 魔王：
+                    HP: 400 / 攻撃力: 50
+                    魔王級魔物。要注意！
+                    <br>
+                    <br>
+                    それぞれ異なる戦術が求められます。
+                    <br>
+                    <br>
+                    <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div id="gameUI" style="display: none;">
+        <div id="battle" class="battle" style="display: block;">
+            <div id="area" class="area"></div>
+            <div class="playerBar">
+                <p>プレイヤー: <span id="playerName"></span>&emsp;&emsp;LEVEL : <span id="playerLevel"></span>&emsp;&emsp;HP
+                    : <span id="playerHP"></span>&emsp;&emsp;Attack : <span id="playerAttack"></span></p>
+                <div class="playerMaxHP">
+                    <div id="playerHPBar" class="playerHP"></div>
+                </div>
+                <div class="playerMaxPoints">
+                    <div id="playerPointsBar" class="playerPoints"></div>
+                </div>
+            </div>
+            <div id="monster" class="monster animate__animated animate__fadeIn"></div>
+            <div id="effect" class="effect"></div>
+            <div class="playerBtnMenu">
+                <button id="attackBtn" class="playBtn" onclick="playerAttack()">こうげき</button>
+                <button id="defendBtn" class="playBtn" onclick="defendAction()">まもる</button>
+                <button id="itemsBtn" class="playBtn" onclick="usePotion()">アイテム</button>
+                <button class="playBtn" onclick="runAway()">にげる</button>
+                <br>
+            </div>
+            <div class="enemyBar">
+                <p><span id="enemyName"></span>&emsp;レベル : <span id="enemyLevel"></span>&emsp;HP
+                    : <span id="enemyHP"></span></p>
+                <div class="enemyMaxHP">
+                    <div id="enemyHPBar" class="enemyHP"></div>
+                </div>
+                <div id="logPanel" style="display: none;">
+                    <div>
+                        <div id="battleLog" class="battleLog" style="display: block;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="map" style="display: none;">
+        <div class="map animate__animated animate__fadeIn">
+            <img src="img/map/MAP.png" alt="MAP" width="100%" height="550px">
+            <img id="kumo" style="transform: scaleY(-1); display: block;" class="kumo" src="img/map/kumo.png" alt="雲"
+                width="53%" height="110%">
+            <div>
+                <button class="castle" onclick="castleShow()">ダイヤモンド<br>&emsp;マーメイド城</button> <button class="stage1"
+                    onclick="startGames1()">始まりの森</button>
+                <button class="stage2" onclick="startGames2()">大きな洞窟</button>
+                <button id="extra1" style="display: none;" class="extra1" onclick="extra1()">岩石の番人</button>
+                <button id="extra2" style="display: none;" class="extra2" onclick="extra2()">麒麟</button>
+                <button class="stage3" onclick="startGames3()">スノーフェアリー</button>
+                <button class="stage4" onclick="startGames4()">北の大地</button>
+                <button id="stage5" style="display: none;" class="stage5" onclick="startGames5()">カラカラ山</button>
+                <button id="stage6" style="display: none;" class="stage6" onclick="startGames6()">サハラ砂漠</button>
+                <button id="stage7" style="display: none;" class="stage7" onclick="startGames7()">神秘の森</button>
+                <button id="stageLast" style="display: none;" class="stageLast" onclick="startGamesLast()">魔王城</button>
+            </div>
+            <div id="gameClearPanel" class="panel animate__animated animate__fadeIn" style="display: none;">
+                ****** ゲームクリア ******
+                <br>
+                <br>
+                魔王が断末魔の叫びをあげ、ついに倒れた。
+                世界に平和が戻った。
+                長き戦いに終止符が打たれた今、
+                あなたの冒険も、静かに幕を閉じる
+                …そして、新たな伝説が始まる。
+                <br>
+                <br>
+                <div><button class="startBtn" onclick="closeClearPanel()">❌閉じる</button></div>
+            </div>
+        </div>
+        <div>
+            <button class="titleBtn" onclick="titleGame()">タイトルへ</button>
+            <button class="menuBtn" onclick="menuOpen()">メニュー</button>
+        </div>
+    </div>
+    <div id="castle" style="display: none;">
+        <img class="castleMenu animate__animated animate__fadeIn" src="img/map/castle.png" alt="背景" width='100%'
+            height='550px'>
+        <div class="castleMenuResult">
+            <button class="startBtn" onclick="itemshop()">アイテム屋へ</button>
+            <br>
+            <br>
+            <button class="startBtn" onclick="weaponshop()">鍛冶屋へ</button>
+        </div>
+        <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
+    </div>
+    <div id="itemshop" style="display: none;">
+        <img class="animate__animated animate__fadeIn" src="img/map/アイテム屋.png" alt="背景" width='100%' height='550px'>
+        <div class="castleMenuResult">
+            <img src="img/items1/治癒のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+                onclick="buyHpPotion()">治癒のポーション<br>1000ゴールド</button>
+            <br>
+            <br>
+            <img src="img/items1/力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+                onclick="buyPwPotion()">力のポーション<br>5000ゴールド</button>
+            <br>
+            <br>
+            <img src="img/items1/体力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
+                onclick="buyHpUpPotion()">体力のポーション<br>3000ゴールド</button>
+        </div>
+        <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
+    </div>
+    <div id="weaponshop" style="display: none;">
+        <img class="shopMenu animate__animated animate__fadeIn" src="img/map/鍛冶屋.png" alt="背景" width='100%' height='550px'>
+        <div class="castleMenuResult">
+            <button class="startBtn">武器1&emsp;400ゴールド</button>
+            <br>
+            <br>
+            <button class="startBtn">武器2&emsp;300ゴールド</button>
+        </div>
+        <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
+    </div>
+    <div id="menu" class="menu" style="display: none;">
+        <img class="animate__animated animate__fadeIn" src="img/menu/playerMenu.png" alt="背景" width='100%' height='550px'>
+        <div class="status animate__animated animate__fadeIn">
+            <p>プレイヤー: <span id="Name"></span><br><br>
+                レベル : <span id="Level"></span>&emsp;&emsp;&emsp;HP: <span id="HP"></span>&emsp;&emsp;&emsp;攻撃力 : <span
+                    id="Attack"></span>
+                <br><br>所持ゴールド : <span id="Coin"></span>
+            </p>
+        </div>
+        <div class="bug animate__animated animate__fadeIn">
+            <div>持ち物</div>
+            <div class="items">
+                <div id="hpPotion" style="display: none;"><img src="img/items1/治癒のポーション.png" alt="ポーション" width="15px"
+                        height="15px" style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
+                <div id="pwPotion" style="display: none;"><img src="img/items1/力のポーション.png" alt="ポーション" width="15px"
+                        height="15px" style="vertical-align: middle;">力のポーション × <span id="have2"></span></div>
+                <div id="hpupPotion" style="display: none;"><img src="img/items1/体力のポーション.png" alt="ポーション" width="15px"
+                        height="15px" style="vertical-align: middle;">体力のポーション × <span id="have3"></span></div>
+                <div id="no" style="display: block;">なし</div>
+            </div>
+        </div>
+        <img class="player animate__animated animate__fadeIn" src="img/menu/勇者.png" alt="勇者" width="200px" height="200px">
+        <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
+    </div>
+    <div id="restartMenu" class="resultScreen" style="display: none;">
+        <div id="win" class="result" style="display: block;">
+            <div id="levelUpShow" style="display: none;">レベルが<span id="levelup"></span><span>になった！</span></div><br>
+            <span id="winName"></span><span>を倒した！</span><br>
+            <span>獲得ゴールド&emsp;</span><span id="winGold"></span><br>
+            <span>獲得経験値</span>&emsp;<span id="winPoints"></span><br>
+            <span>入手アイテム</span>&emsp;<span id="rareItems"></span><br>
+            <br>
+            <button class="startBtn" onclick="mapGame()">マップへ戻る</button>
+            <button id="nextBattle" style="display: none;" class="startBtn" onclick="restartGame()">もう少し探索する</button>
+            <button class="startBtn" onclick="downloadSessionLog()">ログを保存する</button>
+            <br>
+            <br>
+            <div id="sessionLogPanel" style="display: none;">
+                <div>
+                    <div style="display: block;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="lose" class="result" style="display: none;">
+            <div>
+                <span id="eName"></span><span>にやられてしまった…</span><br>
+                <p>プレイヤー: <span id="resultName"></span><br>
+                    レベル : <span id="resultLevel"></span><br>
+                    HP: <span id="resultHP"></span><br>
+                    攻撃力 : <span id="resultAttack"></span><br>
+                    所持ゴールド : <span id="resultCoin"></span><br>
+                </p>
+            </div>
+            <button class="titleEndBtn" onclick="titleGame()">タイトルへ</button>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+
+</html>
