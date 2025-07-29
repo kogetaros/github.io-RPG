@@ -723,8 +723,8 @@ function generateEnemy1() {
                 enemy.coin = 10;
                 enemy.level = 1;
                 enemy.points = 60;
-                area.innerHTML = "<img src='img/stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='move-left-right' src='img/stage1/スライム.png' alt='背景' width='100%' height='60px'>";
+                area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
+                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='60px'>";
                 slime()
                 break;
             case 'ゴブリン':
@@ -735,8 +735,8 @@ function generateEnemy1() {
                 enemy.coin = 20;
                 enemy.level = 3;
                 enemy.points = 80;
-                area.innerHTML = "<img src='img/stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage1/ゴブリン.png' alt='背景' width='100%' height='100px'>";
+                area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
+                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゴブリン.png' alt='背景' width='100%' height='100px'>";
                 break;
             case 'ゲベロペ':
                 enemy.name = 'ゲベロペ';
@@ -746,8 +746,8 @@ function generateEnemy1() {
                 enemy.coin = 500;
                 enemy.level = 10;
                 enemy.points = 200;
-                area.innerHTML = "<img src='img/stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage1/ゲベロペ.png' alt='背景' width='100%' height='1s50px'>";
+                area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
+                monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage1/ゲベロペ.png' alt='背景' width='100%' height='1s50px'>";
                 break;
             default:
                 break;
@@ -770,8 +770,8 @@ function generateEnemy1() {
                 enemy.coin = 10;
                 enemy.level = 1;
                 enemy.points = 100;
-                area.innerHTML = "<img src='img/stage1/area1.png' alt='背景' width='100%' height='620px'>";
-                monster.innerHTML = "<img class='move-left-right' src='img/stage1/スライム.png' alt='背景' width='100%' height='60px'>";
+                area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
+                monster.innerHTML = "<img class='move-left-right' src='stage1/スライム.png' alt='背景' width='100%' height='60px'>";
                 break;
             default:
                 break;
@@ -806,8 +806,8 @@ function generateEnemy2() {
             enemy.coin = 1100;
             enemy.level = 13;
             enemy.points = 150;
-            area.innerHTML = "<img src='img/stage2/area2.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage2/ゾンビ.png' alt='背景' width='100%' height='150px'>";
+            area.innerHTML = "<img src='stage2/area2.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage2/ゾンビ.png' alt='背景' width='100%' height='150px'>";
             darkNight();
             break;
         case 'マミー':
@@ -818,8 +818,8 @@ function generateEnemy2() {
             enemy.coin = 1300;
             enemy.level = 15;
             enemy.points = 180;
-            area.innerHTML = "<img src='img/stage2/area2.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage2/マミー.png' alt='背景' width='100%' height='150px'>";
+            area.innerHTML = "<img src='stage2/area2.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage2/マミー.png' alt='背景' width='100%' height='150px'>";
             break;
         case 'ガーゴイル':
             enemy.name = 'ガーゴイル';
@@ -829,8 +829,8 @@ function generateEnemy2() {
             enemy.coin = 2000;
             enemy.level = 20;
             enemy.points = 250;
-            area.innerHTML = "<img src='img/stage2/area2.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage2/ガーゴイル.png' alt='背景' width='100%' height='180px'>";
+            area.innerHTML = "<img src='stage2/area2.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage2/ガーゴイル.png' alt='背景' width='100%' height='180px'>";
             break;
         default:
             break;
@@ -864,8 +864,8 @@ function generateEnemy3() {
             enemy.coin = 2100;
             enemy.level = 24;
             enemy.points = 200;
-            area.innerHTML = "<img src='img/stage3/area3.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage3/雪男.png' alt='背景' width='100%' height='200px'>";
+            area.innerHTML = "<img src='stage3/area3.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage3/雪男.png' alt='背景' width='100%' height='200px'>";
             break;
         case 'スノーフェアリー':
             enemy.name = 'スノーフェアリー';
@@ -875,8 +875,8 @@ function generateEnemy3() {
             enemy.coin = 2300;
             enemy.level = 30;
             enemy.points = 220;
-            area.innerHTML = "<img src='img/stage3/area3.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage3/スノーフェアリー.png' alt='背景' width='100%' height='100px'>";
+            area.innerHTML = "<img src='stage3/area3.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage3/スノーフェアリー.png' alt='背景' width='100%' height='100px'>";
             break;
         case 'スノーワイバーン':
             enemy.name = 'スノーワイバーン';
@@ -886,8 +886,8 @@ function generateEnemy3() {
             enemy.coin = 3000;
             enemy.level = 38;
             enemy.points = 300;
-            area.innerHTML = "<img src='img/stage3/area3.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage3/スノーワイバーン.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stage3/area3.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage3/スノーワイバーン.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -921,8 +921,8 @@ function generateEnemy4() {
             enemy.coin = 3600;
             enemy.level = 48;
             enemy.points = 380;
-            area.innerHTML = "<img src='img/stage4/area4.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage4/レッドドラゴン.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stage4/area4.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage4/レッドドラゴン.png' alt='背景' width='100%' height='250px'>";
             dragon();
             break;
         case 'ウィッチ':
@@ -933,8 +933,8 @@ function generateEnemy4() {
             enemy.coin = 3300;
             enemy.level = 42;
             enemy.points = 270;
-            area.innerHTML = "<img src='img/stage4/area4.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage4/ウィッチ.png' alt='背景' width='100%' height='180px'>";
+            area.innerHTML = "<img src='stage4/area4.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage4/ウィッチ.png' alt='背景' width='100%' height='180px'>";
             break;
         case '大天使':
             enemy.name = '大天使';
@@ -944,8 +944,8 @@ function generateEnemy4() {
             enemy.coin = 5000;
             enemy.level = 55;
             enemy.points = 500;
-            area.innerHTML = "<img src='img/stage4/area4.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage4/大天使.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stage4/area4.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage4/大天使.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -979,8 +979,8 @@ function generateEnemy5() {
             enemy.coin = 4600;
             enemy.level = 59;
             enemy.points = 540;
-            area.innerHTML = "<img src='img/stage5/area5.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage5/フングリード.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stage5/area5.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage5/フングリード.png' alt='背景' width='100%' height='250px'>";
             break;
         case 'グルームリッチ':
             enemy.name = 'グルームリッチ';
@@ -990,8 +990,8 @@ function generateEnemy5() {
             enemy.coin = 5000;
             enemy.level = 61;
             enemy.points = 570;
-            area.innerHTML = "<img src='img/stage5/area5.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage5/グルームリッチ.png' alt='背景' width='100%' height='180px'>";
+            area.innerHTML = "<img src='stage5/area5.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage5/グルームリッチ.png' alt='背景' width='100%' height='180px'>";
             break;
         case 'ヴェノメギド':
             enemy.name = 'ヴェノメギド';
@@ -1001,8 +1001,8 @@ function generateEnemy5() {
             enemy.coin = 5500;
             enemy.level = 68;
             enemy.points = 600;
-            area.innerHTML = "<img src='img/stage5/area5.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage5/ヴェノメギド.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stage5/area5.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage5/ヴェノメギド.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -1036,8 +1036,8 @@ function generateEnemy6() {
             enemy.coin = 5300;
             enemy.level = 70;
             enemy.points = 620;
-            area.innerHTML = "<img src='img/stage6/area6.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage6/フレイモン.png' alt='背景' width='100%' height='180px'>";
+            area.innerHTML = "<img src='stage6/area6.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage6/フレイモン.png' alt='背景' width='100%' height='180px'>";
             break;
         case 'フェニクレスト':
             enemy.name = 'フェニクレスト';
@@ -1047,8 +1047,8 @@ function generateEnemy6() {
             enemy.coin = 5500;
             enemy.level = 72;
             enemy.points = 660;
-            area.innerHTML = "<img src='img/stage6/area6.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage6/フェニクレスト.png' alt='背景' width='100%' height='300px'>";
+            area.innerHTML = "<img src='stage6/area6.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage6/フェニクレスト.png' alt='背景' width='100%' height='300px'>";
             break;
         case 'インフェルナード':
             enemy.name = 'インフェルナード';
@@ -1058,8 +1058,8 @@ function generateEnemy6() {
             enemy.coin = 6000;
             enemy.level = 79;
             enemy.points = 710;
-            area.innerHTML = "<img src='img/stage6/area6.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage6/インフェルナード.png' alt='背景' width='100%' height='300px'>";
+            area.innerHTML = "<img src='stage6/area6.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage6/インフェルナード.png' alt='背景' width='100%' height='300px'>";
             break;
         default:
             break;
@@ -1093,8 +1093,8 @@ function generateEnemy7() {
             enemy.coin = 7000;
             enemy.level = 82;
             enemy.points = 770;
-            area.innerHTML = "<img src='img/stage7/area7.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage7/ルーナリス.png' alt='背景' width='100%' height='200px'>";
+            area.innerHTML = "<img src='stage7/area7.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage7/ルーナリス.png' alt='背景' width='100%' height='200px'>";
             dragon();
             break;
         case 'ノクタリオン':
@@ -1105,8 +1105,8 @@ function generateEnemy7() {
             enemy.coin = 8100;
             enemy.level = 84;
             enemy.points = 810;
-            area.innerHTML = "<img src='img/stage7/area7.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage7/ノクタリオン.png' alt='背景' width='100%' height='200px'>";
+            area.innerHTML = "<img src='stage7/area7.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage7/ノクタリオン.png' alt='背景' width='100%' height='200px'>";
             break;
         case 'グリムヴェイル':
             enemy.name = 'グリムヴェイル';
@@ -1116,8 +1116,8 @@ function generateEnemy7() {
             enemy.coin = 9000;
             enemy.level = 90;
             enemy.points = 1000;
-            area.innerHTML = "<img src='img/stage7/area7.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage7/グリムヴェイル.png' alt='背景' width='100%' height='200px'>";
+            area.innerHTML = "<img src='stage7/area7.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage7/グリムヴェイル.png' alt='背景' width='100%' height='200px'>";
             break;
         default:
             break;
@@ -1151,8 +1151,8 @@ function generateEnemyLast() {
             enemy.coin = 15000;
             enemy.level = 100;
             enemy.points = 2000;
-            area.innerHTML = "<img src='img/stageLast/areaLast.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stageLast/魔王.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='stageLast/areaLast.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stageLast/魔王.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -1186,8 +1186,8 @@ function generateEnemyExtra1() {
             enemy.coin = 5000;
             enemy.level = 50;
             enemy.points = 1000;
-            area.innerHTML = "<img src='img/extra1/extra1.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/extra1/岩の番人.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='extra1/extra1.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra1/岩の番人.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -1221,8 +1221,8 @@ function generateEnemyExtra2() {
             enemy.coin = 10000;
             enemy.level = 62;
             enemy.points = 2500;
-            area.innerHTML = "<img src='img/extra2/extra2.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/extra2/麒麟.png' alt='背景' width='100%' height='250px'>";
+            area.innerHTML = "<img src='extra2/extra2.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra2/麒麟.png' alt='背景' width='100%' height='250px'>";
             break;
         default:
             break;
@@ -1571,7 +1571,7 @@ function endGame(result) {
         }
         displaySessionLogs();
         win();
-        //monster.innerHTML = "<img onclick='win()' class='animate__animated animate__fadeIn' src='img/coin_gold_02.png' alt='背景' width='100%' height='100px'>";
+        //monster.innerHTML = "<img onclick='win()' class='animate__animated animate__fadeIn' src='coin_gold_02.png' alt='背景' width='100%' height='100px'>";
     } else {
         player.points = 0;
         //経験値の反映
@@ -1878,7 +1878,7 @@ function changeMaou() {
     hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "の姿が変化した…");
     let monster = document.getElementById("monster");
-    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='img/stageLast/魔王2.png' alt='背景' width='100%' height='280px'>";
+    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='stageLast/魔王2.png' alt='背景' width='100%' height='280px'>";
     enemy.name = "魔王(2)";
     enemy.attack = 270;
     enemy.maxHP = 4000;
@@ -1914,8 +1914,8 @@ function slime() {
         enemy.coin *= 2;
         enemy.level = 30;
         enemy.points = 350;
-        area.innerHTML = "<img src='img/stage1/area1.png' alt='背景' width='100%' height='620px'>";
-        monster.innerHTML = "<img class='move-left-right' src='img/stage1/レッドスライム.png' alt='背景' width='100%' height='50px'>";
+        area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
+        monster.innerHTML = "<img class='move-left-right' src='stage1/レッドスライム.png' alt='背景' width='100%' height='50px'>";
     }
 }
 
@@ -1930,8 +1930,8 @@ function darkNight() {
         enemy.coin *= 2;
         enemy.level = 45;
         enemy.points = 550;
-        area.innerHTML = "<img src='img/stage2/area2.png' alt='背景' width='100%' height='620px'>";
-        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage2/ダークナイト.png' alt='背景' width='100%' height='250px'>";
+        area.innerHTML = "<img src='stage2/area2.png' alt='背景' width='100%' height='620px'>";
+        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage2/ダークナイト.png' alt='背景' width='100%' height='250px'>";
     }
 }
 
@@ -1946,8 +1946,8 @@ function dragon() {
         enemy.coin *= 2;
         enemy.level = 80;
         enemy.points = 1000;
-        area.innerHTML = "<img src='img/stage4/area4.png' alt='背景' width='100%' height='620px'>";
-        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/stage4/ホワイトドラゴン.png' alt='背景' width='100%' height='300px'>";
+        area.innerHTML = "<img src='stage4/area4.png' alt='背景' width='100%' height='620px'>";
+        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage4/ホワイトドラゴン.png' alt='背景' width='100%' height='300px'>";
     }
 }
 
@@ -1962,8 +1962,8 @@ function dragon() {
 //         enemy.coin *= 2;
 //         enemy.level = 90;
 //         enemy.points = 500;
-//         area.innerHTML = "<img src='img/areaLast.png' alt='背景' width='100%' height='620px'>";
-//         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='img/ダークドラゴン.png' alt='背景' width='100%' height='400px'>";
+//         area.innerHTML = "<img src='areaLast.png' alt='背景' width='100%' height='620px'>";
+//         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ダークドラゴン.png' alt='背景' width='100%' height='400px'>";
 //     }
 // }
 
