@@ -188,10 +188,10 @@ function castleShow() {
 
 //治癒のポーションを購入する
 function buyHpPotion() {
-    if (player.coin < 1000) {
+    if (player.coin < 30000) {
         alert("コインが足りません");
     } else {
-        player.coin -= 1000;
+        player.coin -= 30000;
         player.hpPotion += 1;
         alert("治癒のポーションを購入しました！");
     }
@@ -199,10 +199,10 @@ function buyHpPotion() {
 
 //力のポーションを購入する
 function buyPwPotion() {
-    if (player.coin < 5000) {
+    if (player.coin < 50000) {
         alert("コインが足りません");
     } else {
-        player.coin -= 5000;
+        player.coin -= 50000;
         player.pwPotion += 1;
         alert("力のポーションを購入しました！");
     }
@@ -210,10 +210,10 @@ function buyPwPotion() {
 
 //体力のポーションを購入する
 function buyHpUpPotion() {
-    if (player.coin < 3000) {
+    if (player.coin < 60000) {
         alert("コインが足りません");
     } else {
-        player.coin -= 3000;
+        player.coin -= 60000;
         player.hpupPotion += 1;
         alert("体力のポーションを購入しました！");
     }
@@ -1088,9 +1088,9 @@ function generateEnemy7() {
     switch (enemy.name) {
         case 'ルーナリス':
             enemy.name = 'ルーナリス';
-            enemy.hp = 1850;
-            enemy.attack = 130;
-            enemy.maxHP = 1850;
+            enemy.hp = 1050;
+            enemy.attack = 98;
+            enemy.maxHP = 1050;
             enemy.coin = 7000;
             enemy.level = 82;
             enemy.points = 770;
@@ -1100,9 +1100,9 @@ function generateEnemy7() {
             break;
         case 'ノクタリオン':
             enemy.name = 'ノクタリオン';
-            enemy.hp = 1930;
-            enemy.attack = 155;
-            enemy.maxHP = 1930;
+            enemy.hp = 1130;
+            enemy.attack = 105;
+            enemy.maxHP = 1130;
             enemy.coin = 8100;
             enemy.level = 84;
             enemy.points = 810;
@@ -1111,9 +1111,9 @@ function generateEnemy7() {
             break;
         case 'グリムヴェイル':
             enemy.name = 'グリムヴェイル';
-            enemy.hp = 2450;
-            enemy.attack = 180;
-            enemy.maxHP = 2450;
+            enemy.hp = 1250;
+            enemy.attack = 120;
+            enemy.maxHP = 1250;
             enemy.coin = 9000;
             enemy.level = 90;
             enemy.points = 1000;
@@ -1652,9 +1652,9 @@ function win() {
     gameUI = document.getElementById("gameUI");
     logPanel = document.getElementById("logPanel");
     //ログパネルの表示
-    let sessionLogPanel = document.getElementById("sessionLogPanel");
+    //let sessionLogPanel = document.getElementById("sessionLogPanel");
     let restartMenu = document.getElementById("restartMenu");
-    sectionIds.push(sessionLogPanel.id, restartMenu.id, gameUI.id, logPanel.id);
+    sectionIds.push(restartMenu.id, gameUI.id, logPanel.id);
     showSection(sectionIds);
 }
 
