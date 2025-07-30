@@ -105,14 +105,12 @@
     <div id="gameUI" style="display: none;">
         <div id="battle" class="battle" style="display: block;">
             <div id="area" class="area"></div>
+            <!-- enemyBar -->
             <div class="playerBar">
-                <p>プレイヤー: <span id="playerName"></span>&emsp;&emsp;LEVEL : <span id="playerLevel"></span>&emsp;&emsp;HP
-                    : <span id="playerHP"></span>&emsp;&emsp;Attack : <span id="playerAttack"></span></p>
-                <div class="playerMaxHP">
-                    <div id="playerHPBar" class="playerHP"></div>
-                </div>
-                <div class="playerMaxPoints">
-                    <div id="playerPointsBar" class="playerPoints"></div>
+                <p><span id="enemyName"></span>&emsp;レベル : <span id="enemyLevel"></span>&emsp;HP
+                    : <span id="enemyHP"></span></p>
+                <div class="enemyMaxHP">
+                    <div id="enemyHPBar" class="enemyHP"></div>
                 </div>
             </div>
             <div id="monster" class="monster animate__animated animate__fadeIn"></div>
@@ -138,11 +136,17 @@
                 <button class="playBtn" onclick="runAway()">にげる</button>
                 <br>
             </div>
+            <!-- playerBar -->
             <div class="enemyBar">
-                <p><span id="enemyName"></span>&emsp;レベル : <span id="enemyLevel"></span>&emsp;HP
-                    : <span id="enemyHP"></span></p>
-                <div class="enemyMaxHP">
-                    <div id="enemyHPBar" class="enemyHP"></div>
+                <p>プレイヤー: <span id="playerName"></span>&emsp;&emsp;LEVEL : <span id="playerLevel"></span>
+                    <br>
+                    HP : <span id="playerHP"></span>&emsp;&emsp;Attack : <span id="playerAttack"></span>
+                </p>
+                <div class="playerMaxHP">
+                    <div id="playerHPBar" class="playerHP"></div>
+                </div>
+                <div class="playerMaxPoints">
+                    <div id="playerPointsBar" class="playerPoints"></div>
                 </div>
                 <div id="logPanel" style="display: none;">
                     <div>
