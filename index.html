@@ -15,9 +15,11 @@
             <img class="title" src="タイトル画面.png" alt="背景" width='100%' height='600px'>
             <div class="titleBlock">
                 <input id="playerInput" class="input" type="text" placeholder="名前を入力">
-                <button class="startBtn" onclick="playGames()">ゲームスタート</button>
-                <button class="startBtn" onclick="showInstructions()">操作方法を見る</button>
-                <button class="startBtn" onclick="showEnemyList()">敵一覧を見る</button>
+                <br>
+                <button class="startBtn" onclick="playGames()">はじめから</button><br>
+                <button class="startBtn" onclick="loadGame()">つづきから</button><br>
+                <button class="startBtn" onclick="showInstructions()">操作方法</button><br>
+                <button class="startBtn" onclick="showEnemyList()">ステージ一詳細</button>
             </div>
             <div id="instructionsPanel" class="panel" style="display: none;">
                 <div style="font-size: 10px;">
@@ -26,16 +28,20 @@
                     <br>
                     🔰 ゲームの流れ：
                     1. 名前を入力して「ゲーム開始」ボタンを押します
-                    2. ステージを選択します
-                    2. 敵がランダムに登場します
-                    2. ボスモンスターを倒すと次のステージに進むことができます
-                    3. 下記3つの行動から選択してターンを進めます
+                    2. セーブデータがある場合は、つづきからを押してください
+                    3. メニューでプレイヤーのステータスを見ることができます
+                    4. メニュー画面のセーブから、データを保存することができます
+                    5. ステージを選択します
+                    6. 各ステージごとに敵がランダムに登場します
+                    7. ボス級モンスターを倒すと次のステージに進むことができます
+                    8. 下記3つの行動から選択してターンを進めます
                     <br>
                     <br>
                     🎮 プレイヤーの行動：
                     🗡 こうげき：敵にダメージを与える。時々「会心の一撃」で大ダメージ！
                     🛡 まもる：敵の攻撃を避けやすくなり、回避成功時は少し回復します
-                    🍷 ポーション：HPが1/4回復（1回のみ使用可能）
+                    🍷 どうぐ：アイテムを所持している場合のみ使用できます
+                    🚀 にげる：モンスターに「こうげき」をしていなければ、逃げることができます
                     <br>
                     <br>
                     👾 敵の行動：
@@ -46,9 +52,8 @@
                     📜 その他の機能：
                     - 敵を倒すたびに経験値を取得し、レベルが上がっていきます
                     - レベルが上がることで、能力が上昇します
-                    - 戦闘ログがリアルタイムで表示されます
-                    - プレイ履歴はセッションログとして記録されます
-                    - 戦闘後は「マップへ戻る」や「再戦」ができます
+                    - モンスターを倒すと、稀にアイテムをドロップします
+                    - 戦闘後は「マップへ戻る」や「もう少し探索する(再戦)」ができます
                     <br>
                     <br>
                     <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
@@ -56,35 +61,39 @@
             </div>
             <div id="enemyListPanel" class="panel" style="display: none;">
                 <div style="font-size: 10px;">
-                    ◆ 敵の種類一覧 ◆
+                    ◆ マップ一覧 ◆
                     <br>
                     <br>
-                    🟢 スライム：
-                    HP: 50 / 攻撃力: 10
-                    基本的な魔物。初心者向け。
+                    ステージ1：始まりの森
+                    ボス級モンスター：「ゲベロペ」
                     <br>
                     <br>
-                    🟠 スケルトン：
-                    HP: 80 / 攻撃力: 15
-                    素早く攻撃力も高い中級魔物。
+                    ステージ2：大きな洞窟
+                    ボス級モンスター：「ガーゴイル」
                     <br>
                     <br>
-                    🟠 ゾンビ：
-                    HP: 110 / 攻撃力: 17
-                    HPと攻撃力も高い中級魔物。
+                    ステージ3：スノーフェアリー
+                    ボス級モンスター：「スノーワイバーン」
                     <br>
                     <br>
-                    🔴 ドラゴン：
-                    HP: 150 / 攻撃力: 20
-                    強力なボス級魔物。
+                    ステージ4：北の大地
+                    ボス級モンスター：「大天使」
                     <br>
                     <br>
-                    👾 魔王：
-                    HP: 400 / 攻撃力: 50
-                    魔王級魔物。要注意！
+                    ステージ5：カラカラ山
+                    ボス級モンスター：「ヴェノメギド」
                     <br>
                     <br>
-                    それぞれ異なる戦術が求められます。
+                    ステージ6：サハラ砂漠
+                    ボス級モンスター：「インフェルナード」
+                    <br>
+                    <br>
+                    ステージ7：神秘の森
+                    ボス級モンスター：「グリムヴェイル」
+                    <br>
+                    <br>
+                    ステージ8：魔王城
+                    ボス級モンスター：「魔王」
                     <br>
                     <br>
                     <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
@@ -108,10 +117,24 @@
             </div>
             <div id="monster" class="monster animate__animated animate__fadeIn"></div>
             <div id="effect" class="effect"></div>
+            <div id="overlay" class="overlay" style="display: none;">
+                <div id="haveItems" class="bugMenu">
+                    <button id="haveHpPotion" class="startBtn" style="display: none;" onclick="useHpPotion()">治癒のポーション ×
+                        <span id="haveBug1"></span></button>
+                    <button id="havePwrPotion" class="startBtn" style="display: none;" onclick="">力のポーション × <span
+                            id="haveBug2"></span></button>
+                    <button id="haveHpUpPotion" class="startBtn" style="display: none;" onclick="">体力のポーション × <span
+                            id="haveBug3"></span></button>
+                    <div id="noBug" style="display: block;">なし</div>
+                    <br>
+                    <div><button class="startBtn" onclick="closeBug()">❌閉じる</button></div>
+                </div>
+            </div>
             <div class="playerBtnMenu">
                 <button id="attackBtn" class="playBtn" onclick="playerAttack()">こうげき</button>
                 <button id="defendBtn" class="playBtn" onclick="defendAction()">まもる</button>
-                <button id="itemsBtn" class="playBtn" onclick="usePotion()">アイテム</button>
+                <!-- <button id="hpPotionBtn" class="playBtn" onclick="usePotion()">どうぐ</button> -->
+                <button id="itemsBtn" class="playBtn" onclick="useItems()">どうぐ</button>
                 <button class="playBtn" onclick="runAway()">にげる</button>
                 <br>
             </div>
@@ -162,8 +185,8 @@
             </div>
         </div>
         <div>
-            <button class="titleBtn" onclick="titleGame()">タイトルへ</button>
             <button class="menuBtn" onclick="menuOpen()">メニュー</button>
+            <button class="titleBtn" style="display: none;" onclick="titleGame()">タイトルへ</button>
         </div>
     </div>
     <div id="castle" style="display: none;">
@@ -225,7 +248,10 @@
             </div>
         </div>
         <img class="player animate__animated animate__fadeIn" src="menu/勇者.png" alt="勇者" width="200px" height="200px">
-        <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
+        <div class="button-container">
+            <button class="backMenuBtn" onclick="menuClose()">戻る</button>
+            <button class="saveBtn" onclick="saveGame()">セーブ</button>
+        </div>
     </div>
     <div id="restartMenu" class="resultScreen" style="display: none;">
         <div id="win" class="result" style="display: block;">
@@ -235,9 +261,13 @@
             <span>獲得経験値</span>&emsp;<span id="winPoints"></span><br>
             <span>入手アイテム</span>&emsp;<span id="rareItems"></span><br>
             <br>
+            <br>
             <button class="startBtn" onclick="mapGame()">マップへ戻る</button>
+            <br>
+            <br>
             <button id="nextBattle" style="display: none;" class="startBtn" onclick="restartGame()">もう少し探索する</button>
             <button class="startBtn" style="display: none;" onclick="downloadSessionLog()">ログを保存する</button>
+            <br>
             <br>
             <br>
             <div id="sessionLogPanel" style="display: none;">
