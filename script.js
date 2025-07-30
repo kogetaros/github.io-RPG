@@ -161,6 +161,34 @@ function playGames() {
     if (!player.name) {
         alert("名前を入力してください！");
     } else {
+        if (player.name === "最強") {
+            player.maxHP = 10000;
+            player.hp = 10000;
+            player.attack = 200;
+            player.coin = 1000000;
+            player.defending = false;
+            player.hpPotion = 100;
+            player.points = 0;
+            flg.stage2 = true;
+            flg.stage3 = true;
+            flg.stage4 = true;
+            flg.stage5 = false;
+            flg.stage6 = false;
+            flg.stage7 = true;
+            flg.stageLast = true;
+            flg.castle = true;
+            flg.extra1 = true;
+            flg.extra2 = true;
+        }
+        if (player.name === "こが") {
+            player.maxHP = 10000;
+            player.hp = 10000;
+            player.attack = 200;
+            player.coin = 10000;
+            player.defending = false;
+            player.hpPotion = 100;
+            player.points = 0;
+        }
         //画面表示
         let map = document.getElementById("map");
         playBGM("map");
@@ -2062,7 +2090,7 @@ function slime() {
         enemy.attack = 50;
         enemy.maxHP = 150;
         enemy.coin *= 2;
-        enemy.level = 30;
+        enemy.level = 20;
         enemy.points = 350;
         area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img src='stage1/レッドスライム.png' alt='背景' width='100%' height='180px'>";
@@ -2074,11 +2102,11 @@ function darkNight() {
     let rare = (Math.random() < 0.1);
     if (rare) {
         enemy.name = 'ダークナイト';
-        enemy.hp = 400;
-        enemy.attack = 55;
-        enemy.maxHP = 400;
+        enemy.hp = 350;
+        enemy.attack = 50;
+        enemy.maxHP = 350;
         enemy.coin *= 2;
-        enemy.level = 45;
+        enemy.level = 32;
         enemy.points = 550;
         area.innerHTML = "<img src='stage2/area2.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage2/ダークナイト.png' alt='背景' width='100%' height='250px'>";
@@ -2090,12 +2118,12 @@ function dragon() {
     let rare = (Math.random() < 0.1);
     if (rare) {
         enemy.name = 'ホワイトドラゴン';
-        enemy.hp = 850;
-        enemy.attack = 120;
-        enemy.maxHP = 850;
+        enemy.hp = 700;
+        enemy.attack = 75;
+        enemy.maxHP = 700;
         enemy.coin *= 2;
-        enemy.level = 72;
-        enemy.points = 1000;
+        enemy.level = 60;
+        enemy.points = 800;
         area.innerHTML = "<img src='stage4/area4.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage4/ホワイトドラゴン.png' alt='背景' width='100%' height='300px'>";
     }
@@ -2106,12 +2134,12 @@ function azure() {
     let rare = (Math.random() < 0.1);
     if (rare) {
         enemy.name = 'アズリオン';
-        enemy.hp = 1600;
-        enemy.attack = 300;
-        enemy.maxHP = 1600;
+        enemy.hp = 1200;
+        enemy.attack = 107;
+        enemy.maxHP = 1200;
         enemy.coin *= 2;
-        enemy.level = 85;
-        enemy.points = 1500;
+        enemy.level = 75;
+        enemy.points = 1000;
         area.innerHTML = "<img src='stage6/area6.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/アズリオン.png' alt='背景' width='100%' height='200px'>";
     }
@@ -2122,12 +2150,12 @@ function frost() {
     let rare = (Math.random() < 0.1);
     if (rare) {
         enemy.name = 'フロストタイラント';
-        enemy.hp = 1000;
-        enemy.attack = 95;
-        enemy.maxHP = 1000;
+        enemy.hp = 600;
+        enemy.attack = 65;
+        enemy.maxHP = 600;
         enemy.coin *= 2;
-        enemy.level = 78;
-        enemy.points = 1100;
+        enemy.level = 47;
+        enemy.points = 700;
         area.innerHTML = "<img src='stage3/area3.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/フロストタイラント.png' alt='背景' width='100%' height='200px'>";
     }
@@ -2138,12 +2166,12 @@ function morbasylisk() {
     let rare = (Math.random() < 0.1);
     if (rare) {
         enemy.name = 'モルバジリスク';
-        enemy.hp = 1360;
-        enemy.attack = 210;
-        enemy.maxHP = 1360;
+        enemy.hp = 960;
+        enemy.attack = 95;
+        enemy.maxHP = 960;
         enemy.coin *= 2;
-        enemy.level = 75;
-        enemy.points = 1500;
+        enemy.level = 68;
+        enemy.points = 900;
         area.innerHTML = "<img src='stage5/area5.png' alt='背景' width='100%' height='620px'>";
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/モルバジリスク.png' alt='背景' width='100%' height='130px'>";
     }
