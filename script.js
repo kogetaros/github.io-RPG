@@ -2060,6 +2060,7 @@ function runAway() {
     if (enemy.hp != enemy.maxHP || player.hp != player.maxHP) {
         alert(enemy.name + "から逃げることはできない。");
     } else {
+        stopBGM();
         alert(enemy.name + "から逃げました。");
         map = document.getElementById("map");
         sectionIds.push(map.id);
