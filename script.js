@@ -161,34 +161,6 @@ function playGames() {
     if (!player.name) {
         alert("名前を入力してください！");
     } else {
-        if (player.name === "最強") {
-            player.maxHP = 10000;
-            player.hp = 10000;
-            player.attack = 200;
-            player.coin = 1000000;
-            player.defending = false;
-            player.hpPotion = 100;
-            player.points = 0;
-            flg.stage2 = true;
-            flg.stage3 = true;
-            flg.stage4 = true;
-            flg.stage5 = false;
-            flg.stage6 = false;
-            flg.stage7 = true;
-            flg.stageLast = true;
-            flg.castle = true;
-            flg.extra1 = true;
-            flg.extra2 = true;
-        }
-        if (player.name === "こが") {
-            player.maxHP = 10000;
-            player.hp = 10000;
-            player.attack = 200;
-            player.coin = 10000;
-            player.defending = false;
-            player.hpPotion = 100;
-            player.points = 0;
-        }
         //画面表示
         let map = document.getElementById("map");
         playBGM("map");
