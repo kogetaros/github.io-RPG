@@ -1418,8 +1418,8 @@ function enemyAttack() {
         //敵の攻撃の命中判定（30%の確率で外れる）
         if (Math.random() < 0.3) {
             // 最大HPの 25% ～ 40% 回復
-            const min = Math.floor(player.maxHP * 0.25);
-            const max = Math.floor(player.maxHP * 0.40);
+            const min = Math.floor(player.maxHP * 0.10);
+            const max = Math.floor(player.maxHP * 0.25);
             const healAmount = Math.floor(Math.random() * (max - min + 1)) + min;
             player.hp += healAmount;
             if (player.hp > player.maxHP) {
@@ -1586,12 +1586,12 @@ function useHpPotion() {
         haveHpPotion.disabled = false;
     } else {
         useHpPotionBGM();
-        player.hp += player.maxHP / 4;
+        player.hp += player.maxHP / 6;
         if (player.hp > player.maxHP) {
             player.hp = player.maxHP;
         }
         player.hpPotion -= 1;
-        log(player.name + "はポーションを使った！ HPが" + Math.floor(player.maxHP / 4) + "回復！");
+        log(player.name + "はポーションを使った！ HPが" + Math.floor(player.maxHP / 6) + "回復！");
         attackBtn.disabled = false;
         defendBtn.disabled = false;
         haveHpPotion.disabled = false;
