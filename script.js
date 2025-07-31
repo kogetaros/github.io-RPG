@@ -122,7 +122,7 @@ function loadGame() {
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
-    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop'];
+    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven'];
 
     allSections.forEach(id => {
         const element = document.getElementById(id);
@@ -138,7 +138,6 @@ function showSection(sectionIds) {
 
 //ゲームスタートでMAPに遷移
 function playGames() {
-    stopBGM();
     console.log("MAXHP" + player.maxHP);
     console.log("HP" + player.hp);
     console.log("POINTS" + player.points);
@@ -162,6 +161,25 @@ function playGames() {
     if (!player.name) {
         alert("名前を入力してください！");
     } else {
+        if (player.name === "最強") {
+            player.maxHP = 10000;
+            player.hp = 10000;
+            player.attack = 200;
+            player.coin = 1000000;
+            player.defending = false;
+            player.hpPotion = 100;
+            player.points = 0;
+            flg.stage2 = true;
+            flg.stage3 = true;
+            flg.stage4 = true;
+            flg.stage5 = true;
+            flg.stage6 = true;
+            flg.stage7 = true;
+            flg.stageLast = true;
+            flg.castle = true;
+            flg.extra1 = true;
+            flg.extra2 = true;
+        }
         //画面表示
         let map = document.getElementById("map");
         playBGM("map");
@@ -172,7 +190,6 @@ function playGames() {
 
 //メニューを開く
 function menuOpen() {
-    stopBGM();
     playBGM("menu");
     player.hp = player.maxHP;
     let sectionIds = [];
@@ -227,7 +244,6 @@ function haveItems() {
 
 //メニューを閉じる
 function menuClose() {
-    stopBGM();
     playBGM("map");
     let sectionIds = [];
     let map = document.getElementById("map");
@@ -296,7 +312,6 @@ function buyHpUpPotion() {
 
 //ゲーム開始/stage1
 function startGames1() {
-    stopBGM();
     let playerInput = document.getElementById("playerInput");
     player.name = playerInput.value.trim();
     let effect = document.getElementById("effect");
@@ -346,7 +361,6 @@ function startGames1() {
 //ゲーム開始/stage2
 function startGames2() {
     if (flg.stage2) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -399,7 +413,6 @@ function startGames2() {
 //ゲーム開始/stage3
 function startGames3() {
     if (flg.stage3) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -452,7 +465,6 @@ function startGames3() {
 //ゲーム開始/stage4
 function startGames4() {
     if (flg.stage4) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -505,7 +517,6 @@ function startGames4() {
 //ゲーム開始/stage5
 function startGames5() {
     if (flg.stage5) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -558,7 +569,6 @@ function startGames5() {
 //ゲーム開始/stage6
 function startGames6() {
     if (flg.stage6) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -611,7 +621,6 @@ function startGames6() {
 //ゲーム開始/stage7
 function startGames7() {
     if (flg.stage7) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -664,7 +673,6 @@ function startGames7() {
 //ゲーム開始/stageLast
 function startGamesLast() {
     if (flg.stageLast) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -712,7 +720,6 @@ function startGamesLast() {
 
 function extra1() {
     if (flg.extra1) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -760,7 +767,6 @@ function extra1() {
 
 function extra2() {
     if (flg.extra2) {
-        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -1194,9 +1200,9 @@ function generateEnemy7() {
     switch (enemy.name) {
         case 'ルーナリス':
             enemy.name = 'ルーナリス';
-            enemy.hp = 1000;
+            enemy.hp = 1300;
             enemy.attack = 92;
-            enemy.maxHP = 1000;
+            enemy.maxHP = 1300;
             enemy.coin = 7000;
             enemy.level = 65;
             enemy.points = 530;
@@ -1206,9 +1212,9 @@ function generateEnemy7() {
             break;
         case 'ノクタリオン':
             enemy.name = 'ノクタリオン';
-            enemy.hp = 1070;
+            enemy.hp = 1370;
             enemy.attack = 94;
-            enemy.maxHP = 1070;
+            enemy.maxHP = 1370;
             enemy.coin = 7100;
             enemy.level = 67;
             enemy.points = 550;
@@ -1217,9 +1223,9 @@ function generateEnemy7() {
             break;
         case 'グリムヴェイル':
             enemy.name = 'グリムヴェイル';
-            enemy.hp = 1150;
+            enemy.hp = 1550;
             enemy.attack = 100;
-            enemy.maxHP = 1150;
+            enemy.maxHP = 1550;
             enemy.coin = 7700;
             enemy.level = 70;
             enemy.points = 600;
@@ -1252,9 +1258,9 @@ function generateEnemyLast() {
     switch (enemy.name) {
         case '魔王':
             enemy.name = '魔王';
-            enemy.hp = 1300;
+            enemy.hp = 1600;
             enemy.attack = 120;
-            enemy.maxHP = 1300;
+            enemy.maxHP = 1600;
             enemy.coin = 10000;
             enemy.level = 75;
             enemy.points = 700;
@@ -1406,6 +1412,7 @@ function enemyAttack() {
     itemsBtn.disabled = true;
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
+
     if (enemy.name === "魔王" && enemy.hp <= 500) {
         let monster = document.getElementById("monster");
         monster.innerHTML = "";
@@ -1413,75 +1420,63 @@ function enemyAttack() {
         defendBtn.disabled = false;
         itemsBtn.disabled = false;
         changeMaou();
-        //守備判定
-    } else if (player.defending) {
-        //敵の攻撃の命中判定（30%の確率で外れる）
+        return; // ← ここで終わりにする
+    }
+
+    // --- 守備時 ---
+    if (player.defending) {
         if (Math.random() < 0.3) {
-            // 最大HPの 25% ～ 40% 回復
-            const min = Math.floor(player.maxHP * 0.10);
-            const max = Math.floor(player.maxHP * 0.25);
+            const min = Math.floor(player.maxHP * 0.25);
+            const max = Math.floor(player.maxHP * 0.40);
             const healAmount = Math.floor(Math.random() * (max - min + 1)) + min;
             player.hp += healAmount;
-            if (player.hp > player.maxHP) {
-                player.hp = player.maxHP;
-            }
+            if (player.hp > player.maxHP) player.hp = player.maxHP;
+
             useHpPotionBGM();
-            player.defending = false;
             log("✨ 防御成功!" + player.name + "のHPが" + healAmount + "回復！");
-            //HPバーを更新
-            updateDisplay();
-            attackBtn.disabled = false;
-            defendBtn.disabled = false;
-            itemsBtn.disabled = false;
-        } else {
-            //防御失敗
-            let damage = getAttackDamageEnemy(enemy.attack);
-            log(enemy.name + "の攻撃　→　" + player.name + "　に" + Math.floor(damage / 2) + "ダメージ！");
-            player.hp -= damage / 2;
             player.defending = false;
-            //プレイヤーのHPが0のとき
+            updateDisplay();
+        } else {
+            let damage = getAttackDamageEnemy(enemy.attack);
+            damage = Math.floor(damage / 2);
+            player.hp -= damage;
+            log(enemy.name + "の攻撃　→　" + player.name + " に " + damage + " ダメージ！（防御で半減）");
+
+            player.defending = false;
             if (player.hp <= 0) {
                 player.hp = 0;
-                attackBtn.disabled = false;
-                defendBtn.disabled = false;
-                itemsBtn.disabled = false;
                 updateDisplay();
                 endGame("lose");
+                return; // ← ここで処理を止める
             }
-            attackBtn.disabled = false;
-            defendBtn.disabled = false;
-            itemsBtn.disabled = false;
-            //HPバーを更新
             updateDisplay();
         }
     } else {
+        // --- 通常攻撃 ---
         if (Math.random() < 0.12) {
-            log("💨" + player.name + "は攻撃をかわした！");
-            attackBtn.disabled = false;
-            defendBtn.disabled = false;
-            itemsBtn.disabled = false;
+            log("💨" + player.name + "は" + enemy.name + "の攻撃をかわした！");
         } else {
             let damage = getAttackDamageEnemy(enemy.attack);
             player.hp -= damage;
-            log(enemy.name + "の攻撃　→　" + player.name + "　に" + damage + "ダメージ！");
-            //HPバーを更新
+            log(enemy.name + "の攻撃　→　" + player.name + " に " + damage + " ダメージ！");
+
             player.defending = false;
-            //プレイヤーのHPが0のとき
             if (player.hp <= 0) {
                 player.hp = 0;
-                attackBtn.disabled = false;
-                defendBtn.disabled = false;
-                itemsBtn.disabled = false;
                 updateDisplay();
                 endGame("lose");
+                return; // ← ここで処理を止める
             }
-            attackBtn.disabled = false;
-            defendBtn.disabled = false;
-            itemsBtn.disabled = false;
-            updateDisplay();
         }
+        updateDisplay();
     }
+
+    // ボタンを再び有効化
+    attackBtn.disabled = false;
+    defendBtn.disabled = false;
+    itemsBtn.disabled = false;
 }
+
 //プレイヤーの攻撃時に使用するダメージの算出（baseは攻撃力）
 function getAttackDamage(base) {
     let effect = document.getElementById("effect");
@@ -1586,12 +1581,12 @@ function useHpPotion() {
         haveHpPotion.disabled = false;
     } else {
         useHpPotionBGM();
-        player.hp += player.maxHP / 6;
+        player.hp += player.maxHP / 4;
         if (player.hp > player.maxHP) {
             player.hp = player.maxHP;
         }
         player.hpPotion -= 1;
-        log(player.name + "はポーションを使った！ HPが" + Math.floor(player.maxHP / 6) + "回復！");
+        log(player.name + "はポーションを使った！ HPが" + Math.floor(player.maxHP / 4) + "回復！");
         attackBtn.disabled = false;
         defendBtn.disabled = false;
         haveHpPotion.disabled = false;
@@ -1643,8 +1638,8 @@ function updatePointsDisplay() {
         levelUpShow.style.display = "block";
         let levelup = document.getElementById("levelup");
         levelup.innerHTML = player.level;
-        player.maxHP += 5;
-        player.attack += 3;
+        player.maxHP += 4;
+        player.attack += 2;
         levelUpBGM();
         levelUP();
     }
@@ -1727,6 +1722,8 @@ function endGame(result) {
             flg.stageLastWin = true;
             let gameClearPanel = document.getElementById('gameClearPanel');
             gameClearPanel.style.display = "block";
+            let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+            mapMoveToHeaven.style.display = "block";
         }
         displaySessionLogs();
         win();
@@ -1845,9 +1842,15 @@ function end() {
     showSection(sectionIds);
 }
 
+function mapMoveToHeaven() {
+    let sectionIds = [];
+    let mapHeaven = document.getElementById("mapHeaven");
+    sectionIds.push(mapHeaven.id);
+    showSection(sectionIds);
+}
+
 //mapに戻る
 function mapGame() {
-    stopBGM();
     playBGM("map");
     //Start画面に遷移
     let levelUpShow = document.getElementById("levelUpShow");
@@ -1909,7 +1912,6 @@ function titleGame() {
 
 //データを保持したまま、ゲームを再開する
 function restartGame() {
-    stopBGM();
     let nextBattle = document.getElementById('nextBattle');
     let levelUpShow = document.getElementById("levelUpShow");
     levelUpShow.style.display = "none";
@@ -2044,9 +2046,9 @@ function changeMaou() {
     let monster = document.getElementById("monster");
     monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='stageLast/魔王2.png' alt='背景' width='100%' height='280px'>";
     enemy.name = "魔王(2)";
-    enemy.attack = 200;
-    enemy.maxHP = 1800;
-    enemy.hp += 1800;
+    enemy.attack = 250;
+    enemy.maxHP = 2000;
+    enemy.hp += 2000;
     if (enemy.hp > enemy.maxHP) {
         enemy.hp = enemy.maxHP;
     }
@@ -2060,7 +2062,6 @@ function runAway() {
     if (enemy.hp != enemy.maxHP || player.hp != player.maxHP) {
         alert(enemy.name + "から逃げることはできない。");
     } else {
-        stopBGM();
         alert(enemy.name + "から逃げました。");
         map = document.getElementById("map");
         sectionIds.push(map.id);
@@ -2171,34 +2172,34 @@ function levelUP() {
         alert("レベルアップボーナス！！！");
         if (player.level >= 100) {
             player.maxHP += 20;
-            player.attack += 20;
+            player.attack += 5;
         } else if (player.level >= 90) {
             player.maxHP += 10;
-            player.attack += 10;
+            player.attack += 3;
         } else if (player.level >= 80) {
             player.maxHP += 10;
-            player.attack += 10;
+            player.attack += 3;
         } else if (player.level >= 70) {
             player.maxHP += 10;
-            player.attack += 10;
+            player.attack += 3;
         } else if (player.level >= 60) {
             player.maxHP += 10;
-            player.attack += 10;
+            player.attack += 3;
         } else if (player.level >= 50) {
             player.maxHP += 10;
-            player.attack += 10;
+            player.attack += 3;
         } else if (player.level >= 40) {
             player.maxHP += 5;
-            player.attack += 5;
+            player.attack += 3;
         } else if (player.level >= 30) {
             player.maxHP += 5;
-            player.attack += 5;
+            player.attack += 3;
         } else if (player.level >= 20) {
             player.maxHP += 5;
-            player.attack += 5;
+            player.attack += 3;
         } else if (player.level >= 10) {
             player.maxHP += 5;
-            player.attack += 5;
+            player.attack += 3;
         }
 
         player.bonus = false;  // ボーナス適用後はリセット
@@ -2280,7 +2281,7 @@ function defending() {
 
 //治癒のポーション際の効果音を再生
 function useHpPotionBGM() {
-    let sound = new Audio("ver1.4/useHpPotion.mp3");
+    let sound = new Audio("ver1.4/UsehpPotion.mp3");
     sound.volume = 0.3;
     sound.currentTime = 0; // 連続再生用
     sound.play();
