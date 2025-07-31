@@ -123,7 +123,7 @@ function loadGame() {
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
-    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven'];
+    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop'];
 
     allSections.forEach(id => {
         const element = document.getElementById(id);
