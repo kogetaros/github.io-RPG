@@ -6,7 +6,8 @@ const bgmList = {
     menu: "ver1.4/menu.mp3",
     map: "ver1.4/map.mp3",
     battle: "ver1.4/battle.mp3",
-    stageBoss: "ver1.4/stageBoss.mp3"
+    stageBoss: "ver1.4/stageBoss.mp3",
+    heaven: "ver1.5/Heaven.mp3"
 };
 let currentBGM = null; // 現在のBGM
 let fadeInterval = null; // フェード制御用
@@ -138,6 +139,7 @@ function showSection(sectionIds) {
 
 //ゲームスタートでMAPに遷移
 function playGames() {
+    stopBGM();
     console.log("MAXHP" + player.maxHP);
     console.log("HP" + player.hp);
     console.log("POINTS" + player.points);
@@ -190,6 +192,7 @@ function playGames() {
 
 //メニューを開く
 function menuOpen() {
+    stopBGM();
     playBGM("menu");
     player.hp = player.maxHP;
     let sectionIds = [];
@@ -244,6 +247,7 @@ function haveItems() {
 
 //メニューを閉じる
 function menuClose() {
+    stopBGM();
     playBGM("map");
     let sectionIds = [];
     let map = document.getElementById("map");
@@ -312,6 +316,7 @@ function buyHpUpPotion() {
 
 //ゲーム開始/stage1
 function startGames1() {
+    stopBGM();
     let playerInput = document.getElementById("playerInput");
     player.name = playerInput.value.trim();
     let effect = document.getElementById("effect");
@@ -361,6 +366,7 @@ function startGames1() {
 //ゲーム開始/stage2
 function startGames2() {
     if (flg.stage2) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -413,6 +419,7 @@ function startGames2() {
 //ゲーム開始/stage3
 function startGames3() {
     if (flg.stage3) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -465,6 +472,7 @@ function startGames3() {
 //ゲーム開始/stage4
 function startGames4() {
     if (flg.stage4) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -517,6 +525,7 @@ function startGames4() {
 //ゲーム開始/stage5
 function startGames5() {
     if (flg.stage5) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -569,6 +578,7 @@ function startGames5() {
 //ゲーム開始/stage6
 function startGames6() {
     if (flg.stage6) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -621,6 +631,7 @@ function startGames6() {
 //ゲーム開始/stage7
 function startGames7() {
     if (flg.stage7) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -673,6 +684,7 @@ function startGames7() {
 //ゲーム開始/stageLast
 function startGamesLast() {
     if (flg.stageLast) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -720,6 +732,7 @@ function startGamesLast() {
 
 function extra1() {
     if (flg.extra1) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -767,6 +780,7 @@ function extra1() {
 
 function extra2() {
     if (flg.extra2) {
+        stopBGM();
         let playerInput = document.getElementById("playerInput");
         player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
@@ -1851,6 +1865,7 @@ function mapMoveToHeaven() {
 
 //mapに戻る
 function mapGame() {
+    stopBGM();
     playBGM("map");
     //Start画面に遷移
     let levelUpShow = document.getElementById("levelUpShow");
@@ -1912,6 +1927,7 @@ function titleGame() {
 
 //データを保持したまま、ゲームを再開する
 function restartGame() {
+    stopBGM();
     let nextBattle = document.getElementById('nextBattle');
     let levelUpShow = document.getElementById("levelUpShow");
     levelUpShow.style.display = "none";
@@ -2062,6 +2078,7 @@ function runAway() {
     if (enemy.hp != enemy.maxHP || player.hp != player.maxHP) {
         alert(enemy.name + "から逃げることはできない。");
     } else {
+        stopBGM();
         alert(enemy.name + "から逃げました。");
         map = document.getElementById("map");
         sectionIds.push(map.id);
