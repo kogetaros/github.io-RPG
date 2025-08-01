@@ -11,7 +11,7 @@ const bgmList = {
 };
 let currentBGM = null; // 現在のBGM
 let fadeInterval = null; // フェード制御用
-let flg = ['stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stageLast', 'castle', 'extra1', 'extra2', 'extra1Win', 'extra2Win', 'stageLastWin'];
+let flg = ['stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stageLast', 'stage8', 'stage9', 'stage10', 'stage11', 'stage12', 'stage13', 'stage14', 'castle', 'extra1', 'extra2', 'extra3', 'extra4', 'extra1Win', 'extra2Win', 'extra3Win', 'extra4Win', 'stageLastWin'];
 
 let battleLogLive = [];
 let sessionLogs = [];
@@ -37,11 +37,22 @@ flg.stage5 = false;
 flg.stage6 = false;
 flg.stage7 = false;
 flg.stageLast = false;
+flg.stage8 = false;
+flg.stage9 = false;
+flg.stage10 = false;
+flg.stage11 = false;
+flg.stage12 = false;
+flg.stage13 = false;
+flg.stage14 = false;
 flg.castle = false;
 flg.extra1 = false;
 flg.extra1Win = false;
 flg.extra2 = false;
 flg.extra2Win = false;
+flg.extra3 = false;
+flg.extra3Win = false;
+flg.extra4 = false;
+flg.extra4Win = false;
 flg.stageLastWin = false;
 
 // ===== セーブ機能 =====
@@ -59,7 +70,7 @@ function saveGame() {
             hpPotion: player.hpPotion,
             pwPotion: player.pwPotion,
             hpupPotion: player.hpupPotion,
-            points: player.points
+            points: player.points,
         },
         flg: {
             stage2: flg.stage2,
@@ -68,12 +79,23 @@ function saveGame() {
             stage5: flg.stage5,
             stage6: flg.stage6,
             stage7: flg.stage7,
+            stage8: flg.stage8,
+            stage9: flg.stage9,
+            stage10: flg.stage10,
+            stage11: flg.stage11,
+            stage12: flg.stage12,
+            stage13: flg.stage13,
+            stage14: flg.stage14,
             stageLast: flg.stageLast,
             castle: flg.castle,
             extra1: flg.extra1,
             extra1Win: flg.extra1Win,
             extra2: flg.extra2,
             extra2Win: flg.extra2Win,
+            extra3: flg.extra3,
+            extra3Win: flg.extra3Win,
+            extra4: flg.extra4,
+            extra4Win: flg.extra4Win,
             stageLastWin: flg.stageLastWin
         }
     };
@@ -103,6 +125,8 @@ function loadGame() {
     // ステージ表示の復元
     document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
     document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
+    document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
+    document.getElementById("extra4").style.display = (flg.extra4 && !flg.extra4Win) ? "block" : "none";
 
     if (flg.stage5) {
         document.getElementById("kumo").style.display = "none";
@@ -112,8 +136,19 @@ function loadGame() {
     if (flg.stage7) {
         document.getElementById("stage7").style.display = "block";
     }
+    if (flg.stageLastWin) {
+        let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+        mapMoveToHeaven.style.display = "block";
+    }
+    if (flg.stageLastWin && !player.name.startsWith("👑")) {
+        player.name = "👑" + player.name;
+    }
+    if (flg.extra4Win && !player.name.endsWith("🍜")) {
+        player.name = player.name + "🍜";
+    }
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
+    updatePointsDisplay();
     alert("セーブデータをロードしました！");
     menuOpen();
 }
@@ -123,7 +158,7 @@ function loadGame() {
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
-    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop'];
+    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven'];
 
     allSections.forEach(id => {
         const element = document.getElementById(id);
@@ -152,24 +187,31 @@ function playGames() {
     extra1.style.display = "none";
     let extra2 = document.getElementById("extra2");
     extra2.style.display = "none";
+    let extra3 = document.getElementById("extra3");
+    extra3.style.display = "none";
+    let extra4 = document.getElementById("extra4");
+    extra4.style.display = "none";
     let stageLast = document.getElementById("stageLast");
     stageLast.style.display = "none";
     let playerInput = document.getElementById("playerInput");
     player.name = playerInput.value.trim();
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
+    let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+    mapMoveToHeaven.style.display = "none";
     let sectionIds = [];
 
     if (!player.name) {
         alert("名前を入力してください！");
     } else {
         if (player.name === "最強") {
-            player.maxHP = 10000;
-            player.hp = 10000;
-            player.attack = 200;
+            player.maxHP = 5545;
+            player.hp = 5545;
+            player.attack = 500;
             player.coin = 1000000;
             player.defending = false;
-            player.hpPotion = 100;
+            player.hpPotion = 300;
+            player.level = 100;
             player.points = 0;
             flg.stage2 = true;
             flg.stage3 = true;
@@ -178,6 +220,13 @@ function playGames() {
             flg.stage6 = true;
             flg.stage7 = true;
             flg.stageLast = true;
+            flg.stage8 = true;
+            flg.stage9 = true;
+            flg.stage10 = false;
+            flg.stage11 = false;
+            flg.stage12 = false;
+            flg.stage13 = false;
+            flg.stage14 = false;
             flg.castle = true;
             flg.extra1 = true;
             flg.extra2 = true;
@@ -317,8 +366,6 @@ function buyHpUpPotion() {
 //ゲーム開始/stage1
 function startGames1() {
     stopBGM();
-    let playerInput = document.getElementById("playerInput");
-    player.name = playerInput.value.trim();
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
     player.stage = 1;
@@ -367,8 +414,6 @@ function startGames1() {
 function startGames2() {
     if (flg.stage2) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 2;
@@ -420,8 +465,6 @@ function startGames2() {
 function startGames3() {
     if (flg.stage3) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 3;
@@ -473,8 +516,6 @@ function startGames3() {
 function startGames4() {
     if (flg.stage4) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 4;
@@ -526,8 +567,6 @@ function startGames4() {
 function startGames5() {
     if (flg.stage5) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 5;
@@ -579,8 +618,6 @@ function startGames5() {
 function startGames6() {
     if (flg.stage6) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 6;
@@ -632,8 +669,6 @@ function startGames6() {
 function startGames7() {
     if (flg.stage7) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 7;
@@ -685,8 +720,6 @@ function startGames7() {
 function startGamesLast() {
     if (flg.stageLast) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 'last';
@@ -730,11 +763,394 @@ function startGamesLast() {
     }
 }
 
+//ゲーム開始/stage8
+function startGames8() {
+    if (flg.stage8) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 8;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy8();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'アストラルドラコ') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage9
+function startGames9() {
+    if (flg.stage9) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 9;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy9();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'ザルヴァドス') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage10
+function startGames10() {
+    if (flg.stage10) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 10;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy10();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'セラフィオス') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage11
+function startGames11() {
+    if (flg.stage11) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 11;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy11();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'オルディア') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage12
+function startGames12() {
+    if (flg.stage12) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 12;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy12();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'ルシフェル') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage13
+function startGames13() {
+    if (flg.stage13) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 13;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy13();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'アストラリオン') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+//ゲーム開始/stage14
+function startGames14() {
+    if (flg.stage14) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 14;
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemy14();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        if (enemy.name === 'アビスファング') {
+            playBGM("stageBoss");
+        } else {
+            playBGM("battle");
+        }
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
 function extra1() {
     if (flg.extra1) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 'ex1';
@@ -781,8 +1197,6 @@ function extra1() {
 function extra2() {
     if (flg.extra2) {
         stopBGM();
-        let playerInput = document.getElementById("playerInput");
-        player.name = playerInput.value.trim();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
         player.stage = 'ex2';
@@ -810,6 +1224,106 @@ function extra2() {
 
         //敵キャラクターを生成
         generateEnemyExtra2();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        playBGM("stageBoss");
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+function extra3() {
+    if (flg.extra3) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 'ex3';
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemyExtra3();
+
+        //戦闘ログ初期化（配置と表示）
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        console.log("battleLogLive初期化:" + battleLogLive);
+
+        //ステータス表示更新処理
+        updateDisplay();
+
+        //バトルBGM再生
+        playBGM("stageBoss");
+    } else {
+        alert("進めないようだ…");
+    }
+}
+
+function extra4() {
+    if (flg.extra4) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "block";
+        stopBGM();
+        let effect = document.getElementById("effect");
+        effect.innerHTML = "";
+        player.stage = 'ex4';
+        let sectionIds = [];
+
+        //画面表示
+        gameUI = document.getElementById("gameUI");
+        logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        //初期化:HP/ポーション/防御
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        let playerLevel = document.getElementById("playerLevel");
+        playerLevel.innerHTML = player.level;
+
+        let playerName = document.getElementById("playerName");
+        playerName.innerHTML = player.name;
+
+        let playerAttack = document.getElementById("playerAttack");
+        playerAttack.innerHTML = player.attack;
+
+        //敵キャラクターを生成
+        generateEnemyExtra4();
 
         //戦闘ログ初期化（配置と表示）
         let battleLog = document.getElementById("battleLog");
@@ -1222,7 +1736,6 @@ function generateEnemy7() {
             enemy.points = 530;
             area.innerHTML = "<img src='stage7/area7.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage7/ルーナリス.png' alt='背景' width='100%' height='200px'>";
-            dragon();
             break;
         case 'ノクタリオン':
             enemy.name = 'ノクタリオン';
@@ -1280,6 +1793,405 @@ function generateEnemyLast() {
             enemy.points = 700;
             area.innerHTML = "<img src='stageLast/areaLast.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stageLast/魔王.png' alt='背景' width='100%' height='250px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage8
+function generateEnemy8() {
+    //敵のHPと攻撃力を定義
+    let types = ['ソラリス', 'グリフォス', 'アストラルドラコ'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ソラリス':
+            enemy.name = 'ソラリス';
+            enemy.hp = 1600;
+            enemy.attack = 104;
+            enemy.maxHP = 1600;
+            enemy.coin = 8000;
+            enemy.level = 72;
+            enemy.points = 620;
+            area.innerHTML = "<img src='stage8/area8.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage8/ソラリス.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'グリフォス':
+            enemy.name = 'グリフォス';
+            enemy.hp = 1670;
+            enemy.attack = 110;
+            enemy.maxHP = 1670;
+            enemy.coin = 8200;
+            enemy.level = 74;
+            enemy.points = 650;
+            area.innerHTML = "<img src='stage8/area8.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage8/グリフォス.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'アストラルドラコ':
+            enemy.name = 'アストラルドラコ';
+            enemy.hp = 1810;
+            enemy.attack = 123;
+            enemy.maxHP = 1810;
+            enemy.coin = 8700;
+            enemy.level = 79;
+            enemy.points = 700;
+            area.innerHTML = "<img src='stage8/area8.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage8/アストラルドラコ.png' alt='背景' width='100%' height='300px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage9
+function generateEnemy9() {
+    //敵のHPと攻撃力を定義
+    let types = ['ラプトール', 'ルミナスタグ', 'ザルヴァドス'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ラプトール':
+            enemy.name = 'ラプトール';
+            enemy.hp = 1830;
+            enemy.attack = 120;
+            enemy.maxHP = 1830;
+            enemy.coin = 7800;
+            enemy.level = 80;
+            enemy.points = 710;
+            area.innerHTML = "<img src='stage9/area9.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage9/ラプトール.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'ルミナスタグ':
+            enemy.name = 'ルミナスタグ';
+            enemy.hp = 1870;
+            enemy.attack = 125;
+            enemy.maxHP = 1870;
+            enemy.coin = 8200;
+            enemy.level = 81;
+            enemy.points = 720;
+            area.innerHTML = "<img src='stage9/area9.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage9/ルミナスタグ.png' alt='背景' width='100%' height='250px'>";
+            break;
+        case 'ザルヴァドス':
+            enemy.name = 'ザルヴァドス';
+            enemy.hp = 1960;
+            enemy.attack = 134;
+            enemy.maxHP = 1960;
+            enemy.coin = 8700;
+            enemy.level = 85;
+            enemy.points = 750;
+            area.innerHTML = "<img src='stage9/area9.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage9/ザルヴァドス.png' alt='背景' width='100%' height='300px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage10
+function generateEnemy10() {
+    //敵のHPと攻撃力を定義
+    let types = ['セレスティコーン', 'セラフィム', 'セラフィオス'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'セレスティコーン':
+            enemy.name = 'セレスティコーン';
+            enemy.hp = 2000;
+            enemy.attack = 135;
+            enemy.maxHP = 2000;
+            enemy.coin = 8800;
+            enemy.level = 86;
+            enemy.points = 760;
+            area.innerHTML = "<img src='stage10/area10.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage10/セレスティコーン.png' alt='背景' width='100%' height='250px'>";
+            break;
+        case 'セラフィム':
+            enemy.name = 'セラフィム';
+            enemy.hp = 2070;
+            enemy.attack = 139;
+            enemy.maxHP = 2070;
+            enemy.coin = 9000;
+            enemy.level = 88;
+            enemy.points = 770;
+            area.innerHTML = "<img src='stage10/area10.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage10/セラフィム.png' alt='背景' width='100%' height='250px'>";
+            break;
+        case 'セラフィオス':
+            enemy.name = 'セラフィオス';
+            enemy.hp = 2160;
+            enemy.attack = 145;
+            enemy.maxHP = 2160;
+            enemy.coin = 9500;
+            enemy.level = 90;
+            enemy.points = 800;
+            area.innerHTML = "<img src='stage10/area10.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage10/セラフィオス.png' alt='背景' width='100%' height='300px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage11
+function generateEnemy11() {
+    //敵のHPと攻撃力を定義
+    let types = ['アストラルナイト', 'ルクシア', 'オルディア'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'アストラルナイト':
+            enemy.name = 'アストラルナイト';
+            enemy.hp = 2200;
+            enemy.attack = 150;
+            enemy.maxHP = 2200;
+            enemy.coin = 10000;
+            enemy.level = 91;
+            enemy.points = 810;
+            area.innerHTML = "<img src='stage11/area11.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage11/アストラルナイト.png' alt='背景' width='100%' height='250px'>";
+            break;
+        case 'ルクシア':
+            enemy.name = 'ルクシア';
+            enemy.hp = 2230;
+            enemy.attack = 153;
+            enemy.maxHP = 2230;
+            enemy.coin = 10500;
+            enemy.level = 93;
+            enemy.points = 840;
+            area.innerHTML = "<img src='stage11/area11.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage11/ルクシア.png' alt='背景' width='100%' height='250px'>";
+            break;
+        case 'オルディア':
+            enemy.name = 'オルディア';
+            enemy.hp = 2450;
+            enemy.attack = 168;
+            enemy.maxHP = 2450;
+            enemy.coin = 12000;
+            enemy.level = 98;
+            enemy.points = 900;
+            area.innerHTML = "<img src='stage11/area11.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage11/オルディア.png' alt='背景' width='100%' height='300px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage12
+function generateEnemy12() {
+    //敵のHPと攻撃力を定義
+    let types = ['エレボス', 'グリムセラフ', 'ルシフェル'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'エレボス':
+            enemy.name = 'エレボス';
+            enemy.hp = 2500;
+            enemy.attack = 170;
+            enemy.maxHP = 2500;
+            enemy.coin = 10000;
+            enemy.level = 99;
+            enemy.points = 910;
+            area.innerHTML = "<img src='stage12/area12.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage12/エレボス.png' alt='背景' width='100%' height='300px'>";
+            break;
+        case 'グリムセラフ':
+            enemy.name = 'グリムセラフ';
+            enemy.hp = 2560;
+            enemy.attack = 174;
+            enemy.maxHP = 2560;
+            enemy.coin = 10500;
+            enemy.level = 100;
+            enemy.points = 930;
+            area.innerHTML = "<img src='stage12/area12.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage12/グリムセラフ.png' alt='背景' width='100%' height='300px'>";
+            break;
+        case 'ルシフェル':
+            enemy.name = 'ルシフェル';
+            enemy.hp = 2700;
+            enemy.attack = 180;
+            enemy.maxHP = 2700;
+            enemy.coin = 11000;
+            enemy.level = 105;
+            enemy.points = 1000;
+            area.innerHTML = "<img src='stage12/area12.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage12/ルシフェル.png' alt='背景' width='100%' height='250px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage13
+function generateEnemy13() {
+    //敵のHPと攻撃力を定義
+    let types = ['ネフェルシア', 'オルソロス', 'アストラリオン'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ネフェルシア':
+            enemy.name = 'ネフェルシア';
+            enemy.hp = 2750;
+            enemy.attack = 170;
+            enemy.maxHP = 2750;
+            enemy.coin = 11500;
+            enemy.level = 107;
+            enemy.points = 1030;
+            area.innerHTML = "<img src='stage13/area13.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage13/ネフェルシア.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'オルソロス':
+            enemy.name = 'オルソロス';
+            enemy.hp = 2790;
+            enemy.attack = 174;
+            enemy.maxHP = 2790;
+            enemy.coin = 12000;
+            enemy.level = 109;
+            enemy.points = 1050;
+            area.innerHTML = "<img src='stage13/area13.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage13/オルソロス.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'アストラリオン':
+            enemy.name = 'アストラリオン';
+            enemy.hp = 2910;
+            enemy.attack = 190;
+            enemy.maxHP = 2910;
+            enemy.coin = 14000;
+            enemy.level = 113;
+            enemy.points = 1200;
+            area.innerHTML = "<img src='stage13/area13.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage13/アストラリオン.png' alt='背景' width='100%' height='250px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/stage14
+function generateEnemy14() {
+    //敵のHPと攻撃力を定義
+    let types = ['ヴォイドイーター', 'アビスドラグーン', 'アビスファング'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ヴォイドイーター':
+            enemy.name = 'ヴォイドイーター';
+            enemy.hp = 2940;
+            enemy.attack = 195;
+            enemy.maxHP = 2940;
+            enemy.coin = 14500;
+            enemy.level = 115;
+            enemy.points = 1230;
+            area.innerHTML = "<img src='stage14/area14.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage14/ヴォイドイーター.png' alt='背景' width='100%' height='200px'>";
+            break;
+        case 'アビスドラグーン':
+            enemy.name = 'アビスドラグーン';
+            enemy.hp = 3000;
+            enemy.attack = 200;
+            enemy.maxHP = 3000;
+            enemy.coin = 15000;
+            enemy.level = 117;
+            enemy.points = 1260;
+            area.innerHTML = "<img src='stage14/area14.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage14/アビスドラグーン.png' alt='背景' width='100%' height='300px'>";
+            break;
+        case 'アビスファング':
+            enemy.name = 'アビスファング';
+            enemy.hp = 3250;
+            enemy.attack = 222;
+            enemy.maxHP = 3250;
+            enemy.coin = 11000;
+            enemy.level = 123;
+            enemy.points = 2000;
+            area.innerHTML = "<img src='stage14/area14.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='stage14/アビスファング.png' alt='背景' width='100%' height='300px'>";
             break;
         default:
             break;
@@ -1363,6 +2275,76 @@ function generateEnemyExtra2() {
     enemyLevel.innerHTML = enemy.level;
 }
 
+//敵キャラクターの生成/extra3
+function generateEnemyExtra3() {
+    //敵のHPと攻撃力を定義
+    let types = ['ルクス・ヴェルム'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ルクス・ヴェルム':
+            enemy.name = 'ルクス・ヴェルム';
+            enemy.hp = 3000;
+            enemy.attack = 187;
+            enemy.maxHP = 3000;
+            enemy.coin = 60000;
+            enemy.level = 110;
+            enemy.points = 2500;
+            area.innerHTML = "<img src='ver1.5/extra3.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.5/ルクス・ヴェルム.png' alt='背景' width='100%' height='320px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
+//敵キャラクターの生成/extra4
+function generateEnemyExtra4() {
+    //敵のHPと攻撃力を定義
+    let types = ['ザクナ'];
+
+    //敵キャラクターのランダム取得
+    let selected = Math.floor(Math.random() * types.length);
+    enemy.name = types[selected];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+    switch (enemy.name) {
+        case 'ザクナ':
+            enemy.name = 'ザクナ';
+            enemy.hp = 3500;
+            enemy.attack = 230;
+            enemy.maxHP = 3500;
+            enemy.coin = 100000;
+            enemy.level = 125;
+            enemy.points = 3000;
+            area.innerHTML = "<img src='ver1.5/extra4.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.5/ザクナ.png' alt='背景' width='100%' height='200px'>";
+            break;
+        default:
+            break;
+    }
+    //確認ログ（敵:name/HP/attack/maxHP）
+    console.log(enemy.name, enemy.hp, enemy.attack, enemy.maxHP);
+
+    let enemyName = document.getElementById("enemyName");
+    enemyName.innerHTML = enemy.name;
+    let enemyLevel = document.getElementById("enemyLevel");
+    enemyLevel.innerHTML = enemy.level;
+}
+
 //戦闘メッセージをリアルタイムに画面に表示
 function log(message) {
     let battleLog = document.getElementById("battleLog");
@@ -1421,75 +2403,104 @@ function enemyAttack() {
     let attackBtn = document.getElementById("attackBtn");
     let defendBtn = document.getElementById("defendBtn");
     let itemsBtn = document.getElementById("itemsBtn");
-    attackBtn.disabled = true;
-    defendBtn.disabled = true;
-    itemsBtn.disabled = true;
-    let effect = document.getElementById("effect");
-    effect.innerHTML = "";
 
-    if (enemy.name === "魔王" && enemy.hp <= 500) {
-        let monster = document.getElementById("monster");
-        monster.innerHTML = "";
+    // 共通で使う関数
+    function enableButtons() {
         attackBtn.disabled = false;
         defendBtn.disabled = false;
         itemsBtn.disabled = false;
+    }
+
+    attackBtn.disabled = true;
+    defendBtn.disabled = true;
+    itemsBtn.disabled = true;
+
+    let effect = document.getElementById("effect");
+    effect.innerHTML = "";
+
+    // --- 変身イベント ---
+    if (enemy.name === "魔王" && enemy.hp <= 700) {
+        document.getElementById("monster").innerHTML = "";
+        enableButtons();
         changeMaou();
-        return; // ← ここで終わりにする
+        return;
+    }
+    if (enemy.name === "ザクナ" && enemy.hp <= 1500) {
+        document.getElementById("monster").innerHTML = "";
+        enableButtons();
+        changeZakuna();
+        return;
+    }
+    if (enemy.name === "ザクナ(2)" && enemy.hp <= 1000) {
+        document.getElementById("monster").innerHTML = "";
+        enableButtons();
+        changeZakuna2();
+        return;
     }
 
     // --- 守備時 ---
     if (player.defending) {
         if (Math.random() < 0.3) {
-            const min = Math.floor(player.maxHP * 0.25);
-            const max = Math.floor(player.maxHP * 0.40);
+            const min = Math.floor(player.maxHP * 0.15);
+            const max = Math.floor(player.maxHP * 0.25);
             const healAmount = Math.floor(Math.random() * (max - min + 1)) + min;
-            player.hp += healAmount;
-            if (player.hp > player.maxHP) player.hp = player.maxHP;
+            player.hp = Math.min(player.hp + healAmount, player.maxHP);
 
             useHpPotionBGM();
             log("✨ 防御成功!" + player.name + "のHPが" + healAmount + "回復！");
-            player.defending = false;
-            updateDisplay();
         } else {
-            let damage = getAttackDamageEnemy(enemy.attack);
-            damage = Math.floor(damage / 2);
+            let damage = Math.floor(getAttackDamageEnemy(enemy.attack) / 2);
             player.hp -= damage;
             log(enemy.name + "の攻撃　→　" + player.name + " に " + damage + " ダメージ！（防御で半減）");
-
-            player.defending = false;
-            if (player.hp <= 0) {
-                player.hp = 0;
-                updateDisplay();
-                endGame("lose");
-                return; // ← ここで処理を止める
-            }
-            updateDisplay();
         }
-    } else {
-        // --- 通常攻撃 ---
-        if (Math.random() < 0.12) {
-            log("💨" + player.name + "は" + enemy.name + "の攻撃をかわした！");
+        player.defending = false;
+        if (player.hp <= 0) {
+            player.hp = 0;
+            updateDisplay();
+            endGame("lose");
+            return;
+        }
+        updateDisplay();
+        enableButtons();
+        return;
+    }
+
+    // --- 通常攻撃 ---
+    if (Math.random() < 0.12) {
+        log("💨" + player.name + "は" + enemy.name + "の攻撃をかわした！");
+        enableButtons();
+        return;
+    }
+
+    if (enemy.name === "アビスロード・ザクナ") {
+        if (Math.random() < 0.2) {
+            zakunaBGM();
+            let damage = Math.floor(player.hp * 0.99);
+            player.hp -= damage;
+            log(enemy.name + "の強烈な一撃");
+            log(player.name + " に " + damage + " ダメージ！");
         } else {
             let damage = getAttackDamageEnemy(enemy.attack);
             player.hp -= damage;
             log(enemy.name + "の攻撃　→　" + player.name + " に " + damage + " ダメージ！");
-
-            player.defending = false;
-            if (player.hp <= 0) {
-                player.hp = 0;
-                updateDisplay();
-                endGame("lose");
-                return; // ← ここで処理を止める
-            }
         }
-        updateDisplay();
+    } else {
+        let damage = getAttackDamageEnemy(enemy.attack);
+        player.hp -= damage;
+        log(enemy.name + "の攻撃　→　" + player.name + " に " + damage + " ダメージ！");
     }
 
-    // ボタンを再び有効化
-    attackBtn.disabled = false;
-    defendBtn.disabled = false;
-    itemsBtn.disabled = false;
+    player.defending = false;
+    if (player.hp <= 0) {
+        player.hp = 0;
+        updateDisplay();
+        endGame("lose");
+        return;
+    }
+    updateDisplay();
+    enableButtons();
 }
+
 
 //プレイヤーの攻撃時に使用するダメージの算出（baseは攻撃力）
 function getAttackDamage(base) {
@@ -1545,32 +2556,33 @@ function useItems() {
     let overlay = document.getElementById("overlay");
     overlay.style.display = "block";
     let haveHpPotion = document.getElementById("haveHpPotion");
-    let havePwrPotion = document.getElementById("havePwrPotion");
-    let haveHpUpPotion = document.getElementById("haveHpUpPotion");
+    // let havePwrPotion = document.getElementById("havePwrPotion");
+    // let haveHpUpPotion = document.getElementById("haveHpUpPotion");
     let haveBug1 = document.getElementById("haveBug1");
-    let haveBug2 = document.getElementById("haveBug2");
-    let haveBug3 = document.getElementById("haveBug3");
+    // let haveBug2 = document.getElementById("haveBug2");
+    // let haveBug3 = document.getElementById("haveBug3");
     let noBug = document.getElementById("noBug");
     if (player.hpPotion > 0) {
         noBug.style.display = "none";
         haveHpPotion.style.display = "block";
         haveBug1.innerHTML = player.hpPotion;
     }
-    if (player.pwPotion > 0) {
-        noBug.style.display = "none";
-        havePwrPotion.style.display = "block";
-        haveBug2.innerHTML = player.pwPotion;
-    }
-    if (player.hpupPotion > 0) {
-        noBug.style.display = "none";
-        haveHpUpPotion.style.display = "block";
-        haveBug3.innerHTML = player.hpupPotion;
-    }
-    if (player.hpPotion === 0 && player.pwPotion === 0 && player.hpupPotion === 0) {
+    // if (player.pwPotion > 0) {
+    //     noBug.style.display = "none";
+    //     havePwrPotion.style.display = "block";
+    //     haveBug2.innerHTML = player.pwPotion;
+    // }
+    // if (player.hpupPotion > 0) {
+    //     noBug.style.display = "none";
+    //     haveHpUpPotion.style.display = "block";
+    //     haveBug3.innerHTML = player.hpupPotion;
+    // }
+    // if (player.hpPotion === 0 && player.pwPotion === 0 && player.hpupPotion === 0) {
+    if (player.hpPotion === 0) {
         noBug.style.display = "block";
         haveHpPotion.style.display = "none";
-        havePwrPotion.style.display = "none";
-        haveHpUpPotion.style.display = "none";
+        // havePwrPotion.style.display = "none";
+        // haveHpUpPotion.style.display = "none";
     }
 }
 
@@ -1593,9 +2605,19 @@ function useHpPotion() {
         attackBtn.disabled = false;
         defendBtn.disabled = false;
         haveHpPotion.disabled = false;
+    } else if (enemy.name === 'ルクス・ヴェルム') {
+        alert(enemy.name + "の神聖な力でポーションが使えない");
+        attackBtn.disabled = false;
+        defendBtn.disabled = false;
+        haveHpPotion.disabled = false;
+    } else if (enemy.name === 'ザクナ(2)') {
+        alert(enemy.name + "が放つ覇気でポーションが使えない");
+        attackBtn.disabled = false;
+        defendBtn.disabled = false;
+        haveHpPotion.disabled = false;
     } else {
         useHpPotionBGM();
-        player.hp += player.maxHP / 4;
+        player.hp += player.maxHP / 5;
         if (player.hp > player.maxHP) {
             player.hp = player.maxHP;
         }
@@ -1606,6 +2628,43 @@ function useHpPotion() {
         haveHpPotion.disabled = false;
         haveBug1.innerHTML = player.hpPotion;
         updateDisplay();
+    }
+}
+
+function usePwPotion() {
+    useHpPotionBGM();
+    player.pwPotion -= 1;
+    alert("力のポーションを使いました！攻撃力が5上昇しました！");
+    player.attack += 5;
+    let Attack = document.getElementById('Attack');
+    Attack.innerHTML = player.attack;
+    let pwPotion = document.getElementById("pwPotion");
+    let have2 = document.getElementById("have2");
+    if (player.pwPotion <= 0) {
+        pwPotion.style.display = "none";
+        have2.innerHTML = player.pwPotion;
+    } else {
+        pwPotion.style.display = "block";
+        have2.innerHTML = player.pwPotion;
+    }
+}
+
+function useHpUpPotion() {
+    useHpPotionBGM();
+    player.hpupPotion -= 1;
+    alert("体力のポーションを使いました！体力が10上昇しました！");
+    player.maxHP += 5;
+    player.hp = player.maxHP;
+    let HP = document.getElementById('HP');
+    HP.innerHTML = player.maxHP;
+    let hpupPotion = document.getElementById("hpupPotion");
+    let have3 = document.getElementById("have3");
+    if (player.hpupPotion <= 0) {
+        hpupPotion.style.display = "none";
+        have3.innerHTML = player.hpupPotion;
+    } else {
+        hpupPotion.style.display = "block";
+        have3.innerHTML = player.hpupPotion;
     }
 }
 
@@ -1643,7 +2702,9 @@ function getRequiredExp(level) {
 //プレイヤーの経験値を画面に反映し、経験値バーを更新
 function updatePointsDisplay() {
     let playerPointsBar = document.getElementById("playerPointsBar");
-    player.points += enemy.points;
+    if (enemy.hp <= 0) {
+        player.points += enemy.points;
+    }
 
     while (player.points >= getRequiredExp(player.level)) {
         player.points -= getRequiredExp(player.level);
@@ -1679,6 +2740,8 @@ function endGame(result) {
         player.coin += enemy.coin;
         let extra1 = document.getElementById("extra1");
         let extra2 = document.getElementById("extra2");
+        let extra3 = document.getElementById("extra3");
+        let extra4 = document.getElementById("extra4");
         let stageLast = document.getElementById("stageLast");
         let gameClearPanel = document.getElementById('gameClearPanel');
         gameClearPanel.style.display = "none";
@@ -1736,7 +2799,46 @@ function endGame(result) {
             flg.stageLastWin = true;
             let gameClearPanel = document.getElementById('gameClearPanel');
             gameClearPanel.style.display = "block";
-            
+            let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+            mapMoveToHeaven.style.display = "block";
+            flg.stage8 = true;
+            player.name = '👑' + player.name;
+        } else if (enemy.name === 'アストラルドラコ') {
+            flg.stage9 = true;
+        } else if (enemy.name === 'ザルヴァドス') {
+            flg.stage10 = true;
+        } else if (enemy.name === 'セラフィオス') {
+            flg.stage11 = true;
+        } else if (enemy.name === 'オルディア') {
+            flg.stage12 = true;
+        } else if (enemy.name === 'ルシフェル') {
+            if (flg.extra3Win) {
+                flg.extra3 = false;
+                extra3.style.display = "none";
+            } else {
+                flg.extra3 = true;
+                extra3.style.display = "block";
+            }
+        } else if (enemy.name === 'ルクス・ヴェルム') {
+            extra3.style.display = "none";
+            flg.extra3Win = true;
+            flg.stage13 = true;
+        } else if (enemy.name === 'アストラリオン') {
+            flg.stage14 = true;
+        } else if (enemy.name === 'アビスファング') {
+            if (flg.extra4Win) {
+                flg.extra4 = false;
+                extra4.style.display = "none";
+            } else {
+                flg.extra4 = true;
+                extra4.style.display = "block";
+            }
+        } else if (enemy.name === 'アビスロード・ザクナ') {
+            extra4.style.display = "none";
+            flg.extra4Win = true;
+            let game2ClearPanel = document.getElementById('game2ClearPanel');
+            game2ClearPanel.style.display = "block";
+            player.name = player.name + '🍜';
         }
         displaySessionLogs();
         win();
@@ -1759,6 +2861,12 @@ function endGame(result) {
         flg.stage5 = false;
         flg.stage6 = false;
         flg.stage7 = false;
+        flg.stage8 = false;
+        flg.stage9 = false;
+        flg.stage10 = false;
+        flg.stage11 = false;
+        flg.stage12 = false;
+        flg.stage13 = false;
         flg.stageLast = false;
         flg.castle = false;
         flg.extra1 = false;
@@ -1775,6 +2883,20 @@ function win() {
 
     if (player.stage === 'last') {
         nextBattle.style.display = "none";
+    } else if (player.stage === 14) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 13) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 12) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 11) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 10) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 9) {
+        nextBattle.style.display = "block";
+    } else if (player.stage === 8) {
+        nextBattle.style.display = "block";
     } else if (player.stage === 7) {
         nextBattle.style.display = "block";
     } else if (player.stage === 6) {
@@ -1790,6 +2912,10 @@ function win() {
     } else if (player.stage === 'ex1') {
         nextBattle.style.display = "none";
     } else if (player.stage === 'ex2') {
+        nextBattle.style.display = "none";
+    } else if (player.stage === 'ex3') {
+        nextBattle.style.display = "none";
+    } else if (player.stage === 'ex4') {
         nextBattle.style.display = "none";
     } else {
         nextBattle.style.display = "block";
@@ -1862,14 +2988,24 @@ function end() {
 }
 
 function mapMoveToHeaven() {
+    let map1 = document.getElementById("map1");
+    map1.style.display = "none";
+    let map2 = document.getElementById("map2");
+    map2.style.display = "block";
+    stopBGM();
     let sectionIds = [];
     let mapHeaven = document.getElementById("mapHeaven");
     sectionIds.push(mapHeaven.id);
+    playBGM("heaven");
     showSection(sectionIds);
 }
 
 //mapに戻る
 function mapGame() {
+    let map1 = document.getElementById("map1");
+    map1.style.display = "block";
+    let map2 = document.getElementById("map2");
+    map2.style.display = "none";
     stopBGM();
     playBGM("map");
     //Start画面に遷移
@@ -1878,6 +3014,20 @@ function mapGame() {
     let sectionIds = [];
     let map = document.getElementById("map");
     sectionIds.push(map.id);
+    showSection(sectionIds);
+}
+
+//天空に戻る
+function mapHeavenGame() {
+    let map1 = document.getElementById("map1");
+    map1.style.display = "block";
+    let map2 = document.getElementById("map2");
+    map2.style.display = "none";
+    stopBGM();
+    playBGM("heaven");
+    let sectionIds = [];
+    let mapHeaven = document.getElementById("mapHeaven");
+    sectionIds.push(mapHeaven.id);
     showSection(sectionIds);
 }
 
@@ -1898,6 +3048,8 @@ function titleGame() {
     stage7.style.display = "none";
     let playerInput = document.getElementById("playerInput");
     playerInput.value = null;
+    let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+    mapMoveToHeaven.style.display = "none";
     player.level = 1;
     player.maxHP = 50;
     player.hp = 50;
@@ -1917,6 +3069,12 @@ function titleGame() {
     flg.stage5 = false;
     flg.stage6 = false;
     flg.stage7 = false;
+    flg.stage8 = false;
+    flg.stage9 = false;
+    flg.stage10 = false;
+    flg.stage11 = false;
+    flg.stage12 = false;
+    flg.stage13 = false;
     flg.stageLast = false;
     flg.stageLastWin = false;
     flg.castle = false;
@@ -1940,6 +3098,20 @@ function restartGame() {
     //ゲーム画面に遷移
     if (player.stage === 'last') {
         nextBattle.style.display = "none";
+    } else if (player.stage === 14) {
+        startGames14();
+    } else if (player.stage === 13) {
+        startGames13();
+    } else if (player.stage === 12) {
+        startGames12();
+    } else if (player.stage === 11) {
+        startGames11();
+    } else if (player.stage === 10) {
+        startGames10();
+    } else if (player.stage === 9) {
+        startGames9();
+    } else if (player.stage === 8) {
+        startGames8();
     } else if (player.stage === 7) {
         startGames7();
     } else if (player.stage === 6) {
@@ -1955,6 +3127,10 @@ function restartGame() {
     } else if (player.stage === 'ex1') {
         nextBattle.style.display = "none";
     } else if (player.stage === 'ex2') {
+        nextBattle.style.display = "none";
+    } else if (player.stage === 'ex3') {
+        nextBattle.style.display = "none";
+    } else if (player.stage === 'ex4') {
         nextBattle.style.display = "none";
     } else {
         startGames1();
@@ -2059,6 +3235,15 @@ function closeClearPanel() {
     showSection(sectionIds);
 }
 
+function closeClearPanel2() {
+    let game2ClearPanel = document.getElementById('game2ClearPanel');
+    game2ClearPanel.style.display = "none";
+    let sectionIds = [];
+    mapHeaven = document.getElementById("mapHeaven");
+    sectionIds.push(mapHeaven.id);
+    showSection(sectionIds);
+}
+
 //魔王のHPが1/3を切ったら、変身する
 function changeMaou() {
     let hensin = document.getElementById("effect");
@@ -2077,18 +3262,63 @@ function changeMaou() {
     updateDisplay();
 }
 
+function changeZakuna() {
+    let hensin = document.getElementById("effect");
+    hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
+    log(enemy.name + "の姿が変化した…");
+    let monster = document.getElementById("monster");
+    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='ver1.5/ザクナ2.png' alt='背景' width='100%' height='250px'>";
+    enemy.name = "ザクナ(2)";
+    enemy.attack = 250;
+    enemy.maxHP = 4000;
+    enemy.hp += 4000;
+    if (enemy.hp > enemy.maxHP) {
+        enemy.hp = enemy.maxHP;
+    }
+    //HPバーを更新
+    updateDisplay();
+}
+
+function changeZakuna2() {
+    let hensin = document.getElementById("effect");
+    hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
+    log(enemy.name + "が真の力を見せてきた！");
+    let monster = document.getElementById("monster");
+    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='ver1.5/アビスロードザクナ.png' alt='背景' width='100%' height='320px'>";
+    enemy.name = "アビスロード・ザクナ";
+    enemy.attack = 300;
+    enemy.maxHP = 5000;
+    enemy.hp += 5000;
+    if (enemy.hp > enemy.maxHP) {
+        enemy.hp = enemy.maxHP;
+    }
+    //HPバーを更新
+    updateDisplay();
+}
+
 //モンスターから逃げる機能
 function runAway() {
     let sectionIds = [];
     if (enemy.hp != enemy.maxHP || player.hp != player.maxHP) {
         alert(enemy.name + "から逃げることはできない。");
     } else {
-        stopBGM();
-        alert(enemy.name + "から逃げました。");
-        map = document.getElementById("map");
-        sectionIds.push(map.id);
-        showSection(sectionIds);
-        playBGM("map");
+        if (player.stage === 8 || player.stage === 9 || player.stage === 10 || player.stage === 11 || player.stage === 12 || player.stage === 'ex3' || player.stage === 13 || player.stage === 14 || player.stage === 'ex4') {
+            runAwayBGM();
+            alert(enemy.name + "から逃げました。");
+            mapHeaven = document.getElementById("mapHeaven");
+            sectionIds.push(mapHeaven.id);
+            showSection(sectionIds);
+            stopBGM();
+            playBGM("heaven");
+        } else {
+            runAwayBGM();
+            alert(enemy.name + "から逃げました。");
+            map = document.getElementById("map");
+            sectionIds.push(map.id);
+            showSection(sectionIds);
+            stopBGM();
+            playBGM("map");
+        }
     }
 }
 
@@ -2184,7 +3414,7 @@ function morbasylisk() {
         enemy.level = 68;
         enemy.points = 900;
         area.innerHTML = "<img src='stage5/area5.png' alt='背景' width='100%' height='620px'>";
-        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/モルバジリスク.png' alt='背景' width='100%' height='130px'>";
+        monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/モルバジリスク.png' alt='背景' width='100%' height='200px'>";
     }
 }
 
@@ -2193,7 +3423,7 @@ function levelUP() {
     if (player.bonus && player.level % 10 === 0) {
         alert("レベルアップボーナス！！！");
         if (player.level >= 100) {
-            player.maxHP += 20;
+            player.maxHP += 10;
             player.attack += 5;
         } else if (player.level >= 90) {
             player.maxHP += 10;
@@ -2333,9 +3563,24 @@ function attackCriticalSound() {
     attackSound.play();
 }
 
+// 逃げる効果音を再生
+function runAwayBGM() {
+    let sound = new Audio("ver1.5/runAway.mp3");
+    sound.volume = 0.3;
+    sound.currentTime = 0; // 連続再生用
+    sound.play();
+}
+
 // ゲームオーバーを再生
 function gameEnd() {
     let sound = new Audio("ver1.4/gameEnd.mp3");
+    sound.volume = 0.3;
+    sound.currentTime = 0; // 連続再生用
+    sound.play();
+}
+
+function zakunaBGM() {
+    let sound = new Audio("ver1.5/ザクナの一撃.mp3");
     sound.volume = 0.3;
     sound.currentTime = 0; // 連続再生用
     sound.play();
