@@ -1736,8 +1736,7 @@ function endGame(result) {
             flg.stageLastWin = true;
             let gameClearPanel = document.getElementById('gameClearPanel');
             gameClearPanel.style.display = "block";
-            let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
-            mapMoveToHeaven.style.display = "block";
+            
         }
         displaySessionLogs();
         win();
