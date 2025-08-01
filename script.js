@@ -1743,6 +1743,12 @@ function endGame(result) {
         win();
         //monster.innerHTML = "<img onclick='win()' class='animate__animated animate__fadeIn' src='coin_gold_02.png' alt='背景' width='100%' height='100px'>";
     } else {
+        let attackBtn = document.getElementById("attackBtn");
+        let defendBtn = document.getElementById("defendBtn");
+        let itemsBtn = document.getElementById("itemsBtn");
+        attackBtn.disabled = false;
+        defendBtn.disabled = false;
+        itemsBtn.disabled = false;
         player.points = 0;
         //経験値の反映
         log("💀 敗北… " + enemy.name + "に負けた。")
