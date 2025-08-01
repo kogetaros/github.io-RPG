@@ -544,6 +544,224 @@ body {
   opacity: 1;
 }
 
+.stage8 {
+  position: absolute;
+  top: 43%;
+  left: 25%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage9 {
+  position: absolute;
+  top: 43%;
+  left: 51%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage10 {
+  position: absolute;
+  top: 32%;
+  left: 76%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage11 {
+  position: absolute;
+  top: 30%;
+  left: 37%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage12 {
+  position: absolute;
+  top: 31%;
+  left: 10%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage13 {
+  position: absolute;
+  top: 15%;
+  left: 41%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage14 {
+  position: absolute;
+  top: 15%;
+  left: 70%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.extra3 {
+  position: absolute;
+  top: 21%;
+  left: 57%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.extra4 {
+  position: absolute;
+  top: 11%;
+  left: 22%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage8:before,
+.stage9:before,
+.stage10:before,
+.stage11:before,
+.stage12:before,
+.stage13:before,
+.stage14:before,
+.extra3:before,
+.extra4:before {
+  content: "＞";
+  position: relative;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.stage8:hover:before,
+.stage9:hover:before,
+.stage10:hover:before,
+.stage11:hover:before,
+.stage12:hover:before,
+.stage13:hover:before,
+.stage14:hover:before,
+.extra3:hover:before,
+.extra4:hover:before {
+  opacity: 1;
+}
+
+
+.mapMoveToHeaven {
+  position: absolute;
+  top: 90%;
+  left: 75%;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+  background-color: #000000;
+  color: white;
+  border-color: #f4f4f4;
+  border-width: 10px;
+  border-style: groove;
+}
+
+.mapMoveToHeaven:before {
+  content: "＞";
+  position: relative;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mapMoveToHeaven:hover:before {
+  opacity: 1;
+}
+
+.mapMove {
+  position: absolute;
+  top: 53.5%;
+  left: 75%;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+  background-color: #000000;
+  color: white;
+  border-color: #f4f4f4;
+  border-width: 10px;
+  border-style: groove;
+}
+
+.mapMove:before {
+  content: "＞";
+  position: relative;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mapMove:hover:before {
+  opacity: 1;
+}
+
 .extra1 {
   position: absolute;
   top: 50%;
