@@ -224,7 +224,7 @@ body {
   border-color: #f4f4f4;
   border-width: 10px;
   border-style: groove;
-  top: 67%;
+  top: 76%;
   left: 14%;
   /*ベンダープレフィックス*/
   transform: translate(-50%, -50%);
@@ -265,8 +265,6 @@ body {
 }
 
 .titleBtn {
-  margin-top: 18px;
-  margin-left: 23%;
   background: transparent;
   border: none;
   outline: none;
@@ -834,7 +832,7 @@ body {
 
 .menuBtn {
   margin-top: 18px;
-  margin-left: 40%;
+  margin-left: 25%;
   background: transparent;
   border: none;
   outline: none;
