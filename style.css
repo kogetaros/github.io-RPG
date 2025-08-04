@@ -546,7 +546,7 @@ body {
 
 .stage8 {
   position: absolute;
-  top: 43%;
+  top: 60%;
   left: 25%;
   background: transparent;
   border: none;
@@ -560,8 +560,8 @@ body {
 
 .stage9 {
   position: absolute;
-  top: 43%;
-  left: 51%;
+  top: 60%;
+  left: 50%;
   background: transparent;
   border: none;
   outline: none;
@@ -574,8 +574,8 @@ body {
 
 .stage10 {
   position: absolute;
-  top: 32%;
-  left: 76%;
+  top: 46%;
+  left: 75%;
   background: transparent;
   border: none;
   outline: none;
@@ -588,7 +588,7 @@ body {
 
 .stage11 {
   position: absolute;
-  top: 30%;
+  top: 42%;
   left: 37%;
   background: transparent;
   border: none;
@@ -602,8 +602,8 @@ body {
 
 .stage12 {
   position: absolute;
-  top: 31%;
-  left: 10%;
+  top: 42%;
+  left: 9%;
   background: transparent;
   border: none;
   outline: none;
@@ -616,7 +616,7 @@ body {
 
 .stage13 {
   position: absolute;
-  top: 15%;
+  top: 20%;
   left: 41%;
   background: transparent;
   border: none;
@@ -630,7 +630,7 @@ body {
 
 .stage14 {
   position: absolute;
-  top: 15%;
+  top: 13%;
   left: 70%;
   background: transparent;
   border: none;
@@ -644,8 +644,8 @@ body {
 
 .extra3 {
   position: absolute;
-  top: 21%;
-  left: 57%;
+  top: 30%;
+  left: 56%;
   background: transparent;
   border: none;
   outline: none;
@@ -658,8 +658,8 @@ body {
 
 .extra4 {
   position: absolute;
-  top: 11%;
-  left: 22%;
+  top: 15%;
+  left: 21%;
   background: transparent;
   border: none;
   outline: none;
@@ -733,7 +733,7 @@ body {
 
 .mapMove {
   position: absolute;
-  top: 53.5%;
+  top: 75%;
   left: 75%;
   border: none;
   outline: none;
