@@ -262,6 +262,9 @@ function loadGame() {
     if (flg.extra4Win && !player.badges.includes("🍜")) {
         player.badges.push("🍜");
     }
+    if (player.level >= 200 && !player.badges.includes("🍜")) {
+        player.badges.push("❷");
+    }
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
     updatePointsDisplay();
@@ -3535,6 +3538,9 @@ function morbasylisk() {
 function levelUP() {
     if (player.bonus && player.level % 10 === 0) {
         alert("レベルアップボーナス！！！");
+        if (player.level >= 200) {
+            player.badges.push("❷");
+        }
         if (player.level >= 100) {
             player.maxHP += 10;
             player.attack += 5;
