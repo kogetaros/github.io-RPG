@@ -16,10 +16,16 @@
             <div class="titleBlock">
                 <input id="playerInput" class="input" type="text" placeholder="名前を入力" maxlength="10">
                 <br>
-                <button class="startBtn" onclick="playGames()">はじめから</button><br>
+                <button id="btnLoadGame" class="startBtn" onclick="playGames()">はじめから</button><br>
                 <button class="startBtn" onclick="loadGame()">つづきから</button><br>
                 <button class="startBtn" onclick="showInstructions()">操作方法</button><br>
                 <button class="startBtn" onclick="showEnemyList()">ステージ一詳細</button>
+                <button class="startBtn" id="loadRankingBtn" onclick="showRnaking()">ランキング</button>
+            </div>
+            <div id="ranking" class="rankingPanel" style="display: none;">
+                <h3 style="color: white;">ランキング（レベル順）</h3>
+                <ol style="color: white;" id="rankingList"></ol>
+                <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
             </div>
             <div id="instructionsPanel" class="panel" style="display: none;">
                 <div style="font-size: 10px;">
@@ -239,6 +245,8 @@
     <div id="itemshop" style="display: none;">
         <img class="animate__animated animate__fadeIn" src="map/アイテム屋.png" alt="背景" width='100%' height='550px'>
         <div class="castleMenuResult">
+            <div style="font-size: 10px;"><span>所持ゴールド：<span id="playerGold"></span></span></div>
+            <br>
             <img src="items1/治癒のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
                 onclick="buyHpPotion()">治癒のポーション<br>30000ゴールド</button>
             <br>
@@ -269,6 +277,9 @@
                 レベル : <span id="Level"></span>&emsp;&emsp;&emsp;HP: <span id="HP"></span>&emsp;&emsp;&emsp;攻撃力 :
                 <span id="Attack"></span>
                 <br><br>所持ゴールド : <span id="Coin"></span>
+                <br>
+                <br>
+                称号：<span id="playerBadge"></span>
             </p>
         </div>
         <div class="bug animate__animated animate__fadeIn">
@@ -276,10 +287,12 @@
             <div class="items">
                 <div id="hpPotion" style="display: none;"><img src="items1/治癒のポーション.png" alt="ポーション" width="15px"
                         height="15px" style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
-                <div id="pwPotion" style="display: none;" onclick="usePwPotion()"><img src="items1/力のポーション.png" alt="ポーション" width="15px"
-                        height="15px" style="vertical-align: middle;">力のポーション × <span id="have2"></span></div>
-                <div id="hpupPotion" style="display: none;" onclick="useHpUpPotion()"><img src="items1/体力のポーション.png" alt="ポーション" width="15px"
-                        height="15px" style="vertical-align: middle;">体力のポーション × <span id="have3"></span></div>
+                <div id="pwPotion" style="display: none;" onclick="usePwPotion()"><img src="items1/力のポーション.png"
+                        alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">力のポーション × <span
+                        id="have2"></span></div>
+                <div id="hpupPotion" style="display: none;" onclick="useHpUpPotion()"><img src="items1/体力のポーション.png"
+                        alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">体力のポーション × <span
+                        id="have3"></span></div>
                 <div id="no" style="display: block;">なし</div>
             </div>
         </div>
@@ -287,6 +300,7 @@
         <div class="button-container">
             <button class="backMenuBtn" onclick="menuClose()">戻る</button>
             <button class="saveBtn" onclick="saveGame()">セーブ</button>
+            <button class="saveBtn" id="renameBtn" onclick="changePlayerName()">名前変更</button>
         </div>
     </div>
     <div id="restartMenu" class="resultScreen" style="display: none;">
@@ -327,6 +341,50 @@
         </div>
     </div>
 </body>
-<script src="script.js"></script>
+
+<script type="module">
+    // Firebase v9 CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+        getFirestore,
+        collection,
+        query,
+        orderBy,
+        limit,
+        getDocs
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
+        authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
+        projectId: "the-legend-of-the-hero-rpg",
+        storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
+        messagingSenderId: "229539309178",
+        appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
+        measurementId: "G-FZXYLBMPX3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadRanking() {
+        const rankingList = document.getElementById("rankingList");
+        rankingList.innerHTML = "";
+
+        const q = query(collection(db, "ranking"), orderBy("level", "desc"), limit(10));
+        const snapshot = await getDocs(q);
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.textContent = `${data.name} : Lv.${data.level}`;
+            rankingList.appendChild(li);
+        });
+    }
+
+    window.onload = loadRanking;
+</script>
+
+<script type="module" src="script.js"></script>
 
 </html>
