@@ -322,33 +322,6 @@ function playGames() {
     if (!player.name) {
         alert("名前を入力してください！");
     } else {
-        if (player.name === "最強") {
-            player.maxHP = 5545;
-            player.hp = 5545;
-            player.attack = 500;
-            player.coin = 1000000;
-            player.defending = false;
-            player.hpPotion = 300;
-            player.level = 100;
-            player.points = 0;
-            flg.stage2 = true;
-            flg.stage3 = true;
-            flg.stage4 = true;
-            flg.stage5 = true;
-            flg.stage6 = true;
-            flg.stage7 = true;
-            flg.stageLast = true;
-            flg.stage8 = true;
-            flg.stage9 = true;
-            flg.stage10 = false;
-            flg.stage11 = false;
-            flg.stage12 = false;
-            flg.stage13 = false;
-            flg.stage14 = false;
-            flg.castle = true;
-            flg.extra1 = true;
-            flg.extra2 = true;
-        }
         //画面表示
         let map = document.getElementById("map");
         playBGM("map");
@@ -3178,6 +3151,7 @@ function titleGame() {
     playerInput.value = null;
     let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
     mapMoveToHeaven.style.display = "none";
+    //プレイヤーの初期設定
     player.level = 1;
     player.maxHP = 50;
     player.hp = 50;
@@ -3185,29 +3159,38 @@ function titleGame() {
     player.bonus = true;
     player.coin = 10;
     player.stage = 1;
-    player.points = 0;
     player.hpPotion = 3;
     player.pwPotion = 0;
     player.hpupPotion = 0;
+    player.points = 0;
+    player.badges = [];
     enemy.points = 0;
     battleLogLive = [];
+    //flgの初期設定
     flg.stage2 = false;
     flg.stage3 = false;
     flg.stage4 = false;
     flg.stage5 = false;
     flg.stage6 = false;
     flg.stage7 = false;
+    flg.stageLast = false;
     flg.stage8 = false;
     flg.stage9 = false;
     flg.stage10 = false;
     flg.stage11 = false;
     flg.stage12 = false;
     flg.stage13 = false;
-    flg.stageLast = false;
-    flg.stageLastWin = false;
+    flg.stage14 = false;
     flg.castle = false;
     flg.extra1 = false;
     flg.extra1Win = false;
+    flg.extra2 = false;
+    flg.extra2Win = false;
+    flg.extra3 = false;
+    flg.extra3Win = false;
+    flg.extra4 = false;
+    flg.extra4Win = false;
+    flg.stageLastWin = false;
     updatePointsDisplay();
     //Start画面に遷移
     let sectionIds = [];
