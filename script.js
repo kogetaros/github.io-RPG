@@ -263,17 +263,25 @@ function loadGame() {
         player.badges.push("🍜");
     }
     //新規
-    // レベルに応じてバッジを後付け（常に最新に上書き）
+    let levelBadge = null;
     if (player.level >= 400) {
-        player.badges = ["④"];
+        levelBadge = "④";
     } else if (player.level >= 300) {
-        player.badges = ["③"];
+        levelBadge = "③";
     } else if (player.level >= 200) {
-        player.badges = ["②"];
+        levelBadge = "②";
     } else if (player.level >= 100) {
-        player.badges = ["①"];
+        levelBadge = "①";
+    }
+
+    // 進化バッジが決まっていたら最新に更新
+    if (levelBadge) {
+        // 👑や🍜は残す → 他の①②③④を消す
+        player.badges = player.badges.filter(b => !["①","②","③","④"].includes(b));
+        player.badges.push(levelBadge);
     } else {
-        player.badges = []; // まだ100未満ならバッジなし
+        // 100未満なら進化バッジは削除（👑🍜は残す）
+        player.badges = player.badges.filter(b => !["①","②","③","④"].includes(b));
     }
 
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
