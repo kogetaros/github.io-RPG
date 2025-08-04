@@ -54,7 +54,7 @@ body {
   background-color: #000000;
   padding: 20px;
   width: 40%;
-  top: 60%;
+  top: 75%;
   left: 50%;
   transform: translate(-50%, -50%);
   border-color: #f4f4f4;
@@ -125,6 +125,22 @@ body {
   border-width: 10px;
   border-style: groove;
 }
+
+.rankingPanel {
+  position: absolute;
+  text-align: center;
+  width: 70%;
+  top: 6%;
+  left: 8%;
+  background-color: black;
+  color: white;
+  padding: 20px;
+  /* white-space: pre; */
+  border-color: #f4f4f4;
+  border-width: 10px;
+  border-style: groove;
+}
+
 
 .battle {
   position: relative;
