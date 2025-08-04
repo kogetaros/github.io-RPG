@@ -262,7 +262,8 @@ function loadGame() {
     if (flg.extra4Win && !player.badges.includes("🍜")) {
         player.badges.push("🍜");
     }
-    if (player.level >= 200 && !player.badges.includes("🍜")) {
+    //新規
+    if (player.level >= 200 && !player.badges.includes("❷")) {
         player.badges.push("❷");
     }
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
@@ -3534,48 +3535,47 @@ function morbasylisk() {
     }
 }
 
-//レベルが10上がるごとにボーナスを適用
+//レベルが10上がるごとにボーナスを適用・新規
 function levelUP() {
     if (player.bonus && player.level % 10 === 0) {
         alert("レベルアップボーナス！！！");
-        if (player.level >= 200) {
-            player.badges.push("❷");
+
+        // 100レベルごとにバッジ付与（重複防止）
+        if (player.level % 100 === 0) {
+            let badge;
+            if (player.level === 100) badge = "①";  // Lv100記念
+            else if (player.level === 200) badge = "②";  // Lv200記念
+            else if (player.level === 300) badge = "③";  // Lv300記念
+            else if (player.level === 400) badge = "④";  // Lv400記念
+            // それ以上も追加したいなら else if を増やす
+
+            if (badge && !player.badges.includes(badge)) {
+                player.badges.push(badge);
+            }
         }
+
+        // HP・攻撃力の成長幅を設定
+        let hpBonus = 0;
+        let atkBonus = 0;
+
         if (player.level >= 100) {
-            player.maxHP += 10;
-            player.attack += 5;
-        } else if (player.level >= 90) {
-            player.maxHP += 10;
-            player.attack += 3;
-        } else if (player.level >= 80) {
-            player.maxHP += 10;
-            player.attack += 3;
-        } else if (player.level >= 70) {
-            player.maxHP += 10;
-            player.attack += 3;
-        } else if (player.level >= 60) {
-            player.maxHP += 10;
-            player.attack += 3;
-        } else if (player.level >= 50) {
-            player.maxHP += 10;
-            player.attack += 3;
+            hpBonus = 10;
+            atkBonus = 5;
         } else if (player.level >= 40) {
-            player.maxHP += 5;
-            player.attack += 3;
-        } else if (player.level >= 30) {
-            player.maxHP += 5;
-            player.attack += 3;
-        } else if (player.level >= 20) {
-            player.maxHP += 5;
-            player.attack += 3;
+            hpBonus = 10;
+            atkBonus = 3;
         } else if (player.level >= 10) {
-            player.maxHP += 5;
-            player.attack += 3;
+            hpBonus = 5;
+            atkBonus = 3;
         }
+
+        player.maxHP += hpBonus;
+        player.attack += atkBonus;
 
         player.bonus = false;  // ボーナス適用後はリセット
     }
 }
+
 
 function playBGM(name) {
     // 同じ曲なら何もしない
