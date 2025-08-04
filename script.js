@@ -263,9 +263,19 @@ function loadGame() {
         player.badges.push("🍜");
     }
     //新規
-    if (player.level >= 200 && !player.badges.includes("❷")) {
-        player.badges.push("❷");
+    // レベルに応じてバッジを後付け（常に最新に上書き）
+    if (player.level >= 400) {
+        player.badges = ["④"];
+    } else if (player.level >= 300) {
+        player.badges = ["③"];
+    } else if (player.level >= 200) {
+        player.badges = ["②"];
+    } else if (player.level >= 100) {
+        player.badges = ["①"];
+    } else {
+        player.badges = []; // まだ100未満ならバッジなし
     }
+
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
     updatePointsDisplay();
@@ -3540,17 +3550,18 @@ function levelUP() {
     if (player.bonus && player.level % 10 === 0) {
         alert("レベルアップボーナス！！！");
 
-        // 100レベルごとにバッジ付与（重複防止）
+        // 100レベルごとにバッジ付与（最新だけ残す）
         if (player.level % 100 === 0) {
             let badge;
             if (player.level === 100) badge = "①";  // Lv100記念
             else if (player.level === 200) badge = "②";  // Lv200記念
             else if (player.level === 300) badge = "③";  // Lv300記念
             else if (player.level === 400) badge = "④";  // Lv400記念
-            // それ以上も追加したいなら else if を増やす
+            // それ以上も追加したいならここに else if を増やす
 
-            if (badge && !player.badges.includes(badge)) {
-                player.badges.push(badge);
+            if (badge) {
+                // 最新だけを残す
+                player.badges = [badge];
             }
         }
 
@@ -3575,6 +3586,7 @@ function levelUP() {
         player.bonus = false;  // ボーナス適用後はリセット
     }
 }
+
 
 
 function playBGM(name) {
