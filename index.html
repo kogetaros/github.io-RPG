@@ -135,11 +135,18 @@
                 </div>
             </div>
             <div class="playerBtnMenu">
+                <br>
                 <button id="attackBtn" class="playBtn" onclick="playerAttack()">こうげき</button>
+                <br>
+                <br>
                 <button id="defendBtn" class="playBtn" onclick="defendAction()">まもる</button>
-                <!-- <button id="hpPotionBtn" class="playBtn" onclick="usePotion()">どうぐ</button> -->
+                <br>
+                <br>
                 <button id="itemsBtn" class="playBtn" onclick="useItems()">どうぐ</button>
+                <br>
+                <br>
                 <button class="playBtn" onclick="runAway()">にげる</button>
+                <br>
                 <br>
             </div>
             <!-- playerBar -->
@@ -191,6 +198,7 @@
             </div>
         </div>
         <button class="menuBtn" onclick="menuOpen()">メニュー</button>
+        <button class="titleBtn" onclick="titleGame()">タイトルへ</button>
     </div>
     <div id="map" style="display: none;">
         <div class="map animate__animated animate__fadeIn">
@@ -228,7 +236,7 @@
         </div>
         <div>
             <button class="menuBtn" onclick="menuOpen()">メニュー</button>
-            <button class="titleBtn" style="display: none;" onclick="titleGame()">タイトルへ</button>
+            <button class="titleBtn" onclick="titleGame()">タイトルへ</button>
         </div>
     </div>
     <div id="castle" style="display: none;">
