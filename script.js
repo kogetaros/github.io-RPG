@@ -2295,8 +2295,8 @@ function generateEnemyExtra3() {
             enemy.coin = 60000;
             enemy.level = 110;
             enemy.points = 2500;
-            area.innerHTML = "<img src='ver1.5/extra3.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.5/ルクス・ヴェルム.png' alt='背景' width='100%' height='320px'>";
+            area.innerHTML = "<img src='extra3/extra3.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra3/ルクス・ヴェルム.png' alt='背景' width='100%' height='320px'>";
             break;
         default:
             break;
@@ -2330,8 +2330,8 @@ function generateEnemyExtra4() {
             enemy.coin = 100000;
             enemy.level = 125;
             enemy.points = 3000;
-            area.innerHTML = "<img src='ver1.5/extra4.png' alt='背景' width='100%' height='620px'>";
-            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.5/ザクナ.png' alt='背景' width='100%' height='200px'>";
+            area.innerHTML = "<img src='extra4/extra4.png' alt='背景' width='100%' height='620px'>";
+            monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra4/ザクナ.png' alt='背景' width='100%' height='200px'>";
             break;
         default:
             break;
