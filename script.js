@@ -2652,8 +2652,8 @@ function usePwPotion() {
 function useHpUpPotion() {
     useHpPotionBGM();
     player.hpupPotion -= 1;
-    alert("体力のポーションを使いました！体力が10上昇しました！");
-    player.maxHP += 5;
+    alert("体力のポーションを使いました！体力が7上昇しました！");
+    player.maxHP += 7;
     player.hp = player.maxHP;
     let HP = document.getElementById('HP');
     HP.innerHTML = player.maxHP;
