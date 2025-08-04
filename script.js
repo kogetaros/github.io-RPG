@@ -1,5 +1,77 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    limit,
+    getDocs,
+    setDoc,
+    doc,
+    serverTimestamp // ← これを忘れずに！
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
+    authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
+    projectId: "the-legend-of-the-hero-rpg",
+    storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
+    messagingSenderId: "229539309178",
+    appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
+    measurementId: "G-FZXYLBMPX3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// グローバル変数として playerId を用意
+let playerId = localStorage.getItem("playerId");
+if (!playerId) {
+    playerId = crypto.randomUUID(); // ブラウザでUUID生成
+    localStorage.setItem("playerId", playerId);
+}
+
+// ランキング保存機能（Firestore ＋ localStorage）
+async function saveLevel() {
+    try {
+        await setDoc(doc(db, "ranking", playerId), {
+            name: player.name,       // 名前はフィールドとして保存
+            level: player.level,
+            badges: player.badges,
+            reachedAt: serverTimestamp()
+        }, { merge: true }); // 同じIDなら上書きされる
+
+        console.log("ランキング保存成功！", playerId, player.name, player.level, player.badges);
+    } catch (e) {
+        console.error("ランキング保存エラー:", e);
+    }
+}
+
+async function loadRanking() {
+    const rankingList = document.getElementById("rankingList");
+    rankingList.innerHTML = "";
+
+    const q = query(
+        collection(db, "ranking"),
+        orderBy("level", "desc"),   // レベル高い順
+        orderBy("reachedAt", "asc"), // 同レベルなら早く到達した人が上
+        limit(10)
+    );
+
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const badges = Array.isArray(data.badges) ? data.badges.join("") : "";
+
+        const li = document.createElement("li");
+        li.innerHTML = `${data.name} : Lv.${data.level}<br>${badges}`;
+        rankingList.appendChild(li);
+    });
+}
+
 //グローバル変数
-let player = ['name', 'level', 'hp', 'attack', 'maxHP', 'defending', 'hpPotion', 'pwPotion', 'hpupPotion', 'end', 'bonus', 'ultimate', 'coin', 'stage', 'points'];
+let player = ['name', 'level', 'hp', 'attack', 'maxHP', 'defending', 'hpPotion', 'pwPotion', 'hpupPotion', 'end', 'bonus', 'ultimate', 'coin', 'stage', 'points', 'badges'];
 let enemy = ['name', 'hp', 'attack', 'maxHP', 'coin', 'points'];
 let items = ['potion'];
 const bgmList = {
@@ -28,6 +100,7 @@ player.hpPotion = 3;
 player.pwPotion = 0;
 player.hpupPotion = 0;
 player.points = 0;
+player.badges = [];
 
 //flgの初期設定
 flg.stage2 = false;
@@ -55,6 +128,37 @@ flg.extra4 = false;
 flg.extra4Win = false;
 flg.stageLastWin = false;
 
+// ===== 名前変更機能 =====
+// プレイヤー表示を更新する関数
+function renderPlayer() {
+    let playerName = document.getElementById("Name");
+    if (playerName) {
+        playerName.innerHTML = player.name;
+    }
+}
+
+// 名前変更処理
+function changePlayerName() {
+    let newName = prompt("新しい名前を入力してください (10文字以内)", player.name);
+
+    if (newName && newName.trim() !== "") {
+        newName = newName.trim();
+
+        if (newName.length > 10) {
+            alert("名前は10文字以内で入力してください");
+            return; // ここで処理終了
+        }
+
+        player.name = newName;
+        renderPlayer();
+        saveGame(); // ← 名前変更後にセーブ
+        alert("名前を変更しました: " + player.name);
+    } else {
+        alert("名前を入力してください");
+    }
+}
+
+
 // ===== セーブ機能 =====
 function saveGame() {
     const saveData = {
@@ -71,6 +175,7 @@ function saveGame() {
             pwPotion: player.pwPotion,
             hpupPotion: player.hpupPotion,
             points: player.points,
+            badges: player.badges,
         },
         flg: {
             stage2: flg.stage2,
@@ -101,6 +206,12 @@ function saveGame() {
     };
 
     console.log(flg.stage2);
+
+    // プレイヤー名とレベルを保存
+    saveLevel(player.name, player.level);
+
+    // ランキング更新
+    loadRanking();
 
     localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
     alert("セーブしました！");
@@ -136,19 +247,25 @@ function loadGame() {
     if (flg.stage7) {
         document.getElementById("stage7").style.display = "block";
     }
+
+    if (!player.badges) {
+        player.badges = []; // 初期化
+    }
+
     if (flg.stageLastWin) {
         let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
         mapMoveToHeaven.style.display = "block";
     }
-    if (flg.stageLastWin && !player.name.startsWith("👑")) {
-        player.name = "👑" + player.name;
+    if (flg.stageLastWin && !player.badges.includes("👑")) {
+        player.badges.push("👑");
     }
-    if (flg.extra4Win && !player.name.endsWith("🍜")) {
-        player.name = player.name + "🍜";
+    if (flg.extra4Win && !player.badges.includes("🍜")) {
+        player.badges.push("🍜");
     }
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
     updatePointsDisplay();
+    renderPlayer(); // ← 名前表示を更新
     alert("セーブデータをロードしました！");
     menuOpen();
 }
@@ -158,7 +275,7 @@ function loadGame() {
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
-    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven'];
+    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven', 'ranking'];
 
     allSections.forEach(id => {
         const element = document.getElementById(id);
@@ -199,6 +316,7 @@ function playGames() {
     effect.innerHTML = "";
     let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
     mapMoveToHeaven.style.display = "none";
+    player.badges = [];
     let sectionIds = [];
 
     if (!player.name) {
@@ -258,6 +376,10 @@ function menuOpen() {
     Attack.innerHTML = player.attack;
     let Coin = document.getElementById("Coin");
     Coin.innerHTML = player.coin;
+    let playerBadge = document.getElementById('playerBadge');
+    // 表示用は join()
+    player.badge = player.badges.join("");
+    playerBadge.innerHTML = player.badges;
     haveItems();
     showSection(sectionIds);
 }
@@ -337,6 +459,8 @@ function buyHpPotion() {
     } else {
         player.coin -= 30000;
         player.hpPotion += 1;
+        let playerGold = document.getElementById('playerGold');
+        playerGold.innerHTML = player.coin;
         alert("治癒のポーションを購入しました！");
     }
 }
@@ -348,6 +472,8 @@ function buyPwPotion() {
     } else {
         player.coin -= 50000;
         player.pwPotion += 1;
+        let playerGold = document.getElementById('playerGold');
+        playerGold.innerHTML = player.coin;
         alert("力のポーションを購入しました！");
     }
 }
@@ -359,6 +485,8 @@ function buyHpUpPotion() {
     } else {
         player.coin -= 60000;
         player.hpupPotion += 1;
+        let playerGold = document.getElementById('playerGold');
+        playerGold.innerHTML = player.coin;
         alert("体力のポーションを購入しました！");
     }
 }
@@ -372,8 +500,8 @@ function startGames1() {
     let sectionIds = [];
 
     //画面表示
-    gameUI = document.getElementById("gameUI");
-    logPanel = document.getElementById("logPanel");
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
     sectionIds.push(gameUI.id, logPanel.id);
     showSection(sectionIds);
 
@@ -420,8 +548,8 @@ function startGames2() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -471,8 +599,8 @@ function startGames3() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -522,8 +650,8 @@ function startGames4() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -573,8 +701,8 @@ function startGames5() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -624,8 +752,8 @@ function startGames6() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -675,8 +803,8 @@ function startGames7() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -726,8 +854,8 @@ function startGamesLast() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -777,8 +905,8 @@ function startGames8() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -832,8 +960,8 @@ function startGames9() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -887,8 +1015,8 @@ function startGames10() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -942,8 +1070,8 @@ function startGames11() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -997,8 +1125,8 @@ function startGames12() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1052,8 +1180,8 @@ function startGames13() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1107,8 +1235,8 @@ function startGames14() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1157,8 +1285,8 @@ function extra1() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1203,8 +1331,8 @@ function extra2() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1253,8 +1381,8 @@ function extra3() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -1303,8 +1431,8 @@ function extra4() {
         let sectionIds = [];
 
         //画面表示
-        gameUI = document.getElementById("gameUI");
-        logPanel = document.getElementById("logPanel");
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
         sectionIds.push(gameUI.id, logPanel.id);
         showSection(sectionIds);
 
@@ -2802,7 +2930,7 @@ function endGame(result) {
             let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
             mapMoveToHeaven.style.display = "block";
             flg.stage8 = true;
-            player.name = '👑' + player.name;
+            player.badges.push("👑");
         } else if (enemy.name === 'アストラルドラコ') {
             flg.stage9 = true;
         } else if (enemy.name === 'ザルヴァドス') {
@@ -2838,7 +2966,7 @@ function endGame(result) {
             flg.extra4Win = true;
             let game2ClearPanel = document.getElementById('game2ClearPanel');
             game2ClearPanel.style.display = "block";
-            player.name = player.name + '🍜';
+            player.badges.push("🍜");
         }
         displaySessionLogs();
         win();
@@ -2949,8 +3077,8 @@ function win() {
     winGold.innerHTML = enemy.coin;
     let winPoints = document.getElementById("winPoints");
     winPoints.innerHTML = enemy.points;
-    gameUI = document.getElementById("gameUI");
-    logPanel = document.getElementById("logPanel");
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
     //ログパネルの表示
     //let sessionLogPanel = document.getElementById("sessionLogPanel");
     let restartMenu = document.getElementById("restartMenu");
@@ -2979,8 +3107,8 @@ function end() {
     let resultCoin = document.getElementById("resultCoin");
     resultCoin.innerHTML = player.coin;
     let sectionIds = [];
-    gameUI = document.getElementById("gameUI");
-    logPanel = document.getElementById("logPanel");
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
     let sessionLogPanel = document.getElementById("sessionLogPanel");
     let restartMenu = document.getElementById("restartMenu");
     sectionIds.push(sessionLogPanel.id, restartMenu.id, gameUI.id, logPanel.id);
@@ -3186,8 +3314,8 @@ function downloadSessionLog() {
 //操作方法の表示
 function showInstructions() {
     let sectionIds = [];
-    startMenu = document.getElementById("startMenu");
-    instructionsPanel = document.getElementById("instructionsPanel");
+    let startMenu = document.getElementById("startMenu");
+    let instructionsPanel = document.getElementById("instructionsPanel");
     sectionIds.push(startMenu.id, instructionsPanel.id);
     showSection(sectionIds);
 }
@@ -3195,8 +3323,8 @@ function showInstructions() {
 //敵一覧の表示
 function showEnemyList() {
     let sectionIds = [];
-    startMenu = document.getElementById("startMenu");
-    enemyListPanel = document.getElementById("enemyListPanel");
+    let startMenu = document.getElementById("startMenu");
+    let enemyListPanel = document.getElementById("enemyListPanel");
     sectionIds.push(startMenu.id, enemyListPanel.id);
     showSection(sectionIds);
 }
@@ -3207,6 +3335,8 @@ function itemshop() {
     let itemshop = document.getElementById("itemshop");
     sectionIds.push(itemshop.id);
     showSection(sectionIds);
+    let playerGold = document.getElementById('playerGold');
+    playerGold.innerHTML = player.coin;
 }
 
 //鍛冶屋の表示
@@ -3221,7 +3351,7 @@ function weaponshop() {
 //パネルを閉じる（例：操作説明、ルールなど）
 function closePanel() {
     let sectionIds = [];
-    startMenu = document.getElementById("startMenu");
+    let startMenu = document.getElementById("startMenu");
     sectionIds.push(startMenu.id);
     showSection(sectionIds);
 }
@@ -3230,7 +3360,7 @@ function closeClearPanel() {
     let gameClearPanel = document.getElementById('gameClearPanel');
     gameClearPanel.style.display = "none";
     let sectionIds = [];
-    startMenu = document.getElementById("map");
+    let startMenu = document.getElementById("map");
     sectionIds.push(startMenu.id);
     showSection(sectionIds);
 }
@@ -3239,7 +3369,7 @@ function closeClearPanel2() {
     let game2ClearPanel = document.getElementById('game2ClearPanel');
     game2ClearPanel.style.display = "none";
     let sectionIds = [];
-    mapHeaven = document.getElementById("mapHeaven");
+    let mapHeaven = document.getElementById("mapHeaven");
     sectionIds.push(mapHeaven.id);
     showSection(sectionIds);
 }
@@ -3305,7 +3435,7 @@ function runAway() {
         if (player.stage === 8 || player.stage === 9 || player.stage === 10 || player.stage === 11 || player.stage === 12 || player.stage === 'ex3' || player.stage === 13 || player.stage === 14 || player.stage === 'ex4') {
             runAwayBGM();
             alert(enemy.name + "から逃げました。");
-            mapHeaven = document.getElementById("mapHeaven");
+            let mapHeaven = document.getElementById("mapHeaven");
             sectionIds.push(mapHeaven.id);
             showSection(sectionIds);
             stopBGM();
@@ -3313,7 +3443,7 @@ function runAway() {
         } else {
             runAwayBGM();
             alert(enemy.name + "から逃げました。");
-            map = document.getElementById("map");
+            let map = document.getElementById("map");
             sectionIds.push(map.id);
             showSection(sectionIds);
             stopBGM();
@@ -3458,28 +3588,15 @@ function levelUP() {
     }
 }
 
-// map表示のBGM再生
 function playBGM(name) {
-    if (bgm) {
-        bgm.pause(); // もし既に再生してたら止める
-        attackSound.currentTime = 0; // 連続再生用
-    }
-    bgm = bgmList[name];
-    bgm.loop = true; // ループ
-    bgm.volume = 0.1;
-    bgm.play();
-}
-
-// BGMを再生（常にフェード付き）
-function playBGM(name) {
-    // もし既に同じ曲が流れていたら何もしない
-    if (currentBGM && currentBGM.src.includes(bgmList[name])) {
+    // 同じ曲なら何もしない
+    if (currentBGM && currentBGM.src.includes(bgmList[name].src)) {
         return;
     }
 
     // フェードアウト処理
     if (currentBGM) {
-        clearInterval(fadeInterval); // 前のフェード処理が残っていたらリセット
+        clearInterval(fadeInterval);
 
         fadeInterval = setInterval(() => {
             if (currentBGM.volume > 0.05) {
@@ -3488,14 +3605,52 @@ function playBGM(name) {
                 clearInterval(fadeInterval);
                 currentBGM.pause();
                 currentBGM.currentTime = 0;
-                startNewBGM(name); // 新BGM開始
+                startNewBGM(name); // 新しいBGMを再生
             }
-        }, 10); // 10msごとに音量を下げる
+        }, 50); // 50msごとに少しずつ下げる（自然なフェード）
     } else {
-        // 今BGMが無いならそのまま再生
         startNewBGM(name);
     }
 }
+
+// // map表示のBGM再生
+// function playBGM(name) {
+//     if (bgm) {
+//         bgm.pause(); // もし既に再生してたら止める
+//         attackSound.currentTime = 0; // 連続再生用
+//     }
+//     bgm = bgmList[name];
+//     bgm.loop = true; // ループ
+//     bgm.volume = 0.1;
+//     bgm.play();
+// }
+
+// // BGMを再生（常にフェード付き）
+// function playBGM(name) {
+//     // もし既に同じ曲が流れていたら何もしない
+//     if (currentBGM && currentBGM.src.includes(bgmList[name])) {
+//         return;
+//     }
+
+//     // フェードアウト処理
+//     if (currentBGM) {
+//         clearInterval(fadeInterval); // 前のフェード処理が残っていたらリセット
+
+//         fadeInterval = setInterval(() => {
+//             if (currentBGM.volume > 0.05) {
+//                 currentBGM.volume -= 0.05;
+//             } else {
+//                 clearInterval(fadeInterval);
+//                 currentBGM.pause();
+//                 currentBGM.currentTime = 0;
+//                 startNewBGM(name); // 新BGM開始
+//             }
+//         }, 10); // 10msごとに音量を下げる
+//     } else {
+//         // 今BGMが無いならそのまま再生
+//         startNewBGM(name);
+//     }
+// }
 
 // 新しいBGMを開始する処理
 function startNewBGM(name) {
@@ -3585,3 +3740,72 @@ function zakunaBGM() {
     sound.currentTime = 0; // 連続再生用
     sound.play();
 }
+
+function showRnaking() {
+    let sectionIds = [];
+    let startMenu = document.getElementById("startMenu");
+    let ranking = document.getElementById("ranking");
+
+    sectionIds.push(startMenu.id, ranking.id);
+    showSection(sectionIds);
+    loadRanking();
+}
+
+window.showInstructions = showInstructions;
+window.showEnemyList = showEnemyList;
+window.showRnaking = showRnaking;
+window.loadRanking = loadRanking;
+window.changePlayerName = changePlayerName;
+window.saveGame = saveGame;
+window.loadGame = loadGame;
+window.showSection = showSection;
+window.playGames = playGames;
+window.menuOpen = menuOpen;
+window.haveItems = haveItems;
+window.menuClose = menuClose;
+window.closeBug = closeBug;
+window.castleShow = castleShow;
+window.buyHpPotion = buyHpPotion;
+window.buyPwPotion = buyPwPotion;
+window.buyHpUpPotion = buyHpUpPotion;
+window.startGames1 = startGames1;
+window.startGames2 = startGames2;
+window.startGames3 = startGames3;
+window.startGames4 = startGames4;
+window.startGames5 = startGames5;
+window.startGames6 = startGames6;
+window.startGames7 = startGames7;
+window.startGames8 = startGames8;
+window.startGames9 = startGames9;
+window.startGames10 = startGames10;
+window.startGames11 = startGames11;
+window.startGames12 = startGames12;
+window.startGames13 = startGames13;
+window.startGames14 = startGames14;
+window.startGamesLast = startGamesLast;
+window.extra1 = extra1;
+window.extra2 = extra2;
+window.extra3 = extra3;
+window.extra4 = extra4;
+window.defendAction = defendAction;
+window.useItems = useItems;
+window.playerAttack = playerAttack;
+window.useHpPotion = useHpPotion;
+window.usePwPotion = usePwPotion;
+window.useHpUpPotion = useHpUpPotion;
+window.mapMoveToHeaven = mapMoveToHeaven;
+window.mapGame = mapGame;
+window.mapHeavenGame = mapHeavenGame;
+window.titleGame = titleGame;
+window.restartGame = restartGame;
+window.showPanel = showPanel;
+window.hiddenPanel = hiddenPanel;
+window.downloadSessionLog = downloadSessionLog;
+window.itemshop = itemshop;
+window.weaponshop = weaponshop;
+window.closePanel = closePanel;
+window.closeClearPanel = closeClearPanel;
+window.closeClearPanel2 = closeClearPanel2;
+window.playGames = playGames;
+window.loadGame = loadGame;
+window.runAway = runAway;
