@@ -3267,7 +3267,7 @@ function changeZakuna() {
     hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "の姿が変化した…");
     let monster = document.getElementById("monster");
-    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='ver1.5/ザクナ2.png' alt='背景' width='100%' height='250px'>";
+    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='extra4/ザクナ2.png' alt='背景' width='100%' height='250px'>";
     enemy.name = "ザクナ(2)";
     enemy.attack = 250;
     enemy.maxHP = 4000;
@@ -3284,7 +3284,7 @@ function changeZakuna2() {
     hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "が真の力を見せてきた！");
     let monster = document.getElementById("monster");
-    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='ver1.5/アビスロードザクナ.png' alt='背景' width='100%' height='320px'>";
+    monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='extra4/アビスロードザクナ.png' alt='背景' width='100%' height='320px'>";
     enemy.name = "アビスロード・ザクナ";
     enemy.attack = 300;
     enemy.maxHP = 5000;
