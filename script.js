@@ -3558,18 +3558,23 @@ function levelUP() {
     if (player.bonus && player.level % 10 === 0) {
         alert("レベルアップボーナス！！！");
 
-        // 100レベルごとにバッジ付与（最新だけ残す）
+        // 100レベルごとに最新バッジを付与
         if (player.level % 100 === 0) {
-            let badge;
-            if (player.level === 100) badge = "①";  // Lv100記念
-            else if (player.level === 200) badge = "②";  // Lv200記念
-            else if (player.level === 300) badge = "③";  // Lv300記念
-            else if (player.level === 400) badge = "④";  // Lv400記念
-            // それ以上も追加したいならここに else if を増やす
+            let levelBadge = null;
+            if (player.level >= 400) {
+                levelBadge = "④";
+            } else if (player.level >= 300) {
+                levelBadge = "③";
+            } else if (player.level >= 200) {
+                levelBadge = "②";
+            } else if (player.level >= 100) {
+                levelBadge = "①";
+            }
 
-            if (badge) {
-                // 最新だけを残す
-                player.badges = [badge];
+            if (levelBadge) {
+                // 👑🍜は残す、①②③④は入れ替え
+                player.badges = player.badges.filter(b => !["①","②","③","④"].includes(b));
+                player.badges.push(levelBadge);
             }
         }
 
@@ -3594,6 +3599,7 @@ function levelUP() {
         player.bonus = false;  // ボーナス適用後はリセット
     }
 }
+
 
 
 
