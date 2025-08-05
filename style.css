@@ -173,10 +173,21 @@ body {
   color: #fff;
 }
 
+.monster2 {
+  position: absolute;
+  /*重ねたい子要素にabsolute*/
+  font-size: 150px;
+  top: 40%;
+  left: 33%;
+  transform: translate(-50%, -50%);
+  /*センター寄せの修正*/
+  color: #fff;
+}
+
 .playerBar {
   position: absolute;
   /*重ねたい子要素にabsolute*/
-  background-color: black;
+  background: rgba(0, 0, 0, 0.6);
   font-size: 10px;
   width: 84%;
   height: 12%;
@@ -194,7 +205,7 @@ body {
 .enemyBar {
   position: absolute;
   /*重ねたい子要素にabsolute*/
-  background-color: black;
+  background: rgba(0, 0, 0, 0.6);
   font-size: 10px;
   width: 60%;
   height: 30%;
@@ -217,7 +228,7 @@ body {
   position: absolute;
   /*重ねたい子要素にabsolute*/
   /* text-align: left; */
-  background-color: black;
+  background: rgba(0, 0, 0, 0.6);
   width: 16%;
   color: white;
   padding: 5px;
@@ -656,6 +667,76 @@ body {
   font-family: 'DotGothic16', monospace;
 }
 
+.stage15 {
+  position: absolute;
+  top: 24%;
+  left: 11%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage16 {
+  position: absolute;
+  top: 24%;
+  left: 65.5%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage17 {
+  position: absolute;
+  top: 54%;
+  left: 10%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage18 {
+  position: absolute;
+  top: 54%;
+  left: 71%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
+.stage19 {
+  position: absolute;
+  top: 58.5%;
+  left: 39%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
 .extra3 {
   position: absolute;
   top: 30%;
@@ -684,6 +765,20 @@ body {
   font-family: 'DotGothic16', monospace;
 }
 
+.extra5 {
+  position: absolute;
+  top: 9.5%;
+  left: 34%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+}
+
 .stage8:before,
 .stage9:before,
 .stage10:before,
@@ -691,8 +786,14 @@ body {
 .stage12:before,
 .stage13:before,
 .stage14:before,
+.stage15:before,
+.stage16:before,
+.stage17:before,
+.stage18:before,
+.stage19:before,
 .extra3:before,
-.extra4:before {
+.extra4:before,
+.extra5:before {
   content: "＞";
   position: relative;
   left: 0;
@@ -708,15 +809,21 @@ body {
 .stage12:hover:before,
 .stage13:hover:before,
 .stage14:hover:before,
+.stage15:hover:before,
+.stage16:hover:before,
+.stage17:hover:before,
+.stage18:hover:before,
+.stage19:hover:before,
 .extra3:hover:before,
-.extra4:hover:before {
+.extra4:hover:before,
+.extra5:hover:before {
   opacity: 1;
 }
 
 
 .mapMoveToHeaven {
   position: absolute;
-  top: 90%;
+  top: 83%;
   left: 75%;
   border: none;
   outline: none;
@@ -742,6 +849,37 @@ body {
 }
 
 .mapMoveToHeaven:hover:before {
+  opacity: 1;
+}
+
+.mapMoveToUnderground {
+  position: absolute;
+  top: 90%;
+  left: 75%;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  /* 縁取りの影 */
+  font-size: 10px;
+  font-family: 'DotGothic16', monospace;
+  background-color: #000000;
+  color: white;
+  border-color: #f4f4f4;
+  border-width: 10px;
+  border-style: groove;
+}
+
+.mapMoveToUnderground:before {
+  content: "＞";
+  position: relative;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mapMoveToUnderground:hover:before {
   opacity: 1;
 }
 
@@ -1050,7 +1188,7 @@ body {
   overflow-y: auto;
   overflow: hidden;
   /* スクロールバーを表示 */
-  background-color: #000000;
+  background: rgba(0, 0, 0, 0.0);
 }
 
 pre {
