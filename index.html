@@ -120,6 +120,7 @@
                 </div>
             </div>
             <div id="monster" class="monster animate__animated animate__fadeIn"></div>
+            <div id="monster2" class="monster2 animate__animated animate__fadeIn"></div>
             <div id="effect" class="effect"></div>
             <div id="overlay" class="overlay" style="display: none;">
                 <div id="haveItems" class="bugMenu">
@@ -129,6 +130,8 @@
                             id="haveBug2"></span></button>
                     <button id="haveHpUpPotion" class="startBtn" style="display: none;" onclick="">体力のポーション × <span
                             id="haveBug3"></span></button>
+                    <button id="haveEternalPotion" class="startBtn" style="display: none;" onclick="useEternalPotion()">エターナルポーション × <span
+                            id="haveBug4"></span></button>
                     <div id="noBug" style="display: block;">なし</div>
                     <br>
                     <div><button class="startBtn" onclick="closeBug()">❌閉じる</button></div>
@@ -169,6 +172,34 @@
             </div>
         </div>
     </div>
+    <div id="mapUnderground" style="display: none;">
+        <div class="mapUnderground animate__animated animate__fadeIn">
+            <img src="ver1.6/mapUnderground.png" alt="mapUnderground" width="100%" height="550px">
+            <div>
+                <button class="stage15" onclick="startGames15()">赤の魔法陣</button>
+                <button class="stage16" onclick="startGames16()">青の魔法陣</button>
+                <button class="stage17" onclick="startGames17()">黄の魔法陣</button>
+                <button class="stage18" onclick="startGames18()">緑の魔法陣</button>
+                <button id="stage19" style="display: none;" class="stage19" onclick="startGames19()">虹の魔法陣</button>
+                <button id="extra5" style="display: none;" class="extra5" onclick="extra5()">「光神ルミナリア」</button>
+                <button class="mapMove" onclick="mapGame()">地上へ戻る</button>
+            </div>
+            <div id="game3ClearPanel" class="panel animate__animated animate__fadeIn" style="display: none;">
+                ****** ゲームクリア ******
+                <br>
+                <br>
+                光神ルミナリアを倒した…
+                世界に平和が戻った。
+                長き戦いに終止符が打たれた今、
+                あなたの冒険も、静かに幕を閉じる
+                <br>
+                <br>
+                <div><button class="startBtn" onclick="closeClearPanel3()">❌閉じる</button></div>
+            </div>
+        </div>
+        <button class="menuBtn" onclick="menuOpen()">メニュー</button>
+        <button class="titleBtn" onclick="titleGame()">タイトルへ</button>
+    </div>
     <div id="mapHeaven" style="display: none;">
         <div class="mapHeaven animate__animated animate__fadeIn">
             <img src="ver1.5/mapHeaven.png" alt="mapHeaven" width="100%" height="550px">
@@ -192,6 +223,7 @@
                 世界に平和が戻った。
                 長き戦いに終止符が打たれた今、
                 あなたの冒険も、静かに幕を閉じる
+                …そして、新たな伝説が始まる。
                 <br>
                 <br>
                 <div><button class="startBtn" onclick="closeClearPanel2()">❌閉じる</button></div>
@@ -219,6 +251,8 @@
                 <button id="stageLast" style="display: none;" class="stageLast" onclick="startGamesLast()">魔王城</button>
                 <button id="mapMoveToHeaven" style="display: none;" class="mapMoveToHeaven"
                     onclick="mapMoveToHeaven()">天空へ行く</button>
+                <button id="mapMoveToUnderground" style="display: none;" class="mapMoveToUnderground"
+                    onclick="mapMoveToUnderground()">地底へ行く</button>
             </div>
             <div id="gameClearPanel" class="panel animate__animated animate__fadeIn" style="display: none;">
                 ****** ゲームクリア ******
@@ -293,7 +327,7 @@
         <div class="bug animate__animated animate__fadeIn">
             <div>持ち物</div>
             <div class="items">
-                <div id="hpPotion" style="display: none;"><img src="items1/治癒のポーション.png" alt="ポーション" width="15px"
+                <div id="hpPotion" style="display: none;" onclick="compoundingEternalPotion()"><img src="items1/治癒のポーション.png" alt="ポーション" width="15px"
                         height="15px" style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
                 <div id="pwPotion" style="display: none;" onclick="usePwPotion()"><img src="items1/力のポーション.png"
                         alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">力のポーション × <span
@@ -301,6 +335,9 @@
                 <div id="hpupPotion" style="display: none;" onclick="useHpUpPotion()"><img src="items1/体力のポーション.png"
                         alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">体力のポーション × <span
                         id="have3"></span></div>
+                <div id="eternalPotion" style="display: none;" onclick=""><img src="ver1.6/エターナルポーション.png"
+                        alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">エターナルポーション × <span
+                        id="have4"></span></div>
                 <div id="no" style="display: block;">なし</div>
             </div>
         </div>
@@ -322,6 +359,7 @@
             <br>
             <button id="map1" class="startBtn" onclick="mapGame()" style="display: block;">マップへ戻る</button>
             <button id="map2" class="startBtn" onclick="mapHeavenGame()" style="display: none;">天空へ戻る</button>
+            <button id="map3" class="startBtn" onclick="mapUndergroundGame()" style="display: none;">地底へ戻る</button>
             <br>
             <br>
             <button id="nextBattle" style="display: none;" class="startBtn" onclick="restartGame()">もう少し探索する</button>
