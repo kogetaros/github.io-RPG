@@ -11,19 +11,59 @@
 
 <body id="body">
     <div>
+        <div id="towerStartMenu" style="display: none;">
+            <img class="title" src="無限の塔タイトル画面.png" alt="背景" width='100%' height='600px'>
+            <div class="titleBlock">
+                <input id="playerInputTower" class="input" type="text" placeholder="名前を入力" maxlength="10">
+                <button id="btnLoadGameTower" class="startBtn" onclick="startGameTower()">塔に挑戦する</button><br>
+                <button class="startBtn" onclick="showInstructionsTower()">操作方法</button><br>
+                <button class="startBtn" onclick="showTowerList()">ゲームの詳細</button><br>
+                <button class="startBtn" onclick="showTowerRnaking()">ランキング</button><br>
+                <button class="startBtn" onclick="titleGame()">RPGへ</button>
+            </div>
+            <div id="rankingTower" class="rankingPanel" style="display: none;">
+                <h3 style="color: white;">ランキング（最高階数順）</h3>
+                <ol style="color: white;" id="rankingTowerList"></ol>
+                <div><button class="startBtn" onclick="closeTowerPanel()">❌閉じる</button></div>
+            </div>
+            <div id="instructionsTowerPanel" class="panel" style="display: none;">
+                <div style="font-size: 10px;">
+                    ◆ ゲーム操作の説明 ◆
+                    <br>
+                    <br>
+                    Beta版なので、バグが起きる可能性があります。
+                    データがバグってしまったら、ごめんなさい…
+                    <br>
+                    <br>
+                    <div><button class="startBtn" onclick="closeTowerPanel()">❌閉じる</button></div>
+                </div>
+            </div>
+            <div id="towerGamePanel" class="panel" style="display: none;">
+                <div style="font-size: 10px;">
+                    <br>
+                    未定
+                    <br>
+                    <div><button class="startBtn" onclick="closeTowerPanel()">❌閉じる</button></div>
+                </div>
+            </div>
+        </div>
         <div id="startMenu" style="display: block;">
             <img class="title" src="タイトル画面.png" alt="背景" width='100%' height='600px'>
+            <div class="ver">Ver.1.7 Beta</div>
             <div class="titleBlock">
                 <input id="playerInput" class="input" type="text" placeholder="名前を入力" maxlength="10">
                 <br>
-                <button id="btnLoadGame" class="startBtn" onclick="playGames()">はじめから</button><br>
-                <button class="startBtn" onclick="loadGame()">つづきから</button><br>
-                <button class="startBtn" onclick="showInstructions()">操作方法</button><br>
-                <button class="startBtn" onclick="showEnemyList()">ステージ一詳細</button>
-                <button class="startBtn" id="loadRankingBtn" onclick="showRnaking()">ランキング</button>
+                <div>
+                    <button id="btnLoadGame" class="startBtn" onclick="playGames()">はじめから</button><br>
+                    <button class="startBtn" onclick="loadGame()">つづきから</button><br>
+                    <button class="startBtn" onclick="showInstructions()">操作方法</button><br>
+                    <button class="startBtn" onclick="showEnemyList()">ステージ一詳細</button><br>
+                    <button class="startBtn" id="loadRankingBtn" onclick="showRnaking()">ランキング</button><br>
+                    <button class="startBtn" id="towerBtn" onclick="showTowerTitle()">無限の塔</button>
+                </div>
             </div>
             <div id="ranking" class="rankingPanel" style="display: none;">
-                <h3 style="color: white;">ランキング（レベル順）</h3>
+                <h3 style="color: white;">RPGランキング（レベル順）</h3>
                 <ol style="color: white;" id="rankingList"></ol>
                 <div><button class="startBtn" onclick="closePanel()">❌閉じる</button></div>
             </div>
@@ -122,6 +162,7 @@
             <div id="monster" class="monster animate__animated animate__fadeIn"></div>
             <div id="monster2" class="monster2 animate__animated animate__fadeIn"></div>
             <div id="effect" class="effect"></div>
+            <div id="flashCover" class="flash-cover"></div>
             <div id="overlay" class="overlay" style="display: none;">
                 <div id="haveItems" class="bugMenu">
                     <button id="haveHpPotion" class="startBtn" style="display: none;" onclick="useHpPotion()">治癒のポーション ×
@@ -130,8 +171,8 @@
                             id="haveBug2"></span></button>
                     <button id="haveHpUpPotion" class="startBtn" style="display: none;" onclick="">体力のポーション × <span
                             id="haveBug3"></span></button>
-                    <button id="haveEternalPotion" class="startBtn" style="display: none;" onclick="useEternalPotion()">エターナルポーション × <span
-                            id="haveBug4"></span></button>
+                    <button id="haveEternalPotion" class="startBtn" style="display: none;"
+                        onclick="useEternalPotion()">エターナルポーション × <span id="haveBug4"></span></button>
                     <div id="noBug" style="display: block;">なし</div>
                     <br>
                     <div><button class="startBtn" onclick="closeBug()">❌閉じる</button></div>
@@ -327,17 +368,18 @@
         <div class="bug animate__animated animate__fadeIn">
             <div>持ち物</div>
             <div class="items">
-                <div id="hpPotion" style="display: none;" onclick="compoundingEternalPotion()"><img src="items1/治癒のポーション.png" alt="ポーション" width="15px"
-                        height="15px" style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
+                <div id="hpPotion" style="display: none;" onclick="compoundingEternalPotion()"><img
+                        src="items1/治癒のポーション.png" alt="ポーション" width="15px" height="15px"
+                        style="vertical-align: middle;">治癒のポーション × <span id="have1"></span></div>
                 <div id="pwPotion" style="display: none;" onclick="usePwPotion()"><img src="items1/力のポーション.png"
                         alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">力のポーション × <span
                         id="have2"></span></div>
                 <div id="hpupPotion" style="display: none;" onclick="useHpUpPotion()"><img src="items1/体力のポーション.png"
                         alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">体力のポーション × <span
                         id="have3"></span></div>
-                <div id="eternalPotion" style="display: none;" onclick=""><img src="ver1.6/エターナルポーション.png"
-                        alt="ポーション" width="15px" height="15px" style="vertical-align: middle;">エターナルポーション × <span
-                        id="have4"></span></div>
+                <div id="eternalPotion" style="display: none;" onclick=""><img src="ver1.6/エターナルポーション.png" alt="ポーション"
+                        width="15px" height="15px" style="vertical-align: middle;">エターナルポーション × <span id="have4"></span>
+                </div>
                 <div id="no" style="display: block;">なし</div>
             </div>
         </div>
@@ -384,6 +426,33 @@
                 </p>
             </div>
             <button class="titleEndBtn" onclick="titleGame()">タイトルへ</button>
+        </div>
+    </div>
+    <div id="restartMenuTower" class="resultScreen" style="display: none;">
+        <div id="towerWin" class="result" style="display: block;">
+            <span id="winNameTower"></span><span>を倒した！</span><br>
+            <!-- <span>入手アイテム</span>&emsp;<span id="rareItems"></span><br> -->
+            <!-- <button id="map1" class="startBtn" onclick="mapGame()" style="display: block;">マップへ戻る</button> -->
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <button id="nextBattleTower" class="startBtn" onclick="goNextFloor()">次の階へ進む</button>
+        </div>
+        <div id="towerLose" class="result" style="display: none;">
+            <div>
+                <span id="eNameTower"></span><span>にやられてしまった…</span>
+                <br>
+                <p>最高階数 : <span id="resultTower"></span></p>
+                <p>プレイヤー: <span id="resultNameTower"></span><br>
+                    レベル : <span id="resultLevelTower"></span><br>
+                    HP: <span id="resultHPTower"></span><br>
+                    攻撃力 : <span id="resultAttackTower"></span>
+                </p>
+            </div>
+            <button class="titleEndBtn" onclick="showTowerTitle()">タイトルへ</button>
         </div>
     </div>
 </body>
