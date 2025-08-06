@@ -6,6 +6,7 @@ import {
     orderBy,
     limit,
     getDocs,
+    getDoc,
     setDoc,
     doc,
     serverTimestamp // ← これを忘れずに！
@@ -31,22 +32,33 @@ if (!playerId) {
     localStorage.setItem("playerId", playerId);
 }
 
-// ランキング保存機能（Firestore ＋ localStorage）
-async function saveLevel() {
+// プレイヤーデータ保存
+async function savePlayerData() {
     try {
-        await setDoc(doc(db, "ranking", playerId), {
-            name: player.name,       // 名前はフィールドとして保存
-            level: player.level,
-            badges: player.badges,
-            reachedAt: serverTimestamp()
-        }, { merge: true }); // 同じIDなら上書きされる
-
-        console.log("ランキング保存成功！", playerId, player.name, player.level, player.badges);
+        await setDoc(doc(db, "players", playerId), {
+            ...player,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("✅ プレイヤーデータ保存成功");
     } catch (e) {
-        console.error("ランキング保存エラー:", e);
+        console.error("❌ プレイヤーデータ保存エラー:", e);
     }
 }
 
+// プレイヤーデータ読み込み
+async function loadPlayerData() {
+    const docRef = doc(db, "players", playerId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        Object.assign(player, docSnap.data());
+        console.log("✅ プレイヤーデータ読み込み成功:", player);
+    } else {
+        console.log("❌ プレイヤーデータが存在しません");
+    }
+}
+
+// ランキング読み込み
 async function loadRanking() {
     const rankingList = document.getElementById("rankingList");
     rankingList.innerHTML = "";
@@ -86,7 +98,7 @@ const bgmList = {
 };
 let currentBGM = null; // 現在のBGM
 let fadeInterval = null; // フェード制御用
-let flg = ['stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stageLast', 'stage8', 'stage9', 'stage10', 'stage11', 'stage12', 'stage13', 'stage14', 'stage15', 'stage15Win', 'stage16', 'stage16Win', 'stage17', 'stage17Win', 'stage18', 'stage18Win', 'stage19', 'castle', 'extra1', 'extra2', 'extra3', 'extra4', 'extra5', 'extra1Win', 'extra2Win', 'extra3Win', 'extra4Win', 'extra5Win', 'stageLastWin'];
+let flg = ['tower', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stageLast', 'stage8', 'stage9', 'stage10', 'stage11', 'stage12', 'stage13', 'stage14', 'stage15', 'stage15Win', 'stage16', 'stage16Win', 'stage17', 'stage17Win', 'stage18', 'stage18Win', 'stage19', 'castle', 'extra1', 'extra2', 'extra3', 'extra4', 'extra5', 'extra1Win', 'extra2Win', 'extra3Win', 'extra4Win', 'extra5Win', 'stageLastWin'];
 
 let battleLogLive = [];
 let sessionLogs = [];
@@ -107,6 +119,7 @@ player.points = 0;
 player.badges = [];
 
 //flgの初期設定
+flg.tower = false;
 flg.stage2 = false;
 flg.stage3 = false;
 flg.stage4 = false;
@@ -173,9 +186,8 @@ function changePlayerName() {
     }
 }
 
-
 // ===== セーブ機能 =====
-function saveGame() {
+async function saveGame() {
     const saveData = {
         player: {
             name: player.name,
@@ -191,76 +203,99 @@ function saveGame() {
             hpupPotion: player.hpupPotion,
             eternalPotion: player.eternalPotion,
             points: player.points,
-            badges: player.badges,
+            badges: [...new Set(player.badges)], // 重複排除
         },
-        flg: {
-            stage2: flg.stage2,
-            stage3: flg.stage3,
-            stage4: flg.stage4,
-            stage5: flg.stage5,
-            stage6: flg.stage6,
-            stage7: flg.stage7,
-            stage8: flg.stage8,
-            stage9: flg.stage9,
-            stage10: flg.stage10,
-            stage11: flg.stage11,
-            stage12: flg.stage12,
-            stage13: flg.stage13,
-            stage14: flg.stage14,
-            stage15: flg.stage15,
-            stage16: flg.stage16,
-            stage17: flg.stage17,
-            stage18: flg.stage18,
-            stage19: flg.stage19,
-            stage15Win: flg.stage15Win,
-            stage16Win: flg.stage16Win,
-            stage17Win: flg.stage17Win,
-            stage18Win: flg.stage18Win,
-            stageLast: flg.stageLast,
-            castle: flg.castle,
-            extra1: flg.extra1,
-            extra1Win: flg.extra1Win,
-            extra2: flg.extra2,
-            extra2Win: flg.extra2Win,
-            extra3: flg.extra3,
-            extra3Win: flg.extra3Win,
-            extra4: flg.extra4,
-            extra4Win: flg.extra4Win,
-            extra5: flg.extra5,
-            extra5Win: flg.extra5Win,
-            stageLastWin: flg.stageLastWin
-        }
+        flg: { ...flg } // フラグを丸ごとコピー
     };
 
-    console.log(flg.stage2);
-
-    // プレイヤー名とレベルを保存
-    saveLevel(player.name, player.level);
-
-    // ランキング更新
-    loadRanking();
-
+    // localStorage に保存
     localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
+
+    // Firestore にも保存（マルチデバイス対応）
+    try {
+        await setDoc(doc(db, "players", playerId), saveData, { merge: true });
+        console.log("✅ Firestore保存成功");
+    } catch (e) {
+        console.error("❌ Firestore保存エラー:", e);
+    }
+
+    //ランキング更新
+    await saveRanking();
+
     alert("セーブしました！");
 }
 
+//ランキング保存関数
+async function saveRanking() {
+    try {
+        const uniqueBadges = [...new Set(player.badges)];
+        await setDoc(doc(db, "ranking", playerId), {
+            name: player.name,
+            level: player.level,
+            badges: uniqueBadges,
+            reachedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("✅ ランキング保存成功");
+    } catch (e) {
+        console.error("❌ ランキング保存エラー:", e);
+    }
+}
+
+// ===== バッジ処理関数 =====
+function ensureBadges() {
+    if (flg.stageLastWin && !player.badges.includes("👑")) player.badges.push("👑");
+    if (flg.extra4Win && !player.badges.includes("🍜")) player.badges.push("🍜");
+    if (flg.extra5Win && !player.badges.includes("⚛️")) player.badges.push("⚛️");
+}
+
+function updateLevelBadge() {
+    let badge = null;
+    if (player.level >= 500) badge = "🔢";
+    else if (player.level >= 400) badge = "4️⃣";
+    else if (player.level >= 300) badge = "3️⃣";
+    else if (player.level >= 200) badge = "2️⃣";
+    else if (player.level >= 100) badge = "1️⃣";
+
+    // 👑🍜⚛️は残す → 数字系は置き換え
+    player.badges = player.badges.filter(b => !["1️⃣", "2️⃣", "3️⃣", "4️⃣", "🔢"].includes(b));
+    if (badge) player.badges.push(badge);
+}
+
 // ===== ロード機能 =====
-function loadGame() {
-    const data = localStorage.getItem("rpgSaveData");
-    if (!data) {
-        alert("⚠ セーブデータがありません。");
-        return;
+async function loadGame() {
+    let saveData = null;
+    flg.tower = false;
+
+    // Firestoreから読み込みを試みる
+    try {
+        const docRef = doc(db, "players", playerId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            saveData = docSnap.data();
+            console.log("✅ Firestoreからロード成功");
+        }
+    } catch (e) {
+        console.error("❌ Firestoreロードエラー:", e);
     }
 
-    const saveData = JSON.parse(data);
+    // Firestoreがなければ localStorage を使う
+    if (!saveData) {
+        const data = localStorage.getItem("rpgSaveData");
+        if (!data) {
+            alert("⚠ セーブデータがありません。");
+            return;
+        }
+        saveData = JSON.parse(data);
+        console.log("📦 localStorageからロード成功");
+    }
 
     // プレイヤー復元
-    Object.assign(player, saveData.player);
+    Object.assign(player, saveData.player || {});
 
-    // フラグ復元
-    flg = saveData.flg;
+    // フラグ復元（安全にマージ）
+    Object.assign(flg, saveData.flg || {});
 
-    // ステージ表示の復元
+    // ステージ表示の復元（例）
     document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
     document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
     document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
@@ -272,77 +307,37 @@ function loadGame() {
         document.getElementById("stage5").style.display = "block";
         document.getElementById("stage6").style.display = "block";
     }
-    if (flg.stage7) {
-        document.getElementById("stage7").style.display = "block";
-    }
+    if (flg.stage7) document.getElementById("stage7").style.display = "block";
     if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
         document.getElementById("stage19").style.display = "block";
     }
 
-    if (!player.badges) {
-        player.badges = []; // 初期化
-    }
-
     if (flg.stageLastWin) {
-        let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
-        mapMoveToHeaven.style.display = "block";
+        document.getElementById('mapMoveToHeaven').style.display = "block";
     }
     if (flg.extra4Win) {
-        let mapMoveToUnderground = document.getElementById('mapMoveToUnderground');
-        mapMoveToUnderground.style.display = "block";
-        flg.stage15 = true;
-        flg.stage16 = true;
-        flg.stage17 = true;
-        flg.stage18 = true;
-        flg.stage19 = true;
-    }
-    if (flg.stageLastWin && !player.badges.includes("👑")) {
-        player.badges.push("👑");
-    }
-    if (flg.extra4Win && !player.badges.includes("🍜")) {
-        player.badges.push("🍜");
-    }
-    if (flg.extra5Win && !player.badges.includes("⚛️")) {
-        player.badges.push("⚛️");
-    }
-    //新規
-    let levelBadge = null;
-    if (player.level >= 500) {
-        levelBadge = "🔢";
-    } else if (player.level >= 400) {
-        levelBadge = "4️⃣";
-    } else if (player.level >= 300) {
-        levelBadge = "3️⃣";
-    } else if (player.level >= 200) {
-        levelBadge = "2️⃣";
-    } else if (player.level >= 100) {
-        levelBadge = "1️⃣";
+        document.getElementById('mapMoveToUnderground').style.display = "block";
+        flg.stage15 = flg.stage16 = flg.stage17 = flg.stage18 = flg.stage19 = true;
     }
 
-    // 進化バッジが決まっていたら最新に更新
-    if (levelBadge) {
-        // 👑や🍜は残す → 他の①②③④を消す
-        player.badges = player.badges.filter(b => !["1️⃣", "2️⃣", "3️⃣", "4️⃣", "🔢"].includes(b));
-        player.badges.push(levelBadge);
-    } else {
-        // 100未満なら進化バッジは削除（👑🍜は残す）
-        player.badges = player.badges.filter(b => !["1️⃣", "2️⃣", "3️⃣", "4️⃣", "🔢"].includes(b));
-    }
+    // バッジを整備
+    if (!player.badges) player.badges = [];
+    ensureBadges();
+    updateLevelBadge();
 
     document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
     updatePointsDisplay();
-    renderPlayer(); // ← 名前表示を更新
+    renderPlayer();
     alert("セーブデータをロードしました！");
     menuOpen();
 }
-
 
 // 指定したパネルID(sectionIds)だけを表示し、それ以外を非表示にする
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
-    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven', 'ranking', 'mapUnderground'];
+    const allSections = ['startMenu', 'castle', 'menu', 'map', 'gameUI', 'logPanel', 'sessionLogPanel', 'restartMenu', 'instructionsPanel', 'enemyListPanel', 'itemshop', 'weaponshop', 'mapHeaven', 'ranking', 'mapUnderground', 'towerStartMenu', 'instructionsTowerPanel', 'towerGamePanel', 'rankingTower', 'restartMenuTower'];
 
     allSections.forEach(id => {
         const element = document.getElementById(id);
@@ -359,6 +354,7 @@ function showSection(sectionIds) {
 //ゲームスタートでMAPに遷移
 function playGames() {
     stopBGM();
+    flg.tower = false;
     console.log("MAXHP" + player.maxHP);
     console.log("HP" + player.hp);
     console.log("POINTS" + player.points);
@@ -407,7 +403,7 @@ function playGames() {
             player.attack = 2503;
             player.coin = 1000000;
             player.defending = false;
-            player.hpPotion = 500;
+            player.hpPotion = 1000;
             player.level = 100;
             player.points = 0;
             flg.stage2 = true;
@@ -2049,7 +2045,7 @@ function generateEnemy1() {
                 enemy.maxHP = 50;
                 enemy.coin = 10;
                 enemy.level = 1;
-                enemy.points = 100;
+                enemy.points = 101;
                 area.innerHTML = "<img src='stage1/area1.png' alt='背景' width='100%' height='620px'>";
                 monster.innerHTML = "<img src='stage1/スライム.png' alt='背景' width='100%' height='180px'>";
                 break;
@@ -3180,7 +3176,7 @@ function generateEnemyExtra5() {
             enemy.attack = 900;
             enemy.maxHP = 50000;
             enemy.coin = 1000000;
-            enemy.level = 500;
+            enemy.level = 350;
             enemy.points = 500000;
             area.innerHTML = "<img src='ver1.6/extra5.png' alt='背景' width='100%' height='620px'>";
             monster2.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/光神ルミナリア.png' alt='背景' width='150%' height='300px'>";
@@ -3226,7 +3222,11 @@ function playerAttack() {
             defendBtn.disabled = false;
             itemsBtn.disabled = false;
             updateDisplay();
-            endGame("win");
+            if (flg.tower) {
+                endGame("towerWin");
+            } else {
+                endGame("win");
+            }
         } else {
             setTimeout(enemyAttack, 600);
         }
@@ -3243,7 +3243,11 @@ function playerAttack() {
             defendBtn.disabled = false;
             itemsBtn.disabled = false;
             updateDisplay();
-            endGame("win");
+            if (flg.tower) {
+                endGame("towerWin");
+            } else {
+                endGame("win");
+            }
         } else {
             setTimeout(enemyAttack, 400);
         }
@@ -3308,7 +3312,11 @@ function enemyAttack() {
         if (player.hp <= 0) {
             player.hp = 0;
             updateDisplay();
-            endGame("lose");
+            if (flg.tower) {
+                endGame("towerLose");
+            } else {
+                endGame("lose");
+            }
             return;
         }
         updateDisplay();
@@ -3353,7 +3361,11 @@ function enemyAttack() {
     if (player.hp <= 0) {
         player.hp = 0;
         updateDisplay();
-        endGame("lose");
+        if (flg.tower) {
+            endGame("towerLose");
+        } else {
+            endGame("lose");
+        }
         return;
     }
     updateDisplay();
@@ -3670,270 +3682,276 @@ function updatePointsDisplay() {
 //勝敗に応じたゲーム終了処理を行い、ログの保存・履歴表示・画面遷移を実行
 function endGame(result) {
     stopBGM();
+    let attackBtn = document.getElementById("attackBtn");
+    let defendBtn = document.getElementById("defendBtn");
+    let itemsBtn = document.getElementById("itemsBtn");
+    attackBtn.disabled = false;
+    defendBtn.disabled = false;
+    itemsBtn.disabled = false;
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
     //let monster = document.getElementById("monster");
     player.end = true;
 
-    if (result === "win") {
-        log("🎉 勝利！ " + player.name + "に勝利した！");
-        //join()メソッドは、配列の要素を指定した区切り文字で結合し、1つの文字列として返す
-        sessionLogs.push(battleLogLive.join("\n"));
-        player.coin += enemy.coin;
-        let extra1 = document.getElementById("extra1");
-        let extra2 = document.getElementById("extra2");
-        let extra3 = document.getElementById("extra3");
-        let extra4 = document.getElementById("extra4");
-        let extra5 = document.getElementById("extra5");
-        let stage19 = document.getElementById("stage19");
-        let stageLast = document.getElementById("stageLast");
-        let gameClearPanel = document.getElementById('gameClearPanel');
-        gameClearPanel.style.display = "none";
-
-        const bosses = {
-            '焔王ヴァルガノス': { flag: 'stage15Win', badge: '🔥' },
-            '氷帝グラシエル': { flag: 'stage16Win', badge: '❄️' },
-            '雷煌ゼルディオン': { flag: 'stage17Win', badge: '⚡' },
-            '樹魔エルドラン': { flag: 'stage18Win', badge: '🌳' }
-        };
-
-        if (bosses[enemy.name]) {
-            const { flag, badge } = bosses[enemy.name];
-            flg[flag] = true;
-
-            // すでに持っていなければ追加
-            if (!player.badges.includes(badge)) {
-                player.badges.push(badge);
-            }
-        }
-
-        // 4体すべて倒したらステージ19解放
-        if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
-            if (!flg.stage19) {
-                alert("マップに「虹の魔法陣」が現れた！");
-            }
-            stage19.style.display = "block";
-            flg.stage19 = true;
-        }
-
-        if (enemy.name === 'ゲベロペ') {
-            if (!flg.stage2) {
-                alert("次のステージ「大きな洞窟」が解放された！");
-            }
-            flg.stage2 = true;
-        } else if (enemy.name === 'ガーゴイル') {
-            if (!flg.stage3) {
-                alert("次のステージ「スノーフェアリー」が解放された！");
-            }
-            flg.stage3 = true;
-        } else if (enemy.name === 'スノーワイバーン') {
-            if (flg.extra1Win) {
-                flg.extra1 = false;
-                extra1.style.display = "none";
-            } else {
-                if (!flg.extra1) {
-                    alert("ダイヤモンドマーメイド城に行く道に「岩石の番人」が現れた！");
-                }
-                flg.extra1 = true;
-                extra1.style.display = "block";
-            }
-        } else if (enemy.name === '岩石の番人') {
-            if (!flg.stage4) {
-                alert("ダイヤモンドマーメイド城が解放された！\n次のステージ「北の大地」が解放された！");
-            }
-            extra1.style.display = "none";
-            flg.extra1Win = true;
-            flg.stage4 = true;
-            flg.castle = true;
-        } else if (enemy.name === '大天使') {
-            if (flg.extra2Win) {
-                flg.extra2 = false;
-                extra2.style.display = "none";
-            } else {
-                if (!flg.extra2) {
-                    alert("ダイヤモンドマーメイド城の左にある橋に「麒麟」が現れた！");
-                }
-                flg.extra2 = true;
-                extra2.style.display = "block";
-            }
-        } else if (enemy.name === '麒麟') {
-            if (!flg.stage5) {
-                alert("次のステージ「カラカラ山」が解放された！");
-            }
-            extra2.style.display = "none";
-            flg.extra2Win = true;
-            flg.stage5 = true;
-            let kumo = document.getElementById("kumo");
-            kumo.style.display = "none";
-            let stage5 = document.getElementById("stage5");
-            stage5.style.display = "block";
-            let stage6 = document.getElementById("stage6");
-            stage6.style.display = "block";
-        } else if (enemy.name === 'ヴェノメギド') {
-            if (!flg.stage6) {
-                alert("次のステージ「サハラ砂漠」が解放された！");
-            }
-            flg.stage6 = true;
-        } else if (enemy.name === 'インフェルナード') {
-            if (!flg.stage7) {
-                alert("次のステージ「神秘の森」が解放された！");
-            }
-            flg.stage7 = true;
-            let stage7 = document.getElementById("stage7");
-            stage7.style.display = "block";
-        } else if (enemy.name === 'グリムヴェイル') {
-            if (flg.stageLastWin) {
-                flg.stageLast = false;
-                stageLast.style.display = "none";
-            } else {
-                if (!flg.stageLast) {
-                    alert("次のステージ「魔王城」が解放された！");
-                }
-                flg.stageLast = true;
-                stageLast.style.display = "block";
-            }
-        } else if (enemy.name === '魔王(2)') {
-            if (!flg.stage8) {
-                alert("新マップの「天空」が解放された！\n次のステージ「空の草原」が解放された！");
-            }
-            stageLast.style.display = "none";
-            flg.stageLastWin = true;
-            let gameClearPanel = document.getElementById('gameClearPanel');
-            gameClearPanel.style.display = "block";
-            let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
-            mapMoveToHeaven.style.display = "block";
-            flg.stage8 = true;
-            player.badges.push("👑");
-        } else if (enemy.name === 'アストラルドラコ') {
-            if (!flg.stage9) {
-                alert("次のステージ「モクモクの森」が解放された！");
-            }
-            flg.stage9 = true;
-        } else if (enemy.name === 'ザルヴァドス') {
-            if (!flg.stage10) {
-                alert("次のステージ「避雷針」が解放された！");
-            }
-            flg.stage10 = true;
-        } else if (enemy.name === 'セラフィオス') {
-            if (!flg.stage11) {
-                alert("次のステージ「天空城」が解放された！");
-            }
-            flg.stage11 = true;
-        } else if (enemy.name === 'オルディア') {
-            if (!flg.stage12) {
-                alert("次のステージ「ロコモコ山」が解放された！");
-            }
-            flg.stage12 = true;
-        } else if (enemy.name === 'ルシフェル') {
-            if (flg.extra3Win) {
-                flg.extra3 = false;
-                extra3.style.display = "none";
-            } else {
-                if (!flg.extra3) {
-                    alert("マップに天空龍「ルクス・ヴェルム」が現れた！");
-                }
-                flg.extra3 = true;
-                extra3.style.display = "block";
-            }
-        } else if (enemy.name === 'ルクス・ヴェルム') {
-            if (!flg.stage13) {
-                alert("次のステージ「天空の祭壇」が解放された！");
-            }
-            extra3.style.display = "none";
-            flg.extra3Win = true;
-            flg.stage13 = true;
-        } else if (enemy.name === 'アストラリオン') {
-            if (!flg.stage14) {
-                alert("次のステージ「点氷山」が解放された！");
-            }
-            flg.stage14 = true;
-        } else if (enemy.name === 'アビスファング') {
-            if (flg.extra4Win) {
-                flg.extra4 = false;
-                extra4.style.display = "none";
-            } else {
-                if (!flg.extra4) {
-                    alert("マップに強敵「ザクナ」が現れた！");
-                }
-                flg.extra4 = true;
-                extra4.style.display = "block";
-            }
-        } else if (enemy.name === 'アビスロード・ザクナ') {
-            if (!flg.stage15) {
-                alert("新マップの「地底」が解放された！\n次のステージ「赤の魔法陣」が解放された！\n次のステージ「青の魔法陣」が解放された！\n次のステージ「黄の魔法陣」が解放された！\n次のステージ「緑の魔法陣」が解放された！");
-            }
-            extra4.style.display = "none";
-            flg.extra4Win = true;
-            let mapMoveToUnderground = document.getElementById('mapMoveToUnderground');
-            mapMoveToUnderground.style.display = "block";
-            let game2ClearPanel = document.getElementById('game2ClearPanel');
-            game2ClearPanel.style.display = "block";
-            flg.stage15 = true;
-            flg.stage16 = true;
-            flg.stage17 = true;
-            flg.stage18 = true;
-            player.badges.push("🍜");
-        } else if (enemy.name === '元素獣オリジン') {
-            if (flg.extra5Win) {
-                flg.extra5 = false;
-                extra5.style.display = "none";
-            } else {
-                if (!flg.extra5) {
-                    alert("マップに「光神ルミナリア」が降臨した！");
-                }
-                flg.extra5 = true;
-                extra5.style.display = "block";
-            }
-        } else if (enemy.name === '光神ルミナリア') {
-            extra5.style.display = "none";
-            flg.extra5Win = true;
-            let game3ClearPanel = document.getElementById('game3ClearPanel');
-            game3ClearPanel.style.display = "block";
-            player.badges.push("⚛️");
-        }
-        displaySessionLogs();
-        win();
-        //monster.innerHTML = "<img onclick='win()' class='animate__animated animate__fadeIn' src='coin_gold_02.png' alt='背景' width='100%' height='100px'>";
+    if (result === 'towerWin') {
+        towerWin();
+    } else if (result === 'towerLose') {
+        towerLose();
     } else {
-        let attackBtn = document.getElementById("attackBtn");
-        let defendBtn = document.getElementById("defendBtn");
-        let itemsBtn = document.getElementById("itemsBtn");
-        attackBtn.disabled = false;
-        defendBtn.disabled = false;
-        itemsBtn.disabled = false;
-        player.points = 0;
-        //経験値の反映
-        log("💀 敗北… " + enemy.name + "に負けた。")
-        //join()メソッドは、配列の要素を指定した区切り文字で結合し、1つの文字列として返す
-        sessionLogs.push(battleLogLive.join("\n"));
-        flg.stage2 = false;
-        flg.stage3 = false;
-        flg.stage4 = false;
-        flg.stage5 = false;
-        flg.stage6 = false;
-        flg.stage7 = false;
-        flg.stage8 = false;
-        flg.stage9 = false;
-        flg.stage10 = false;
-        flg.stage11 = false;
-        flg.stage12 = false;
-        flg.stage13 = false;
-        flg.stage14 = false;
-        flg.stageLast = false;
-        flg.castle = false;
-        flg.extra1 = false;
-        flg.extra1Win = false;
-        flg.extra2 = false;
-        flg.extra2Win = false;
-        flg.extra3 = false;
-        flg.extra3Win = false;
-        flg.extra4 = false;
-        flg.extra4Win = false;
-        flg.extra5 = false;
-        flg.extra5Win = false;
-        flg.stageLastWin = false;
-        displaySessionLogs();
-        end();
+        if (result === "win") {
+            log("🎉 勝利！ " + player.name + "に勝利した！");
+            //join()メソッドは、配列の要素を指定した区切り文字で結合し、1つの文字列として返す
+            sessionLogs.push(battleLogLive.join("\n"));
+            player.coin += enemy.coin;
+            let extra1 = document.getElementById("extra1");
+            let extra2 = document.getElementById("extra2");
+            let extra3 = document.getElementById("extra3");
+            let extra4 = document.getElementById("extra4");
+            let extra5 = document.getElementById("extra5");
+            let stage19 = document.getElementById("stage19");
+            let stageLast = document.getElementById("stageLast");
+            let gameClearPanel = document.getElementById('gameClearPanel');
+            gameClearPanel.style.display = "none";
+
+            const bosses = {
+                '焔王ヴァルガノス': { flag: 'stage15Win', badge: '🔥' },
+                '氷帝グラシエル': { flag: 'stage16Win', badge: '❄️' },
+                '雷煌ゼルディオン': { flag: 'stage17Win', badge: '⚡' },
+                '樹魔エルドラン': { flag: 'stage18Win', badge: '🌳' }
+            };
+
+            if (bosses[enemy.name]) {
+                const { flag, badge } = bosses[enemy.name];
+                flg[flag] = true;
+
+                // すでに持っていなければ追加
+                if (!player.badges.includes(badge)) {
+                    player.badges.push(badge);
+                }
+            }
+
+            // 4体すべて倒したらステージ19解放
+            if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
+                if (!flg.stage19) {
+                    alert("マップに「虹の魔法陣」が現れた！");
+                }
+                stage19.style.display = "block";
+                flg.stage19 = true;
+            }
+
+            if (enemy.name === 'ゲベロペ') {
+                if (!flg.stage2) {
+                    alert("次のステージ「大きな洞窟」が解放された！");
+                }
+                flg.stage2 = true;
+            } else if (enemy.name === 'ガーゴイル') {
+                if (!flg.stage3) {
+                    alert("次のステージ「スノーフェアリー」が解放された！");
+                }
+                flg.stage3 = true;
+            } else if (enemy.name === 'スノーワイバーン') {
+                if (flg.extra1Win) {
+                    flg.extra1 = false;
+                    extra1.style.display = "none";
+                } else {
+                    if (!flg.extra1) {
+                        alert("ダイヤモンドマーメイド城に行く道に「岩石の番人」が現れた！");
+                    }
+                    flg.extra1 = true;
+                    extra1.style.display = "block";
+                }
+            } else if (enemy.name === '岩石の番人') {
+                if (!flg.stage4) {
+                    alert("ダイヤモンドマーメイド城が解放された！\n次のステージ「北の大地」が解放された！");
+                }
+                extra1.style.display = "none";
+                flg.extra1Win = true;
+                flg.stage4 = true;
+                flg.castle = true;
+            } else if (enemy.name === '大天使') {
+                if (flg.extra2Win) {
+                    flg.extra2 = false;
+                    extra2.style.display = "none";
+                } else {
+                    if (!flg.extra2) {
+                        alert("ダイヤモンドマーメイド城の左にある橋に「麒麟」が現れた！");
+                    }
+                    flg.extra2 = true;
+                    extra2.style.display = "block";
+                }
+            } else if (enemy.name === '麒麟') {
+                if (!flg.stage5) {
+                    alert("次のステージ「カラカラ山」が解放された！");
+                }
+                extra2.style.display = "none";
+                flg.extra2Win = true;
+                flg.stage5 = true;
+                let kumo = document.getElementById("kumo");
+                kumo.style.display = "none";
+                let stage5 = document.getElementById("stage5");
+                stage5.style.display = "block";
+                let stage6 = document.getElementById("stage6");
+                stage6.style.display = "block";
+            } else if (enemy.name === 'ヴェノメギド') {
+                if (!flg.stage6) {
+                    alert("次のステージ「サハラ砂漠」が解放された！");
+                }
+                flg.stage6 = true;
+            } else if (enemy.name === 'インフェルナード') {
+                if (!flg.stage7) {
+                    alert("次のステージ「神秘の森」が解放された！");
+                }
+                flg.stage7 = true;
+                let stage7 = document.getElementById("stage7");
+                stage7.style.display = "block";
+            } else if (enemy.name === 'グリムヴェイル') {
+                if (flg.stageLastWin) {
+                    flg.stageLast = false;
+                    stageLast.style.display = "none";
+                } else {
+                    if (!flg.stageLast) {
+                        alert("次のステージ「魔王城」が解放された！");
+                    }
+                    flg.stageLast = true;
+                    stageLast.style.display = "block";
+                }
+            } else if (enemy.name === '魔王(2)') {
+                if (!flg.stage8) {
+                    alert("新マップの「天空」が解放された！\n次のステージ「空の草原」が解放された！");
+                }
+                stageLast.style.display = "none";
+                flg.stageLastWin = true;
+                let gameClearPanel = document.getElementById('gameClearPanel');
+                gameClearPanel.style.display = "block";
+                let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+                mapMoveToHeaven.style.display = "block";
+                flg.stage8 = true;
+                player.badges.push("👑");
+            } else if (enemy.name === 'アストラルドラコ') {
+                if (!flg.stage9) {
+                    alert("次のステージ「モクモクの森」が解放された！");
+                }
+                flg.stage9 = true;
+            } else if (enemy.name === 'ザルヴァドス') {
+                if (!flg.stage10) {
+                    alert("次のステージ「避雷針」が解放された！");
+                }
+                flg.stage10 = true;
+            } else if (enemy.name === 'セラフィオス') {
+                if (!flg.stage11) {
+                    alert("次のステージ「天空城」が解放された！");
+                }
+                flg.stage11 = true;
+            } else if (enemy.name === 'オルディア') {
+                if (!flg.stage12) {
+                    alert("次のステージ「ロコモコ山」が解放された！");
+                }
+                flg.stage12 = true;
+            } else if (enemy.name === 'ルシフェル') {
+                if (flg.extra3Win) {
+                    flg.extra3 = false;
+                    extra3.style.display = "none";
+                } else {
+                    if (!flg.extra3) {
+                        alert("マップに天空龍「ルクス・ヴェルム」が現れた！");
+                    }
+                    flg.extra3 = true;
+                    extra3.style.display = "block";
+                }
+            } else if (enemy.name === 'ルクス・ヴェルム') {
+                if (!flg.stage13) {
+                    alert("次のステージ「天空の祭壇」が解放された！");
+                }
+                extra3.style.display = "none";
+                flg.extra3Win = true;
+                flg.stage13 = true;
+            } else if (enemy.name === 'アストラリオン') {
+                if (!flg.stage14) {
+                    alert("次のステージ「点氷山」が解放された！");
+                }
+                flg.stage14 = true;
+            } else if (enemy.name === 'アビスファング') {
+                if (flg.extra4Win) {
+                    flg.extra4 = false;
+                    extra4.style.display = "none";
+                } else {
+                    if (!flg.extra4) {
+                        alert("マップに強敵「ザクナ」が現れた！");
+                    }
+                    flg.extra4 = true;
+                    extra4.style.display = "block";
+                }
+            } else if (enemy.name === 'アビスロード・ザクナ') {
+                if (!flg.stage15) {
+                    alert("新マップの「地底」が解放された！\n次のステージ「赤の魔法陣」が解放された！\n次のステージ「青の魔法陣」が解放された！\n次のステージ「黄の魔法陣」が解放された！\n次のステージ「緑の魔法陣」が解放された！");
+                }
+                extra4.style.display = "none";
+                flg.extra4Win = true;
+                let mapMoveToUnderground = document.getElementById('mapMoveToUnderground');
+                mapMoveToUnderground.style.display = "block";
+                let game2ClearPanel = document.getElementById('game2ClearPanel');
+                game2ClearPanel.style.display = "block";
+                flg.stage15 = true;
+                flg.stage16 = true;
+                flg.stage17 = true;
+                flg.stage18 = true;
+                player.badges.push("🍜");
+            } else if (enemy.name === '元素獣オリジン') {
+                if (flg.extra5Win) {
+                    flg.extra5 = false;
+                    extra5.style.display = "none";
+                } else {
+                    if (!flg.extra5) {
+                        alert("マップに「光神ルミナリア」が降臨した！");
+                    }
+                    flg.extra5 = true;
+                    extra5.style.display = "block";
+                }
+            } else if (enemy.name === '光神ルミナリア') {
+                extra5.style.display = "none";
+                flg.extra5Win = true;
+                let game3ClearPanel = document.getElementById('game3ClearPanel');
+                game3ClearPanel.style.display = "block";
+                player.badges.push("⚛️");
+            }
+            displaySessionLogs();
+            win();
+            //monster.innerHTML = "<img onclick='win()' class='animate__animated animate__fadeIn' src='coin_gold_02.png' alt='背景' width='100%' height='100px'>";
+        } else {
+            player.points = 0;
+            //経験値の反映
+            log("💀 敗北… " + enemy.name + "に負けた。")
+            //join()メソッドは、配列の要素を指定した区切り文字で結合し、1つの文字列として返す
+            sessionLogs.push(battleLogLive.join("\n"));
+            flg.stage2 = false;
+            flg.stage3 = false;
+            flg.stage4 = false;
+            flg.stage5 = false;
+            flg.stage6 = false;
+            flg.stage7 = false;
+            flg.stage8 = false;
+            flg.stage9 = false;
+            flg.stage10 = false;
+            flg.stage11 = false;
+            flg.stage12 = false;
+            flg.stage13 = false;
+            flg.stage14 = false;
+            flg.stageLast = false;
+            flg.castle = false;
+            flg.extra1 = false;
+            flg.extra1Win = false;
+            flg.extra2 = false;
+            flg.extra2Win = false;
+            flg.extra3 = false;
+            flg.extra3Win = false;
+            flg.extra4 = false;
+            flg.extra4Win = false;
+            flg.extra5 = false;
+            flg.extra5Win = false;
+            flg.stageLastWin = false;
+            displaySessionLogs();
+            end();
+        }
     }
 }
 
@@ -4140,9 +4158,92 @@ function mapUndergroundGame() {
     showSection(sectionIds);
 }
 
+//無限の塔のタイトル画面に遷移する
+function showTowerTitle() {
+    stopBGM();
+    let gameClearPanel = document.getElementById('gameClearPanel');
+    gameClearPanel.style.display = "none";
+    let levelUpShow = document.getElementById("levelUpShow");
+    levelUpShow.style.display = "none";
+    let kumo = document.getElementById("kumo");
+    kumo.style.display = "block";
+    let stage5 = document.getElementById("stage5");
+    stage5.style.display = "none";
+    let stage6 = document.getElementById("stage6");
+    stage6.style.display = "none";
+    let stage7 = document.getElementById("stage7");
+    stage7.style.display = "none";
+    let playerInput = document.getElementById("playerInput");
+    playerInput.value = null;
+    let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
+    mapMoveToHeaven.style.display = "none";
+    let mapMoveToUnderground = document.getElementById('mapMoveToUnderground');
+    mapMoveToUnderground.style.display = "none";
+    //プレイヤーの初期設定
+    player.level = 1;
+    player.maxHP = 50;
+    player.hp = 50;
+    player.attack = 10;
+    player.bonus = true;
+    player.coin = 10;
+    player.stage = 1;
+    player.hpPotion = 3;
+    player.pwPotion = 0;
+    player.hpupPotion = 0;
+    player.eternalPotion = 0;
+    player.points = 0;
+    player.badges = [];
+    enemy.points = 0;
+    battleLogLive = [];
+    //flgの初期設定
+    flg.stage2 = false;
+    flg.stage3 = false;
+    flg.stage4 = false;
+    flg.stage5 = false;
+    flg.stage6 = false;
+    flg.stage7 = false;
+    flg.stageLast = false;
+    flg.stage8 = false;
+    flg.stage9 = false;
+    flg.stage10 = false;
+    flg.stage11 = false;
+    flg.stage12 = false;
+    flg.stage13 = false;
+    flg.stage14 = false;
+    flg.stage15 = false;
+    flg.stage16 = false;
+    flg.stage17 = false;
+    flg.stage18 = false;
+    flg.stage19 = false;
+    flg.stage15Win = false;
+    flg.stage16Win = false;
+    flg.stage17Win = false;
+    flg.stage18Win = false;
+    flg.castle = false;
+    flg.extra1 = false;
+    flg.extra1Win = false;
+    flg.extra2 = false;
+    flg.extra2Win = false;
+    flg.extra3 = false;
+    flg.extra3Win = false;
+    flg.extra4 = false;
+    flg.extra4Win = false;
+    flg.extra5 = false;
+    flg.extra5Win = false;
+    flg.stageLastWin = false;
+    updatePointsDisplay();
+    //Start画面に遷移
+    let sectionIds = [];
+    let towerStartMenu = document.getElementById("towerStartMenu");
+    sectionIds.push(towerStartMenu.id);
+    showSection(sectionIds);
+}
+
+
 //ゲームの再プレイの準備処理（入力欄、ログの初期化・画面の戻し）
 function titleGame() {
     stopBGM();
+    flg.tower = false;
     let gameClearPanel = document.getElementById('gameClearPanel');
     gameClearPanel.style.display = "none";
     let levelUpShow = document.getElementById("levelUpShow");
@@ -4337,6 +4438,24 @@ function showInstructions() {
     showSection(sectionIds);
 }
 
+//無限の塔の操作方法の表示
+function showInstructionsTower() {
+    let sectionIds = [];
+    let towerStartMenu = document.getElementById("towerStartMenu");
+    let instructionsTowerPanel = document.getElementById("instructionsTowerPanel");
+    sectionIds.push(towerStartMenu.id, instructionsTowerPanel.id);
+    showSection(sectionIds);
+}
+
+//無限の塔のゲーム詳細
+function showTowerList() {
+    let sectionIds = [];
+    let towerStartMenu = document.getElementById("towerStartMenu");
+    let towerGamePanel = document.getElementById("towerGamePanel");
+    sectionIds.push(towerStartMenu.id, towerGamePanel.id);
+    showSection(sectionIds);
+}
+
 //敵一覧の表示
 function showEnemyList() {
     let sectionIds = [];
@@ -4363,6 +4482,14 @@ function weaponshop() {
     // let weaponshop = document.getElementById("weaponshop");
     // sectionIds.push(weaponshop.id);
     // showSection(sectionIds);
+}
+
+//無限の塔パネルを閉じる（例：操作説明、ルールなど）
+function closeTowerPanel() {
+    let sectionIds = [];
+    let towerStartMenu = document.getElementById("towerStartMenu");
+    sectionIds.push(towerStartMenu.id);
+    showSection(sectionIds);
 }
 
 //パネルを閉じる（例：操作説明、ルールなど）
@@ -4771,6 +4898,306 @@ function flashEffect() {
     });
 }
 
+////////////////////////////////////////////////////////////////////////////
+/* 「無限の塔」のコードはここから */
+////////////////////////////////////////////////////////////////////////////
+let tower = {
+    floor: 1,      // 現在の階数
+    highest: 0,    // 最高到達階
+    inTower: false // 塔バトル中かどうか
+};
+
+//塔挑戦開始
+function startGameTower() {
+    let playerInputTower = document.getElementById("playerInputTower");
+    player.name = playerInputTower.value.trim();
+
+    if (!player.name) {
+        alert("名前を入力してください");
+    } else {
+        stopBGM();
+        flg.tower = true;
+        let sectionIds = [];
+
+        // 画面表示
+        let gameUI = document.getElementById("gameUI");
+        let logPanel = document.getElementById("logPanel");
+        sectionIds.push(gameUI.id, logPanel.id);
+        showSection(sectionIds);
+
+        // 初期化（塔専用モード）
+        tower.floor = 1;
+        tower.inTower = true;
+
+        // プレイヤーHPをリセット（塔モードは毎回全快スタート）
+        player.hp = player.maxHP;
+        player.defending = false;
+        player.end = false;
+
+        // UI更新
+        document.getElementById("playerLevel").innerHTML = player.level;
+        document.getElementById("playerName").innerHTML = player.name;
+        document.getElementById("playerAttack").innerHTML = player.attack;
+
+        // 敵キャラクターを生成
+        document.getElementById("monster").innerHTML = "";
+        document.getElementById("monster2").innerHTML = "";
+        generateEnemyTower(tower.floor);
+
+        // 戦闘ログ初期化
+        let battleLog = document.getElementById("battleLog");
+        battleLog.innerHTML = "";
+        battleLogLive = [];
+        console.log("battleLogLive初期化:", battleLogLive);
+
+        // ステータス表示更新
+        updateDisplay();
+    }
+}
+
+//無限の塔の敵キャラクターの生成
+function generateEnemyTower(floor) {
+    stopBGM();
+    // BGM再生
+    playBGM("battle");
+    let sectionIds = [];
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
+    sectionIds.push(gameUI.id, logPanel.id);
+    showSection(sectionIds);
+
+    enemy.points = 0;
+    enemy.coin = 0;
+
+    // 敵候補
+    //let types = ['ゾンビ', 'マミー', 'ガーゴイル'];
+    let types = ['ゾンビ'];
+
+    // ランダムに1体選択
+    let selected = types[Math.floor(Math.random() * types.length)];
+
+    let monster = document.getElementById("monster");
+    let area = document.getElementById("area");
+
+    // 基礎ステータス
+    let baseStats = {
+        'ゾンビ': { hp: 10, attack: 1, img: "ゾンビ.png" }
+        // 'マミー': { hp: 67, attack: 8, img: "マミー.png" },
+        // 'ガーゴイル': { hp: 100, attack: 17, img: "ガーゴイル.png" }
+    };
+
+    let stats = baseStats[selected];
+
+    // --- 階層補正 ---
+    let hp = stats.hp + floor * 50;
+    let attack = stats.attack + Math.floor(floor * 5);
+    let level = floor;
+
+    // 敵データセット
+    enemy.name = selected;
+    enemy.hp = hp;
+    enemy.maxHP = hp;
+    enemy.attack = attack;
+    enemy.level = level;
+
+    // 背景・モンスター画像
+    area.innerHTML = "<img src='ver1.7/tower1.png' alt='背景' width='100%' height='620px'>";
+    monster.innerHTML = `<img class='animate__animated animate__fadeIn' src='stage2/${stats.img}' alt='敵' width='100%' height='250px'>`;
+
+    // 表示更新
+    document.getElementById("enemyName").innerHTML = `${enemy.name}`;
+    document.getElementById("enemyLevel").innerHTML = `Lv.${enemy.level}`;
+
+    // 確認ログ
+    console.log(`${floor}階: ${enemy.name} Lv.${enemy.level} HP:${enemy.hp} ATK:${enemy.attack}`);
+}
+
+function goNextFloor() {
+    // 階数を進める
+    tower.floor++;
+
+    // 最高記録更新
+    if (tower.floor > tower.highest) {
+        tower.highest = tower.floor;
+    }
+
+    // 新しい敵を生成
+    generateEnemyTower(tower.floor);
+
+    // プレイヤーをリセット（全回復仕様）
+    player.hp = player.maxHP;
+    player.defending = false;
+    player.end = false;
+
+    document.getElementById("playerLevel").innerHTML = player.level;
+    document.getElementById("playerAttack").innerHTML = player.attack;
+    updateDisplay();
+
+    log(`⚔️ ${tower.floor}階に進んだ！`);
+}
+
+
+//無限の塔：勝利処理
+function towerWin() {
+    //clearBGM入れる
+    
+    // 現在の階を突破
+    log(`🎉 ${tower.floor}階を突破！`);
+
+    // 次の階へ
+    if (tower.floor > tower.highest) {
+        tower.highest = tower.floor;
+    }
+
+    // 戦闘継続のためにリセット
+    player.defending = false;
+    player.end = false;
+    player.maxHP += 40;
+    player.attack += 4;
+    player.level += 1;
+    stopBGM();
+    updateDisplay();
+
+    let lose = document.getElementById("towerLose");
+    lose.style.display = "none";
+    let win = document.getElementById("towerWin");
+    win.style.display = "block";
+
+    let monster = document.getElementById("monster");
+    monster.innerHTML = "";
+    let monster2 = document.getElementById("monster2");
+    monster2.innerHTML = "";
+
+    let winName = document.getElementById("winNameTower");
+    winName.innerHTML = enemy.name;
+
+    let sectionIds = [];
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
+    let restartMenuTower = document.getElementById("restartMenuTower");
+    sectionIds.push(restartMenuTower.id, gameUI.id, logPanel.id);
+    showSection(sectionIds);
+}
+
+function towerLose() {
+    gameEnd();
+    log(`💀 ${tower.floor}階で敗北…`);
+    // 塔モード終了
+    flg.tower = false;
+    tower.floor = 1; // リセット
+
+    // ランキングに保存（Firestore）
+    saveTowerRanking();
+
+    // 戦闘継続のためにリセット
+    player.defending = false;
+    player.end = false;
+
+    // 通常画面に戻す処理（必要なら）
+    stopBGM();
+    let win = document.getElementById("towerWin");
+    win.style.display = "none";
+    let lose = document.getElementById("towerLose");
+    lose.style.display = "block";
+    let eName = document.getElementById("eNameTower");
+    eName.innerHTML = enemy.name;
+    let resultLevel = document.getElementById("resultLevelTower");
+    resultLevel.innerHTML = player.level;
+    let resultName = document.getElementById("resultNameTower");
+    resultName.innerHTML = player.name;
+    let resultHP = document.getElementById("resultHPTower");
+    resultHP.innerHTML = player.maxHP;
+    let resultAttack = document.getElementById("resultAttackTower");
+    resultAttack.innerHTML = player.attack;
+    // 到達記録を表示 resultTowerFloor
+    let resultTower = document.getElementById("resultTower");
+    resultTower.innerHTML = tower.highest;
+
+    let sectionIds = [];
+    let gameUI = document.getElementById("gameUI");
+    let logPanel = document.getElementById("logPanel");
+    let restartMenuTower = document.getElementById("restartMenuTower");
+    sectionIds.push(restartMenuTower.id, gameUI.id, logPanel.id);
+    showSection(sectionIds);
+}
+
+//無限の塔ランキングの表示
+function showTowerRnaking() {
+    let sectionIds = [];
+    let towerStartMenu = document.getElementById("towerStartMenu");
+    let rankingTower = document.getElementById("rankingTower");
+
+    sectionIds.push(towerStartMenu.id, rankingTower.id);
+    showSection(sectionIds);
+    loadTowerRanking();
+}
+
+//Firestore に プレイヤー名 / 最高到達階 / 記録日時 を保存
+async function saveTowerRanking() {
+    try {
+        const ref = doc(db, "towerRanking", playerId);
+        const snap = await getDoc(ref);
+
+        // 現在の最高記録
+        let currentHighest = 0;
+        if (snap.exists()) {
+            currentHighest = snap.data().highest || 0;
+        }
+
+        // 新しい記録が低ければ更新しない
+        if (tower.highest <= currentHighest) {
+            console.log(`⏩ 記録更新なし: 現在(${tower.highest}) <= 保存済(${currentHighest})`);
+            return;
+        }
+
+        // 新記録なら保存（完全上書き）
+        await setDoc(ref, {
+            name: player.name || "名無しの勇者",
+            highest: tower.highest,
+            reachedAt: serverTimestamp()
+        });
+
+        console.log("✅ 塔ランキング更新:", player.name, tower.highest);
+
+    } catch (e) {
+        console.error("❌ 塔ランキング保存エラー:", e);
+    }
+}
+
+//ランキングを読み込む処理例
+async function loadTowerRanking() {
+    const rankingTowerList = document.getElementById("rankingTowerList");
+    rankingTowerList.innerHTML = "";
+
+    const q = query(
+        collection(db, "towerRanking"),
+        orderBy("highest", "desc"),   // 高い階数順
+        orderBy("reachedAt", "asc"),  // 同じ階なら先着順
+        limit(10)
+    );
+
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `${data.name} : ${data.highest}階`;
+        rankingTowerList.appendChild(li);
+    });
+}
+
+
+//window
+window.goNextFloor = goNextFloor;
+window.loadTowerRanking = loadTowerRanking;
+window.startGameTower = startGameTower;
+window.showTowerRnaking = showTowerRnaking;
+window.closeTowerPanel = closeTowerPanel;
+window.showTowerList = showTowerList;
+window.showInstructionsTower = showInstructionsTower;
+window.savePlayerData = savePlayerData;
+window.saveRanking = saveRanking;
+window.loadPlayerData = loadPlayerData;
 window.showInstructions = showInstructions;
 window.showEnemyList = showEnemyList;
 window.showRnaking = showRnaking;
@@ -4841,3 +5268,4 @@ window.playGames = playGames;
 window.loadGame = loadGame;
 window.runAway = runAway;
 window.flashEffect = flashEffect;
+window.showTowerTitle = showTowerTitle;
