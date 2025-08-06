@@ -541,40 +541,77 @@ function castleShow() {
 
 //治癒のポーションを購入する
 function buyHpPotion() {
-    if (player.coin < 30000) {
+    let quantity = parseInt(prompt("何個購入しますか？"), 10);
+
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("正しい数を入力してください");
+        return;
+    }
+
+    const price = 30000 * quantity;
+
+    if (player.coin < price) {
         alert("コインが足りません");
     } else {
-        player.coin -= 30000;
-        player.hpPotion += 1;
+        player.coin -= price;
+        player.hpPotion += quantity;
+
+        // UI 更新
         let playerGold = document.getElementById('playerGold');
         playerGold.innerHTML = player.coin;
-        alert("治癒のポーションを購入しました！");
+
+        alert(`治癒のポーションを${quantity}個購入しました！`);
     }
 }
 
+
 //力のポーションを購入する
 function buyPwPotion() {
-    if (player.coin < 50000) {
+    let quantity = parseInt(prompt("何個購入しますか？"), 10);
+
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("正しい数を入力してください");
+        return;
+    }
+
+    const price = 50000 * quantity;
+
+    if (player.coin < price) {
         alert("コインが足りません");
     } else {
-        player.coin -= 50000;
-        player.pwPotion += 1;
+        player.coin -= price;
+        player.pwPotion += quantity;
+
+        // UI更新
         let playerGold = document.getElementById('playerGold');
         playerGold.innerHTML = player.coin;
-        alert("力のポーションを購入しました！");
+
+        alert(`力のポーションを${quantity}個購入しました！`);
     }
 }
 
 //体力のポーションを購入する
 function buyHpUpPotion() {
-    if (player.coin < 60000) {
+    let quantity = parseInt(prompt("何個購入しますか？"), 10);
+
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("正しい数を入力してください");
+        return;
+    }
+
+    const price = 60000 * quantity;
+
+    if (player.coin < price) {
         alert("コインが足りません");
     } else {
-        player.coin -= 60000;
-        player.hpupPotion += 1;
+        player.coin -= price;
+        player.hpupPotion += quantity;
+
+        // UI更新
         let playerGold = document.getElementById('playerGold');
         playerGold.innerHTML = player.coin;
-        alert("体力のポーションを購入しました！");
+
+        alert(`体力のポーションを${quantity}個購入しました！`);
     }
 }
 
