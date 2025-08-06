@@ -3636,9 +3636,9 @@ function updateDisplay() {
     });
 }
 
-// 例：Lv1=100, Lv2=120, Lv3=140,...
+//レベルアップに必要な経験値　 例：Lv1 → 101　Lv10 → 200　Lv100 → 10,100
 function getRequiredExp(level) {
-    return Math.floor(100 + (level - 1) * 20);
+    return Math.floor(100 + level * level);
 }
 
 //プレイヤーの経験値を画面に反映し、経験値バーを更新
@@ -3656,7 +3656,7 @@ function updatePointsDisplay() {
         let levelup = document.getElementById("levelup");
         levelup.innerHTML = player.level;
         player.maxHP += 4;
-        player.attack += 2;
+        player.attack += 3;
         levelUpBGM();
         levelUP();
     }
