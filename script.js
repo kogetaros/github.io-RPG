@@ -2862,11 +2862,11 @@ function generateEnemy15() {
         case '焔王ヴァルガノス':
             enemy.name = '焔王ヴァルガノス';
             enemy.hp = 20000;
-            enemy.attack = 700;
+            enemy.attack = 600;
             enemy.maxHP = 20000;
             enemy.coin = 50000;
-            enemy.level = 380;
-            enemy.points = 2500;
+            enemy.level = 280;
+            enemy.points = 144500;
             area.innerHTML = "<img src='ver1.6/area15.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/焔王ヴァルガノス.png' alt='背景' width='150%' height='300px'>";
             break;
@@ -2897,11 +2897,11 @@ function generateEnemy16() {
         case '氷帝グラシエル':
             enemy.name = '氷帝グラシエル';
             enemy.hp = 22000;
-            enemy.attack = 600;
+            enemy.attack = 550;
             enemy.maxHP = 22000;
             enemy.coin = 55000;
-            enemy.level = 382;
-            enemy.points = 2600;
+            enemy.level = 282;
+            enemy.points = 150500;
             area.innerHTML = "<img src='ver1.6/area16.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/氷帝グラシエル.png' alt='背景' width='150%' height='300px'>";
             break;
@@ -2932,11 +2932,11 @@ function generateEnemy17() {
         case '雷煌ゼルディオン':
             enemy.name = '雷煌ゼルディオン';
             enemy.hp = 23500;
-            enemy.attack = 750;
+            enemy.attack = 650;
             enemy.maxHP = 23500;
             enemy.coin = 65000;
-            enemy.level = 387;
-            enemy.points = 2800;
+            enemy.level = 287;
+            enemy.points = 155500;
             area.innerHTML = "<img src='ver1.6/area17.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/雷煌ゼルディオン.png' alt='背景' width='150%' height='300px'>";
             break;
@@ -2970,8 +2970,8 @@ function generateEnemy18() {
             enemy.attack = 720;
             enemy.maxHP = 24000;
             enemy.coin = 60000;
-            enemy.level = 391;
-            enemy.points = 2700;
+            enemy.level = 291;
+            enemy.points = 160000;
             area.innerHTML = "<img src='ver1.6/area18.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/樹魔エルドラン.png' alt='背景' width='150%' height='300px'>";
             break;
@@ -3002,11 +3002,11 @@ function generateEnemy19() {
         case '元素獣オリジン':
             enemy.name = '元素獣オリジン';
             enemy.hp = 33500;
-            enemy.attack = 890;
+            enemy.attack = 850;
             enemy.maxHP = 33500;
             enemy.coin = 100000;
-            enemy.level = 400;
-            enemy.points = 4000;
+            enemy.level = 300;
+            enemy.points = 200000;
             area.innerHTML = "<img src='ver1.6/area19.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/元素獣オリジン.png' alt='背景' width='150%' height='300px'>";
             break;
@@ -3111,7 +3111,7 @@ function generateEnemyExtra3() {
             enemy.maxHP = 3000;
             enemy.coin = 60000;
             enemy.level = 110;
-            enemy.points = 2500;
+            enemy.points = 15000;
             area.innerHTML = "<img src='extra3/extra3.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra3/ルクス・ヴェルム.png' alt='背景' width='100%' height='320px'>";
             break;
@@ -3146,7 +3146,7 @@ function generateEnemyExtra4() {
             enemy.maxHP = 3500;
             enemy.coin = 100000;
             enemy.level = 125;
-            enemy.points = 3000;
+            enemy.points = 160000;
             area.innerHTML = "<img src='extra4/extra4.png' alt='背景' width='100%' height='620px'>";
             monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='extra4/ザクナ.png' alt='背景' width='100%' height='200px'>";
             break;
@@ -3177,11 +3177,11 @@ function generateEnemyExtra5() {
         case '光神ルミナリア':
             enemy.name = '光神ルミナリア';
             enemy.hp = 50000;
-            enemy.attack = 1200;
+            enemy.attack = 900;
             enemy.maxHP = 50000;
             enemy.coin = 1000000;
             enemy.level = 500;
-            enemy.points = 6000;
+            enemy.points = 500000;
             area.innerHTML = "<img src='ver1.6/extra5.png' alt='背景' width='100%' height='620px'>";
             monster2.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.6/光神ルミナリア.png' alt='背景' width='150%' height='300px'>";
             break;
