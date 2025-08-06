@@ -2803,7 +2803,7 @@ function generateEnemy14() {
             enemy.hp = 3250;
             enemy.attack = 222;
             enemy.maxHP = 3250;
-            enemy.coin = 11000;
+            enemy.coin = 20000;
             enemy.level = 123;
             enemy.points = 2000;
             area.innerHTML = "<img src='stage14/area14.png' alt='背景' width='100%' height='620px'>";
