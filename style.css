@@ -62,6 +62,16 @@ body {
   border-style: groove;
 }
 
+.ver {
+  position: absolute;
+  /*重ねたい子要素にabsolute*/
+  color: white;
+  font-size: 20px;
+  top: 3%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+}
+
 .block {
   position: absolute;
   /*重ねたい子要素にabsolute*/
@@ -1324,4 +1334,22 @@ pre {
   100% {
     transform: translateX(0);
   }
+}
+
+.flash-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 3000ms;
+}
+
+.flash-cover.active {
+  opacity: 1;
+  transition: none;
 }
