@@ -476,42 +476,31 @@ function menuOpen() {
 
 //メニュー画面で持ち物を表示する
 function haveItems() {
-    let hpPotion = document.getElementById("hpPotion");
-    let pwPotion = document.getElementById("pwPotion");
-    let hpupPotion = document.getElementById("hpupPotion");
-    let eternalPotion = document.getElementById("eternalPotion");
-    let have1 = document.getElementById("have1");
-    let have2 = document.getElementById("have2");
-    let have3 = document.getElementById("have3");
-    let have4 = document.getElementById("have4");
+    const items = [
+        { key: "hpPotion", element: "hpPotion", count: "have1" },
+        { key: "pwPotion", element: "pwPotion", count: "have2" },
+        { key: "hpupPotion", element: "hpupPotion", count: "have3" },
+        { key: "eternalPotion", element: "eternalPotion", count: "have4" }
+    ];
+
     let no = document.getElementById("no");
-    if (player.hpPotion > 0) {
-        no.style.display = "none";
-        hpPotion.style.display = "block";
-        have1.innerHTML = player.hpPotion;
-    }
-    if (player.pwPotion > 0) {
-        no.style.display = "none";
-        pwPotion.style.display = "block";
-        have2.innerHTML = player.pwPotion;
-    }
-    if (player.hpupPotion > 0) {
-        no.style.display = "none";
-        hpupPotion.style.display = "block";
-        have3.innerHTML = player.hpupPotion;
-    }
-    if (player.eternalPotion > 0) {
-        no.style.display = "none";
-        eternalPotion.style.display = "block";
-        have4.innerHTML = player.eternalPotion;
-    }
-    if (player.hpPotion === 0 && player.pwPotion === 0 && player.hpupPotion === 0 && player.eternalPotion === 0) {
-        no.style.display = "block";
-        hpPotion.style.display = "none";
-        pwPotion.style.display = "none";
-        hpupPotion.style.display = "none";
-        eternalPotion.style.display = "none";
-    }
+    let hasAny = false;
+
+    items.forEach(item => {
+        let el = document.getElementById(item.element);
+        let countEl = document.getElementById(item.count);
+
+        if (player[item.key] > 0) {
+            el.style.display = "block";
+            countEl.innerHTML = player[item.key];
+            hasAny = true;
+        } else {
+            el.style.display = "none";
+        }
+    });
+
+    // アイテムが1つもなければ「なし」を表示
+    no.style.display = hasAny ? "none" : "block";
 }
 
 //メニューを閉じる
@@ -3310,6 +3299,7 @@ function enemyAttack() {
     } else if (enemy.name === "光神ルミナリア") {
         if (Math.random() < 0.2) {
             zakunaBGM();
+            flashEffect();
             damage = Math.floor(player.hp * 0.99);
             log(enemy.name + "の神聖な一撃");
         } else {
@@ -3500,6 +3490,7 @@ function usePwPotion() {
         pwPotion.style.display = "block";
         have2.innerHTML = player.pwPotion;
     }
+    haveItems();
 }
 
 function useHpUpPotion() {
@@ -3519,6 +3510,7 @@ function useHpUpPotion() {
         hpupPotion.style.display = "block";
         have3.innerHTML = player.hpupPotion;
     }
+    haveItems();
 }
 
 function useEternalPotion() {
@@ -3560,6 +3552,7 @@ function compoundingEternalPotion() {
             player.hpPotion -= 100;
             player.eternalPotion += 1;
             alert("上位回復ポーションを1個調合しました！");
+            haveItems();
         } else {
             alert("調合をキャンセルしました。");
         }
@@ -4372,8 +4365,9 @@ function closeClearPanel3() {
 
 //魔王のHPが1/3を切ったら、変身する
 function changeMaou() {
-    let hensin = document.getElementById("effect");
-    hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
+    flashEffect();
+    // let hensin = document.getElementById("effect");
+    // hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "の姿が変化した…");
     let monster = document.getElementById("monster");
     monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='stageLast/魔王2.png' alt='背景' width='100%' height='280px'>";
@@ -4389,8 +4383,9 @@ function changeMaou() {
 }
 
 function changeZakuna() {
-    let hensin = document.getElementById("effect");
-    hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
+    flashEffect();
+    // let hensin = document.getElementById("effect");
+    // hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "の姿が変化した…");
     let monster = document.getElementById("monster");
     monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='extra4/ザクナ2.png' alt='背景' width='100%' height='250px'>";
@@ -4406,8 +4401,9 @@ function changeZakuna() {
 }
 
 function changeZakuna2() {
-    let hensin = document.getElementById("effect");
-    hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
+    flashEffect();
+    // let hensin = document.getElementById("effect");
+    // hensin.innerHTML = "<img src='gif/hensin.gif' alt='背景' width='300px' height='300px'>";
     log(enemy.name + "が真の力を見せてきた！");
     let monster = document.getElementById("monster");
     monster.innerHTML = "<img class='animate__animated animate__infinite animate__pulse' src='extra4/アビスロードザクナ.png' alt='背景' width='100%' height='320px'>";
@@ -4719,6 +4715,7 @@ function zakunaBGM() {
     sound.play();
 }
 
+//ランキングの表示
 function showRnaking() {
     let sectionIds = [];
     let startMenu = document.getElementById("startMenu");
@@ -4727,6 +4724,14 @@ function showRnaking() {
     sectionIds.push(startMenu.id, ranking.id);
     showSection(sectionIds);
     loadRanking();
+}
+
+//画面がフラッシュ
+function flashEffect() {
+    flashCover.classList.add("active");
+    requestAnimationFrame(() => {
+        flashCover.classList.remove("active");
+    });
 }
 
 window.showInstructions = showInstructions;
@@ -4798,3 +4803,4 @@ window.closeClearPanel3 = closeClearPanel3;
 window.playGames = playGames;
 window.loadGame = loadGame;
 window.runAway = runAway;
+window.flashEffect = flashEffect;
