@@ -14,9 +14,9 @@
         <div id="towerStartMenu" style="display: none;">
             <img class="title" src="無限の塔タイトル画面.png" alt="背景" width='100%' height='600px'>
             <div class="titleBlock">
-                <input id="playerInputTower" class="input" type="text" placeholder="名前を入力" maxlength="10">
+                <!-- <input id="playerInputTower" class="input" type="text" placeholder="名前を入力" maxlength="10"> -->
                 <button id="btnLoadGameTower" class="startBtn" onclick="startGameTower()">塔に挑戦する</button><br>
-                <button class="startBtn" onclick="showInstructionsTower()">操作方法</button><br>
+                <!-- <button class="startBtn" onclick="showInstructionsTower()">操作方法</button><br> -->
                 <button class="startBtn" onclick="showTowerList()">ゲームの詳細</button><br>
                 <button class="startBtn" onclick="showTowerRnaking()">ランキング</button><br>
                 <button class="startBtn" onclick="titleGame()">RPGへ</button>
@@ -39,9 +39,44 @@
                 </div>
             </div>
             <div id="towerGamePanel" class="panel" style="display: none;">
-                <div style="font-size: 10px;">
+                <div style="font-size: 10px; text-align: center;">
                     <br>
-                    未定
+                    ◆ 無限の塔 ◆<br>
+                    遥かなる空にそびえ立つ、謎多き「無限の塔」。<br>
+                    この塔には、各階層に凶悪なモンスターたちが潜んでおり、挑戦者の行く手を阻む。<br>
+                    階を上るごとに、敵はより強大になり、戦いは過酷さを増していく。<br>
+                    <br>
+                    10階ごとに待ち受けるボスモンスターを撃破すれば、<br>
+                    RPG本編で使用できる強力なアイテムを手に入れることができる。<br>
+                    その力は、冒険の行方を大きく左右するだろう──。
+                    <br>
+                    <br>
+                    ▼ 主なボスモンスター一覧（各階層）
+                    <br>
+                    <br>
+                    10階　炎を統べる猛将　「フレイムロード・バルガン」
+                    <br>
+                    20階　冥界の黒騎士　「冥騎将ダルクス」
+                    <br>
+                    30階　氷獄を統べる王　「氷獄王グラキエス」
+                    <br>
+                    40階　深海の神蛇　「海神蛇セイリュウス」
+                    <br>
+                    50階　紫焔の覇竜　「紫焔竜ヴァルファング」
+                    <br>
+                    60階　灼熱の獄鬼　「獄焔鬼バルヴァ＝ガルム」
+                    <br>
+                    70階　魔炎を纏う獣帝　「魔炎獣ガルヴァリウス」
+                    <br>
+                    80階　屍を統べる不死王　「骸帝ドラグ＝ネクロス」
+                    <br>
+                    90階　深淵に仕える影　「深淵の従者ネブラ」
+                    <br>
+                    100階　煉獄を支配する魔王　「煉獄魔王フラガ＝ドレムス」
+                    <br>
+                    <br>
+                    終わりなき塔を制し、真の力を手に入れよ。
+                    その先に待つのは栄光か、それとも破滅か──。 ChatGPT_
                     <br>
                     <div><button class="startBtn" onclick="closeTowerPanel()">❌閉じる</button></div>
                 </div>
@@ -431,15 +466,17 @@
     <div id="restartMenuTower" class="resultScreen" style="display: none;">
         <div id="towerWin" class="result" style="display: block;">
             <span id="winNameTower"></span><span>を倒した！</span><br>
-            <!-- <span>入手アイテム</span>&emsp;<span id="rareItems"></span><br> -->
+            <br>
+            <span>報酬</span><br>
+            <span id="rareItemsHpPotion"></span><br>
+            <span id="rareItemsPwPotion"></span><br>
+            <span id="rareItemsHpUpPotion"></span><br>
+            <span id="rareItemsEternalPotion"></span><br>
             <!-- <button id="map1" class="startBtn" onclick="mapGame()" style="display: block;">マップへ戻る</button> -->
             <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <button id="nextBattleTower" class="startBtn" onclick="goNextFloor()">次の階へ進む</button>
+            <button id="towerEnd" class="startBtn" onclick="showTowerTitle()" style="display: none;">タイトルへ戻る</button>
+            <button id="nextBattleTower" class="startBtn" onclick="goNextFloor()"
+                style="display: block;">次の階へ進む</button>
         </div>
         <div id="towerLose" class="result" style="display: none;">
             <div>
