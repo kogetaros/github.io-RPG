@@ -613,6 +613,12 @@ function buyHpUpPotion() {
 
 //ゲーム開始/stage1
 function startGames1() {
+    let map1 = document.getElementById("map1");
+    map1.style.display = "block";
+    let map2 = document.getElementById("map3");
+    map2.style.display = "none";
+    let map3 = document.getElementById("map3");
+    map3.style.display = "none";
     stopBGM();
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
@@ -665,6 +671,12 @@ function startGames1() {
 //ゲーム開始/stage2
 function startGames2() {
     if (flg.stage2) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -720,6 +732,12 @@ function startGames2() {
 //ゲーム開始/stage3
 function startGames3() {
     if (flg.stage3) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -775,6 +793,12 @@ function startGames3() {
 //ゲーム開始/stage4
 function startGames4() {
     if (flg.stage4) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -830,6 +854,12 @@ function startGames4() {
 //ゲーム開始/stage5
 function startGames5() {
     if (flg.stage5) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -885,6 +915,12 @@ function startGames5() {
 //ゲーム開始/stage6
 function startGames6() {
     if (flg.stage6) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -940,6 +976,12 @@ function startGames6() {
 //ゲーム開始/stage7
 function startGames7() {
     if (flg.stage7) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -995,6 +1037,12 @@ function startGames7() {
 //ゲーム開始/stageLast
 function startGamesLast() {
     if (flg.stageLast) {
+        let map1 = document.getElementById("map1");
+        map1.style.display = "block";
+        let map2 = document.getElementById("map3");
+        map2.style.display = "none";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1050,6 +1098,8 @@ function startGames8() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1109,6 +1159,8 @@ function startGames9() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1168,6 +1220,8 @@ function startGames10() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1227,6 +1281,8 @@ function startGames11() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1286,6 +1342,8 @@ function startGames12() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1345,6 +1403,8 @@ function startGames13() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1404,6 +1464,8 @@ function startGames14() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1461,6 +1523,8 @@ function startGames15() {
     if (flg.stage15) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -1517,6 +1581,8 @@ function startGames16() {
     if (flg.stage16) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -1573,6 +1639,8 @@ function startGames17() {
     if (flg.stage15) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -1629,6 +1697,8 @@ function startGames18() {
     if (flg.stage18) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -1685,6 +1755,8 @@ function startGames19() {
     if (flg.stage19) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -1834,6 +1906,8 @@ function extra3() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1884,6 +1958,8 @@ function extra4() {
         map1.style.display = "none";
         let map2 = document.getElementById("map2");
         map2.style.display = "block";
+        let map3 = document.getElementById("map3");
+        map3.style.display = "none";
         stopBGM();
         let effect = document.getElementById("effect");
         effect.innerHTML = "";
@@ -1932,6 +2008,8 @@ function extra5() {
     if (flg.extra5) {
         let map1 = document.getElementById("map1");
         map1.style.display = "none";
+        let map2 = document.getElementById("map2");
+        map2.style.display = "none";
         let map3 = document.getElementById("map3");
         map3.style.display = "block";
         stopBGM();
@@ -5040,7 +5118,7 @@ function goNextFloor() {
 //無限の塔：勝利処理
 function towerWin() {
     //clearBGM入れる
-    
+
     // 現在の階を突破
     log(`🎉 ${tower.floor}階を突破！`);
 
