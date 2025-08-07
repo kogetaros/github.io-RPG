@@ -5735,15 +5735,13 @@ async function saveGameTower() {
             pwPotion: player.pwPotion,
             hpupPotion: player.hpupPotion,
             eternalPotion: player.eternalPotion,
-            badges: [...new Set(player.badges)], // 重複排除
-        },
-        flg: { ...flg } // フラグを丸ごとコピー
+            badges: [...new Set(player.badges)],
+        }
+        // flgは保存しない ← 🔥 ここが重要！
     };
 
-    // localStorage に保存
     localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
 
-    // Firestore にも保存（マルチデバイス対応）
     try {
         await setDoc(doc(db, "players", playerId), saveData, { merge: true });
         console.log("✅ Firestore保存成功");
