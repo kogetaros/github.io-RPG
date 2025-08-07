@@ -5729,6 +5729,20 @@ async function updateTowerBadge(floor) {
 
 // ===== セーブ機能 =====
 async function saveGameTower() {
+    // 現在の flg を Firestore から取得
+    const docRef = doc(db, "players", playerId);
+    let existingFlg = {};
+
+    try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            existingFlg = docSnap.data().flg || {};
+        }
+    } catch (e) {
+        console.error("❌ flg読み込み失敗:", e);
+    }
+
+    // 保存データ
     const saveData = {
         player: {
             name: player.name,
@@ -5736,19 +5750,21 @@ async function saveGameTower() {
             hpupPotion: player.hpupPotion,
             eternalPotion: player.eternalPotion,
             badges: [...new Set(player.badges)],
-        }
-        // flgは保存しない ← 🔥 ここが重要！
+        },
+        flg: existingFlg // 🔥 上書きしないよう既存を保持
     };
 
+    // localStorage にも保存（任意）
     localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
 
     try {
-        await setDoc(doc(db, "players", playerId), saveData, { merge: true });
-        console.log("✅ Firestore保存成功");
+        await setDoc(docRef, saveData, { merge: true });
+        console.log("✅ Firestore保存成功（flg保持）");
     } catch (e) {
         console.error("❌ Firestore保存エラー:", e);
     }
 }
+
 
 //window
 window.saveGameTower = saveGameTower;
