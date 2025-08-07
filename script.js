@@ -5752,6 +5752,21 @@ async function saveGameTower() {
     }
 }
 
+async function saveRanking() {
+    try {
+        const uniqueBadges = [...new Set(player.badges)];
+        await setDoc(doc(db, "ranking", playerId), {
+            name: player.name,
+            level: player.level,
+            badges: uniqueBadges,
+            reachedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("✅ ランキング保存成功");
+    } catch (e) {
+        console.error("❌ ランキング保存エラー:", e);
+    }
+}
+
 //window
 window.saveGameTower = saveGameTower;
 window.goNextFloor = goNextFloor;
