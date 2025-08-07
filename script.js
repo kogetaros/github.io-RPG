@@ -5729,20 +5729,10 @@ async function saveGameTower() {
     try {
         await updateDoc(docRef, {
             "player.name": player.name,
-            "player.hp": player.hp,
-            "player.maxHP": player.maxHP,
-            "player.attack": player.attack,
-            "player.coin": player.coin,
-            "player.points": player.points,
-            "player.level": player.level,
-            "player.defending": player.defending,
             "player.pwPotion": player.pwPotion,
-            "player.hpPotion": player.hpPotion,
             "player.hpupPotion": player.hpupPotion,
             "player.eternalPotion": player.eternalPotion,
             "player.badges": [...new Set(player.badges)],
-            "player.bonus": player.bonus || false,
-            "player.end": player.end || false,
             updatedAt: serverTimestamp()
         });
 
