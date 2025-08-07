@@ -5031,7 +5031,7 @@ async function startGameTower() {
     await loadPlayerProfile();
     console.log("読み込み後の名前:", player.name);
 
-    if (player.name === 'undefined' || player.name === '"名無し"') {
+    if (!player.name || player.name === "名無し") {
         alert("RPGのデータを作成してセーブしてください。");
         return;
     }
