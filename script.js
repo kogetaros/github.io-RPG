@@ -187,20 +187,24 @@ function renderPlayer() {
 }
 
 // 名前変更処理
+// 名前変更処理
 function changePlayerName() {
     let newName = prompt("新しい名前を入力してください (10文字以内)", player.name);
 
     if (newName && newName.trim() !== "") {
         newName = newName.trim();
 
+        // 禁止する記号を削除（例: < > " ' & / など）
+        newName = newName.replace(/[<>"'&\\/]/g, '');
+
         if (newName.length > 10) {
             alert("名前は10文字以内で入力してください");
-            return; // ここで処理終了
+            return;
         }
 
         player.name = newName;
         renderPlayer();
-        saveGame(); // ← 名前変更後にセーブ
+        saveGame();
         alert("名前を変更しました: " + player.name);
     } else {
         alert("名前を入力してください");
@@ -386,7 +390,10 @@ function playGames() {
     let stage19 = document.getElementById("stage19");
     stage19.style.display = "none";
     let playerInput = document.getElementById("playerInput");
-    player.name = playerInput.value.trim();
+    let rawName = playerInput.value.trim();
+    // 記号を除去（禁止文字だけ削除）
+    let cleanedName = rawName.replace(/[<>"'&\\/]/g, '');
+    player.name = cleanedName;
     let effect = document.getElementById("effect");
     effect.innerHTML = "";
     let mapMoveToHeaven = document.getElementById('mapMoveToHeaven');
