@@ -5442,8 +5442,8 @@ function towerWin() {
     if (floor % 10 === 0) {
         console.log(tower.floor);
         if (floor === 100) {
-            player.eternalPotion += 1;
-            rareItemsEternalPotion.innerHTML = "エターナルポーション × 1"
+            player.eternalPotion += 3;
+            rareItemsEternalPotion.innerHTML = "エターナルポーション × 3"
             let lose = document.getElementById("towerLose");
             lose.style.display = "none";
             let win = document.getElementById("towerWin");
