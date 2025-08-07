@@ -5466,7 +5466,6 @@ function towerWin() {
             // ランキングに保存（Firestore）
             saveGameTower();
             saveTowerRanking();
-            saveRanking();
 
             let sectionIds = [];
             let gameUI = document.getElementById("gameUI");
@@ -5541,7 +5540,6 @@ function towerWin() {
     // ランキングに保存（Firestore）
     saveGameTower();
     saveTowerRanking();
-    saveRanking();
 
     let sectionIds = [];
     let gameUI = document.getElementById("gameUI");
