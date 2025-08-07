@@ -36,7 +36,7 @@ if (!playerId) {
 async function savePlayerData() {
     try {
         await setDoc(doc(db, "players", playerId), {
-            ...player,
+            player: { ...player },
             updatedAt: serverTimestamp()
         }, { merge: true });
         console.log("✅ プレイヤーデータ保存成功");
@@ -51,8 +51,15 @@ async function loadPlayerData() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        Object.assign(player, docSnap.data());
-        console.log("✅ プレイヤーデータ読み込み成功:", player);
+        const data = docSnap.data();
+
+        if (data.player) {
+            Object.assign(player, data.player);
+            console.log("✅ プレイヤーデータ読み込み成功:", player);
+        } else {
+            console.warn("⚠️ 'player' フィールドが存在しません");
+        }
+
     } else {
         console.log("❌ プレイヤーデータが存在しません");
     }
@@ -200,7 +207,6 @@ function changePlayerName() {
     }
 }
 
-// ===== セーブ機能 =====
 async function saveGame() {
     const saveData = {
         player: {
@@ -217,42 +223,30 @@ async function saveGame() {
             hpupPotion: player.hpupPotion,
             eternalPotion: player.eternalPotion,
             points: player.points,
-            badges: [...new Set(player.badges)], // 重複排除
+            badges: [...new Set(player.badges)],
         },
-        flg: { ...flg } // フラグを丸ごとコピー
+        flg: { ...flg }
     };
 
     // localStorage に保存
     localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
 
-    // Firestore にも保存（マルチデバイス対応）
+    // Firestore に保存（安全に player と flg を分けて）
     try {
-        await setDoc(doc(db, "players", playerId), saveData, { merge: true });
+        await setDoc(doc(db, "players", playerId), {
+            player: saveData.player,
+            flg: saveData.flg,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
         console.log("✅ Firestore保存成功");
     } catch (e) {
         console.error("❌ Firestore保存エラー:", e);
     }
 
-    //ランキング更新
+    // ランキング更新
     await saveRanking();
 
     alert("セーブしました！");
-}
-
-//ランキング保存関数
-async function saveRanking() {
-    try {
-        const uniqueBadges = [...new Set(player.badges)];
-        await setDoc(doc(db, "ranking", playerId), {
-            name: player.name,
-            level: player.level,
-            badges: uniqueBadges,
-            reachedAt: serverTimestamp()
-        }, { merge: true });
-        console.log("✅ ランキング保存成功");
-    } catch (e) {
-        console.error("❌ ランキング保存エラー:", e);
-    }
 }
 
 // ===== バッジ処理関数 =====
@@ -5728,43 +5722,35 @@ async function updateTowerBadge(floor) {
 }
 
 // ===== セーブ機能 =====
+// 無限の塔プレイ中のセーブ処理
 async function saveGameTower() {
-    // 現在の flg を Firestore から取得
     const docRef = doc(db, "players", playerId);
-    let existingFlg = {};
 
     try {
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            existingFlg = docSnap.data().flg || {};
-        }
+        await updateDoc(docRef, {
+            "player.name": player.name,
+            "player.hp": player.hp,
+            "player.maxHP": player.maxHP,
+            "player.attack": player.attack,
+            "player.coin": player.coin,
+            "player.points": player.points,
+            "player.level": player.level,
+            "player.defending": player.defending,
+            "player.pwPotion": player.pwPotion,
+            "player.hpPotion": player.hpPotion,
+            "player.hpupPotion": player.hpupPotion,
+            "player.eternalPotion": player.eternalPotion,
+            "player.badges": [...new Set(player.badges)],
+            "player.bonus": player.bonus || false,
+            "player.end": player.end || false,
+            updatedAt: serverTimestamp()
+        });
+
+        console.log("✅ 無限の塔セーブ成功（flg維持）");
     } catch (e) {
-        console.error("❌ flg読み込み失敗:", e);
-    }
-
-    // 保存データ
-    const saveData = {
-        player: {
-            name: player.name,
-            pwPotion: player.pwPotion,
-            hpupPotion: player.hpupPotion,
-            eternalPotion: player.eternalPotion,
-            badges: [...new Set(player.badges)],
-        },
-        flg: existingFlg // 🔥 上書きしないよう既存を保持
-    };
-
-    // localStorage にも保存（任意）
-    localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
-
-    try {
-        await setDoc(docRef, saveData, { merge: true });
-        console.log("✅ Firestore保存成功（flg保持）");
-    } catch (e) {
-        console.error("❌ Firestore保存エラー:", e);
+        console.error("❌ セーブ失敗:", e);
     }
 }
-
 
 //window
 window.saveGameTower = saveGameTower;
