@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="stylesheet" href="style.css">
     <title>勇者伝説RPG</title>
+    <script>
+        (function () {
+            if (!sessionStorage.getItem('reloaded')) {
+                alert("アップデートしたため、ページをリロードしました。");
+                sessionStorage.setItem('reloaded', 'true');
+                window.location.reload();
+            }
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
