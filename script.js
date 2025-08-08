@@ -5934,30 +5934,35 @@ async function loadTowerRanking() {
 
 //無限の塔の階数度とにバッジを付与
 async function updateTowerBadge(floor) {
-    // 階層に応じてバッジ定義
-    let badge = null;
+    // バッジとランクの対応
+    const badgeTiers = [
+        { floor: 100, badge: "💗" },
+        { floor: 75, badge: "🖤" },
+        { floor: 50, badge: "🤍" },
+        { floor: 25, badge: "💛" },
+        { floor: 10, badge: "❤️" }
+    ];
 
-    if (floor >= 100) {
-        badge = "💗";
-    } else if (floor >= 75) {
-        badge = "🖤";
-    } else if (floor >= 50) {
-        badge = "🤍";
-    } else if (floor >= 25) {
-        badge = "💛";
-    } else if (floor >= 10) {
-        badge = "❤️";
-    }
+    // floorに応じたバッジを決定
+    const newBadge = badgeTiers.find(tier => floor >= tier.floor)?.badge;
+    if (!newBadge) return;
 
-    if (!badge) return;
+    const towerBadges = badgeTiers.map(t => t.badge);
 
-    const towerBadges = ["❤️", "💛", "🤍", "🖤", "💗"];
+    // プレイヤーが持っている最高バッジを取得
+    const currentBadgeIndex = badgeTiers.findIndex(t => player.badges.includes(t.badge));
+    const newBadgeIndex = badgeTiers.findIndex(t => t.badge === newBadge);
+
+    // 既存バッジよりランクが低ければ何もしない
+    if (currentBadgeIndex !== -1 && newBadgeIndex <= currentBadgeIndex) return;
+
+    // 古い塔バッジを削除し、新しいものを追加
     player.badges = player.badges.filter(b => !towerBadges.includes(b));
-    player.badges.push(badge);
+    player.badges.push(newBadge);
 
     try {
         await saveGameTower();
-        console.log("✅ バッジ更新＆保存完了:", badge);
+        console.log("✅ バッジ更新＆保存完了:", newBadge);
     } catch (e) {
         console.error("❌ バッジ保存エラー:", e);
     }
