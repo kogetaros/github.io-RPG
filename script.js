@@ -5956,7 +5956,7 @@ async function updateTowerBadge(floor) {
     player.badges.push(badge);
 
     try {
-        await savePlayerData();
+        await saveGameTower();
         console.log("✅ バッジ更新＆保存完了:", badge);
     } catch (e) {
         console.error("❌ バッジ保存エラー:", e);
