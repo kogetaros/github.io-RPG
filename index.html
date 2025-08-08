@@ -365,6 +365,9 @@
             <button class="startBtn" onclick="itemshop()">アイテム屋へ</button>
             <br>
             <br>
+            <button class="startBtn" onclick="questBoard()">掲示板へ</button>
+            <br>
+            <br>
             <button class="startBtn" onclick="weaponshop()">鍛冶屋へ</button>
         </div>
         <span><button class="backBtn" onclick="menuClose()">戻る</button></span>
@@ -385,6 +388,11 @@
             <img src="items1/体力のポーション.png" alt="ポーション" width="20px" height="20px"><button class="startBtn"
                 onclick="buyHpUpPotion()">体力のポーション<br>60000ゴールド</button>
         </div>
+        <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
+    </div>
+    <div id="board" style="display: none;">
+        <img class="shopMenu animate__animated animate__fadeIn" src="quest/掲示板.png" alt="背景" width='100%' height='550px'>
+        <div id="questBoard"></div>
         <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
     </div>
     <div id="weaponshop" style="display: none;">
