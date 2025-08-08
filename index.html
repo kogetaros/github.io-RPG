@@ -9,7 +9,7 @@
     <script>
         (function () {
             if (!sessionStorage.getItem('reloaded')) {
-                alert("アップデートしたため、ページをリロードしました。");
+                alert("アップデートしたため、ページをリロードしました。\nレアモンスター(出現率0.3%)を倒すとバッジを入手することができます\nメニュー画面からマップに戻る際に、直前で戦闘していたマップに戻るようになりました\nメニュー画面でアイテムを使用する際に、すべて使用できるようになりました\n一部バグを修正しました");
                 sessionStorage.setItem('reloaded', 'true');
                 window.location.reload();
             }
