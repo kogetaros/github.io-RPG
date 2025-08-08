@@ -121,6 +121,21 @@ body {
   border-style: groove;
 }
 
+.questPanel {
+  position: absolute;
+  text-align: center;
+  width: 70%;
+  top: 13%;
+  left: 8%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  /* white-space: pre; */
+  border-color: #f4f4f4;
+  border-width: 10px;
+  border-style: groove;
+}
+
 .panel {
   position: absolute;
   text-align: center;
