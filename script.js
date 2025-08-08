@@ -699,7 +699,7 @@ async function loadRotatingQuest() {
     }
 
     //2025年1月1日を基準日として、「今日から何日経ったか」
-    const baseDate = new Date(2025, 0, 9);
+    const baseDate = new Date(2025, 0, 1);
     //baseDateは2025年1月1日になる
     //現在の日付を取得
     const today = new Date();
