@@ -8,8 +8,9 @@ import {
     getDocs,
     getDoc,
     setDoc,
+    updateDoc,
     doc,
-    serverTimestamp // ← これを忘れずに！
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -207,7 +208,7 @@ function changePlayerName() {
         saveGame();
         alert("名前を変更しました: " + player.name);
     } else {
-        alert("名前を入力してください");
+        alert("キャンセルしました");
     }
 }
 
@@ -5734,16 +5735,36 @@ async function saveGameTower() {
     const docRef = doc(db, "players", playerId);
 
     try {
-        await updateDoc(docRef, {
-            "player.name": player.name,
-            "player.pwPotion": player.pwPotion,
-            "player.hpupPotion": player.hpupPotion,
-            "player.eternalPotion": player.eternalPotion,
-            "player.badges": [...new Set(player.badges)],
-            updatedAt: serverTimestamp()
-        });
+        const snap = await getDoc(docRef);
 
-        console.log("✅ 無限の塔セーブ成功（flg維持）");
+        if (!snap.exists()) {
+            // ドキュメントがない場合は初期データで setDoc
+            await setDoc(docRef, {
+                player: {
+                    name: player.name,
+                    pwPotion: player.pwPotion,
+                    hpupPotion: player.hpupPotion,
+                    eternalPotion: player.eternalPotion,
+                    badges: [...new Set(player.badges)]
+                },
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            console.log("✅ 無限の塔セーブ成功（新規作成）");
+        } else {
+            // すでに存在していれば安全に更新
+            await updateDoc(docRef, {
+                "player.name": player.name,
+                "player.pwPotion": player.pwPotion,
+                "player.hpupPotion": player.hpupPotion,
+                "player.eternalPotion": player.eternalPotion,
+                "player.badges": [...new Set(player.badges)],
+                updatedAt: serverTimestamp()
+            });
+
+            console.log("✅ 無限の塔セーブ成功（flg維持）");
+        }
+
     } catch (e) {
         console.error("❌ セーブ失敗:", e);
     }
