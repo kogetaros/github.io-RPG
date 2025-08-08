@@ -1,3 +1,7 @@
+/////////////////////////////////////////////////////////////////////////
+/*        firebaseを使用したデータベースへの保存・呼び出し         */
+/////////////////////////////////////////////////////////////////////////
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import {
     getFirestore,
@@ -81,7 +85,7 @@ async function loadRanking() {
     const snapshot = await getDocs(q);
 
     // 表示順を定義（使用するバッジのみ）
-    const badgeOrder = ["👑", "🍜", "⚛️", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "🔢", "🔥", "❄️", "⚡", "🌳", "🌈", "❤️", "💛", "🤍", "🖤", "💗", "🥉", "🥈", "🥇"];
+    const badgeOrder = ["👑", "🍜", "⚛️", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "🔢", "🔥", "❄️", "⚡", "🌳", "🌈", "❤️", "💛", "🤍", "🖤", "💗", "🔴", "⚔️", "🐉", "💠", "🟦", "🪓"]; //未実装 "🥉", "🥈", "🥇"
 
     snapshot.forEach(doc => {
         const data = doc.data();
@@ -101,7 +105,13 @@ async function loadRanking() {
     });
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*        RPGのゲームコード        */
+/////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////
+/*        初期設定        */
+/////////////////////////////////////////////////////////////////////////
 
 //グローバル変数
 let player = ['name', 'level', 'hp', 'attack', 'maxHP', 'defending', 'hpPotion', 'pwPotion', 'hpupPotion', 'eternalPotion', 'end', 'bonus', 'ultimate', 'coin', 'stage', 'points', 'badges'];
@@ -178,7 +188,10 @@ flg.extra5 = false;
 flg.extra5Win = false;
 flg.stageLastWin = false;
 
-// ===== 名前変更機能 =====
+/////////////////////////////////////////////////////////////////////////
+/*        名前変更・入力・表示機能       */
+/////////////////////////////////////////////////////////////////////////
+
 // プレイヤー表示を更新する関数
 function renderPlayer() {
     let playerName = document.getElementById("Name");
@@ -187,7 +200,6 @@ function renderPlayer() {
     }
 }
 
-// 名前変更処理
 // 名前変更処理
 function changePlayerName() {
     let newName = prompt("新しい名前を入力してください (10文字以内)", player.name);
@@ -211,6 +223,10 @@ function changePlayerName() {
         alert("キャンセルしました");
     }
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*        セーブ機能        */
+/////////////////////////////////////////////////////////////////////////
 
 async function saveGame() {
     const saveData = {
@@ -254,6 +270,10 @@ async function saveGame() {
     alert("セーブしました！");
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*        ロード時のバッジ機能の処理        */
+/////////////////////////////////////////////////////////////////////////
+
 // ===== バッジ処理関数 =====
 function ensureBadges() {
     if (flg.stageLastWin && !player.badges.includes("👑")) player.badges.push("👑");
@@ -274,7 +294,10 @@ function updateLevelBadge() {
     if (badge) player.badges.push(badge);
 }
 
-// ===== ロード機能 =====
+/////////////////////////////////////////////////////////////////////////
+/*        ロード機能        */
+/////////////////////////////////////////////////////////////////////////
+
 async function loadGame() {
     let saveData = null;
     flg.tower = false;
@@ -295,11 +318,11 @@ async function loadGame() {
     if (!saveData) {
         const data = localStorage.getItem("rpgSaveData");
         if (!data) {
-            alert("⚠ セーブデータがありません。");
+            alert("セーブデータがありません。");
             return;
         }
         saveData = JSON.parse(data);
-        console.log("📦 localStorageからロード成功");
+        console.log("localStorageからロード成功");
     }
 
     // プレイヤー復元
@@ -346,7 +369,10 @@ async function loadGame() {
     menuOpen();
 }
 
-// 指定したパネルID(sectionIds)だけを表示し、それ以外を非表示にする
+/////////////////////////////////////////////////////////////////////////
+/*    指定したパネルID(sectionIds)だけを表示し、それ以外を非表示にする    */
+/////////////////////////////////////////////////////////////////////////
+
 function showSection(sectionIds) {
     //確認ログ（sectionIdsの値）
     console.log(sectionIds);
@@ -363,6 +389,10 @@ function showSection(sectionIds) {
         }
     });
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　RPGゲームスタート！　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //ゲームスタートでMAPに遷移
 function playGames() {
@@ -460,6 +490,10 @@ function playGames() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　メニュー画面　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 //メニューを開く
 function menuOpen() {
     stopBGM();
@@ -519,11 +553,25 @@ function haveItems() {
 //メニューを閉じる
 function menuClose() {
     stopBGM();
-    playBGM("map");
-    let sectionIds = [];
-    let map = document.getElementById("map");
-    sectionIds.push(map.id);
-    showSection(sectionIds);
+    if (player.stage >= 15 || player.stage === 'ex5') {
+        playBGM("underground");
+        let sectionIds = [];
+        let mapUnderground = document.getElementById("mapUnderground");
+        sectionIds.push(mapUnderground.id);
+        showSection(sectionIds);
+    } else if (player.stage >= 8 || player.stage === 'ex3' || player.stage === 'ex4') {
+        playBGM("heaven");
+        let sectionIds = [];
+        let mapHeaven = document.getElementById("mapHeaven");
+        sectionIds.push(mapHeaven.id);
+        showSection(sectionIds);
+    } else {
+        playBGM("map");
+        let sectionIds = [];
+        let map = document.getElementById("map");
+        sectionIds.push(map.id);
+        showSection(sectionIds);
+    }
 }
 
 
@@ -538,6 +586,10 @@ function closeBug() {
     let overlay = document.getElementById("overlay");
     overlay.style.display = "none";
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　お城のメニュー機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //お城のメニューを閉じる
 function castleShow() {
@@ -577,6 +629,9 @@ function buyHpPotion() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　ポーション購入機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //力のポーションを購入する
 function buyPwPotion() {
@@ -627,6 +682,10 @@ function buyHpUpPotion() {
         alert(`体力のポーションを${quantity}個購入しました！`);
     }
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　ステージごとのゲーム処理　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //ゲーム開始/stage1
 function startGames1() {
@@ -1854,6 +1913,10 @@ function extra1() {
         playerAttack.innerHTML = player.attack;
 
         //敵キャラクターを生成
+        let monster = document.getElementById("monster");
+        monster.innerHTML = "";
+        let monster2 = document.getElementById("monster2");
+        monster2.innerHTML = "";
         generateEnemyExtra1();
 
         //戦闘ログ初期化（配置と表示）
@@ -1900,6 +1963,10 @@ function extra2() {
         playerAttack.innerHTML = player.attack;
 
         //敵キャラクターを生成
+        let monster = document.getElementById("monster");
+        monster.innerHTML = "";
+        let monster2 = document.getElementById("monster2");
+        monster2.innerHTML = "";
         generateEnemyExtra2();
 
         //戦闘ログ初期化（配置と表示）
@@ -1952,6 +2019,10 @@ function extra3() {
         playerAttack.innerHTML = player.attack;
 
         //敵キャラクターを生成
+        let monster = document.getElementById("monster");
+        monster.innerHTML = "";
+        let monster2 = document.getElementById("monster2");
+        monster2.innerHTML = "";
         generateEnemyExtra3();
 
         //戦闘ログ初期化（配置と表示）
@@ -2004,6 +2075,10 @@ function extra4() {
         playerAttack.innerHTML = player.attack;
 
         //敵キャラクターを生成
+        let monster = document.getElementById("monster");
+        monster.innerHTML = "";
+        let monster2 = document.getElementById("monster2");
+        monster2.innerHTML = "";
         generateEnemyExtra4();
 
         //戦闘ログ初期化（配置と表示）
@@ -2056,6 +2131,10 @@ function extra5() {
         playerAttack.innerHTML = player.attack;
 
         //敵キャラクターを生成
+        let monster = document.getElementById("monster");
+        monster.innerHTML = "";
+        let monster2 = document.getElementById("monster2");
+        monster2.innerHTML = "";
         generateEnemyExtra5();
 
         //戦闘ログ初期化（配置と表示）
@@ -2072,6 +2151,10 @@ function extra5() {
         alert("進めないようだ…");
     }
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　ステージごとのモンスター生成機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //敵キャラクターの生成/stage1
 function generateEnemy1() {
@@ -3288,6 +3371,10 @@ function generateEnemyExtra5() {
     enemyLevel.innerHTML = enemy.level;
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　戦闘ログ機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 //戦闘メッセージをリアルタイムに画面に表示
 function log(message) {
     let battleLog = document.getElementById("battleLog");
@@ -3298,6 +3385,10 @@ function log(message) {
     battleLog.scrollTop = battleLog.scrollHeight;
     battleLogLive.push(message);
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //プレイヤーの攻撃処理：命中判定ー＞ダメージ計算ー＞敵のHP反映ー＞次のターン移行
 function playerAttack() {
@@ -3510,6 +3601,10 @@ function defendAction() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル中の持ち物機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 //プレイヤーが戦闘時にバッグを開く操作
 function useItems() {
     let attackBtn = document.getElementById("attackBtn");
@@ -3558,6 +3653,10 @@ function useItems() {
         // haveHpUpPotion.style.display = "none";
     }
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　ポーションの機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //プレイヤーのポーション使用時の操作
 function useHpPotion() {
@@ -3618,42 +3717,87 @@ function useHpPotion() {
     }
 }
 
+//力のポーションを使用
 function usePwPotion() {
-    useHpPotionBGM();
-    player.pwPotion -= 1;
-    alert("力のポーションを使いました！攻撃力が5上昇しました！");
-    player.attack += 5;
+    if (player.pwPotion <= 0) {
+        alert("力のポーションを持っていません！");
+        return;
+    }
+
+    const choice = confirm("力のポーションを1つ使いますか？\nキャンセルを押すとすべて使用します。");
+
+    if (choice) {
+        // ✅ 1個だけ使う
+        useHpPotionBGM();
+        player.pwPotion -= 1;
+        player.attack += 5;
+        alert("力のポーションを1つ使いました！攻撃力が5上昇しました！");
+    } else {
+        // ✅ すべて使う
+        useHpPotionBGM();
+        const used = player.pwPotion;
+        player.attack += 5 * used;
+        player.pwPotion = 0;
+        alert(`力のポーションを${used}個すべて使いました！攻撃力が${5 * used}上昇しました！`);
+    }
+
+    // 攻撃力を更新
     let Attack = document.getElementById('Attack');
     Attack.innerHTML = player.attack;
+
+    // ポーション所持数の表示
     let pwPotion = document.getElementById("pwPotion");
     let have2 = document.getElementById("have2");
+    have2.innerHTML = player.pwPotion;
+
     if (player.pwPotion <= 0) {
         pwPotion.style.display = "none";
-        have2.innerHTML = player.pwPotion;
     } else {
         pwPotion.style.display = "block";
-        have2.innerHTML = player.pwPotion;
     }
-    haveItems();
+
+    haveItems(); // 他のアイテム表示更新など
 }
 
+//体力のポーションを使用
 function useHpUpPotion() {
-    useHpPotionBGM();
-    player.hpupPotion -= 1;
-    alert("体力のポーションを使いました！体力が7上昇しました！");
-    player.maxHP += 7;
-    player.hp = player.maxHP;
-    let HP = document.getElementById('HP');
-    HP.innerHTML = player.maxHP;
-    let hpupPotion = document.getElementById("hpupPotion");
-    let have3 = document.getElementById("have3");
+    if (player.hpupPotion <= 0) {
+        alert("体力のポーションを持っていません！");
+        return;
+    }
+
+    const choice = confirm("体力のポーションを1つ使いますか？\nキャンセルを押すとすべて使用します。");
+
+    if (choice) {
+        // ✅ 1個だけ使う
+        useHpPotionBGM();
+        player.hpupPotion -= 1;
+        player.maxHP += 7;
+        player.hp = player.maxHP;
+        alert("体力のポーションを1つ使いました！体力が7上昇しました！");
+    } else {
+        // ✅ すべて使う
+        useHpPotionBGM();
+        const used = player.hpupPotion;
+        player.maxHP += 7 * used;
+        player.hp = player.maxHP;
+        player.hpupPotion = 0;
+        alert(`体力のポーションを${used}個すべて使いました！体力が${7 * used}上昇しました！`);
+    }
+
+    // UI更新
+    document.getElementById('HP').innerHTML = player.maxHP;
+
+    const hpupPotion = document.getElementById("hpupPotion");
+    const have3 = document.getElementById("have3");
+    have3.innerHTML = player.hpupPotion;
+
     if (player.hpupPotion <= 0) {
         hpupPotion.style.display = "none";
-        have3.innerHTML = player.hpupPotion;
     } else {
         hpupPotion.style.display = "block";
-        have3.innerHTML = player.hpupPotion;
     }
+
     haveItems();
 }
 
@@ -3690,6 +3834,10 @@ function useEternalPotion() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　ポーションの調合機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 function compoundingEternalPotion() {
     if (player.hpPotion >= 100) {
         // 確認メッセージ
@@ -3721,6 +3869,10 @@ function compoundingEternalPotion() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル中のHPバー機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 //プレイヤーと敵のHP状態を画面に反映し、HPバーを更新
 function updateDisplay() {
     const entities = [{ obj: player, barId: "playerHPBar", textId: "playerHP" }, { obj: enemy, barId: "enemyHPBar", textId: "enemyHP" }];
@@ -3746,6 +3898,10 @@ function updateDisplay() {
         }
     });
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル中の経験値バーの機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //レベルアップに必要な経験値　 例：Lv1 → 101　Lv10 → 200　Lv100 → 10,100
 function getRequiredExp(level) {
@@ -3777,6 +3933,31 @@ function updatePointsDisplay() {
     const percent = Math.floor((player.points / nextExp) * 100);
     playerPointsBar.style.width = percent + "%";
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル終了後のレアモンスターバッジ付与処理　　　    */
+/////////////////////////////////////////////////////////////////////////
+
+const rareMonsterBadges = {
+    "レッドスライム": "🔴",
+    "ダークナイト": "⚔️",
+    "ホワイトドラゴン": "🐉",
+    "アズリオン": "💠",
+    "フロストタイラント": "🟦",
+    "モルバジリスク": "🪓"
+};
+
+function checkRareBadge() {
+    const badge = rareMonsterBadges[enemy.name];
+    if (badge && !player.badges.includes(badge)) {
+        player.badges.push(badge);
+        alert(`${enemy.name} を倒して、バッジ ${badge} を獲得しました！`);
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　バトル終了後の処理　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //勝敗に応じたゲーム終了処理を行い、ログの保存・履歴表示・画面遷移を実行
 function endGame(result) {
@@ -3811,6 +3992,8 @@ function endGame(result) {
             let stageLast = document.getElementById("stageLast");
             let gameClearPanel = document.getElementById('gameClearPanel');
             gameClearPanel.style.display = "none";
+
+            checkRareBadge();
 
             const bosses = {
                 '焔王ヴァルガノス': { flag: 'stage15Win', badge: '🔥' },
@@ -4177,6 +4360,10 @@ function end() {
     showSection(sectionIds);
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　各マップの表示・非表示機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 function mapMoveToHeaven() {
     let map1 = document.getElementById("map1");
     map1.style.display = "none";
@@ -4257,6 +4444,10 @@ function mapUndergroundGame() {
     sectionIds.push(mapUnderground.id);
     showSection(sectionIds);
 }
+
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　タイトル画面での機能　　　    */
+/////////////////////////////////////////////////////////////////////////
 
 //無限の塔のタイトル画面に遷移する
 function showTowerTitle() {
@@ -4489,6 +4680,10 @@ function restartGame() {
     }
 }
 
+/////////////////////////////////////////////////////////////////////////
+/*    　　　　タイトル画面での詳細機能　　　    */
+/////////////////////////////////////////////////////////////////////////
+
 //セッションログ表示
 function displaySessionLogs() {
     let sessionArea = document.getElementById("sessionLogPanel");
@@ -4535,6 +4730,10 @@ function downloadSessionLog() {
     URL.revokeObjectURL(url);
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/*  タイトル画面でのパネル表示  */
+///////////////////////////////////////////////////////////////////////////////////
+
 //操作方法の表示
 function showInstructions() {
     let sectionIds = [];
@@ -4571,6 +4770,10 @@ function showEnemyList() {
     showSection(sectionIds);
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/*  地上マップのお城  */
+///////////////////////////////////////////////////////////////////////////////////
+
 //アイテム屋の表示
 function itemshop() {
     let sectionIds = [];
@@ -4589,6 +4792,10 @@ function weaponshop() {
     // sectionIds.push(weaponshop.id);
     // showSection(sectionIds);
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+/*  パネルを閉じる機能  */
+///////////////////////////////////////////////////////////////////////////////////
 
 //無限の塔パネルを閉じる（例：操作説明、ルールなど）
 function closeTowerPanel() {
@@ -4632,6 +4839,10 @@ function closeClearPanel3() {
     sectionIds.push(mapUnderground.id);
     showSection(sectionIds);
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+/*  モンスターの変身  */
+///////////////////////////////////////////////////////////////////////////////////
 
 //魔王のHPが1/3を切ったら、変身する
 function changeMaou() {
@@ -4688,6 +4899,10 @@ function changeZakuna2() {
     updateDisplay();
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/*  RPGモンスターから逃げる  */
+///////////////////////////////////////////////////////////////////////////////////
+
 //モンスターから逃げる機能
 function runAway() {
     let sectionIds = [];
@@ -4735,9 +4950,13 @@ function runAway() {
     }
 }
 
-//10%の確率で（スライム）のレアモンスターが出現
+///////////////////////////////////////////////////////////////////////////////////
+/*  レアモンスター（0.3%）  */
+///////////////////////////////////////////////////////////////////////////////////
+
+//0.3%の確率で（スライム）のレアモンスターが出現
 function slime() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'レッドスライム';
         enemy.hp = 150;
@@ -4751,9 +4970,9 @@ function slime() {
     }
 }
 
-//10%の確率で（ゾンビ）のレアモンスターが出現
+//0.3%の確率で（ゾンビ）のレアモンスターが出現
 function darkNight() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'ダークナイト';
         enemy.hp = 350;
@@ -4767,9 +4986,9 @@ function darkNight() {
     }
 }
 
-//10%の確率で（レッドドラゴン）のレアモンスターが出現
+//0.3%の確率で（レッドドラゴン）のレアモンスターが出現
 function dragon() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'ホワイトドラゴン';
         enemy.hp = 700;
@@ -4783,9 +5002,9 @@ function dragon() {
     }
 }
 
-//10%の確率で（フレイモン）のレアモンスターが出現
+//0.3%の確率で（フレイモン）のレアモンスターが出現
 function azure() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'アズリオン';
         enemy.hp = 1200;
@@ -4799,9 +5018,9 @@ function azure() {
     }
 }
 
-//10%の確率で（雪男）のレアモンスターが出現
+//0.3%の確率で（雪男）のレアモンスターが出現
 function frost() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'フロストタイラント';
         enemy.hp = 600;
@@ -4815,9 +5034,9 @@ function frost() {
     }
 }
 
-//10%の確率で（フングリード）のレアモンスターが出現
+//0.03%の確率で（フングリード）のレアモンスターが出現
 function morbasylisk() {
-    let rare = (Math.random() < 0.1);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'モルバジリスク';
         enemy.hp = 960;
@@ -4830,6 +5049,10 @@ function morbasylisk() {
         monster.innerHTML = "<img class='animate__animated animate__fadeIn' src='ver1.4/モルバジリスク.png' alt='背景' width='100%' height='200px'>";
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+/*  レベルボーナス  */
+///////////////////////////////////////////////////////////////////////////////////
 
 //レベルが10上がるごとにボーナスを適用・新規
 function levelUP() {
@@ -4881,6 +5104,9 @@ function levelUP() {
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/*  BGM・効果音  */
+///////////////////////////////////////////////////////////////////////////////////
 
 function playBGM(name) {
     // 同じ曲なら何もしない
@@ -4996,6 +5222,10 @@ function zakunaBGM() {
     sound.play();
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/*  RPGのランキングの表示  */
+///////////////////////////////////////////////////////////////////////////////////
+
 //ランキングの表示
 function showRnaking() {
     let sectionIds = [];
@@ -5006,6 +5236,10 @@ function showRnaking() {
     showSection(sectionIds);
     loadRanking();
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+/*  エフェクト  */
+///////////////////////////////////////////////////////////////////////////////////
 
 //画面がフラッシュ
 function flashEffect() {
