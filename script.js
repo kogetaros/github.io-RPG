@@ -5154,12 +5154,12 @@ function runAway() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-/*  レアモンスター（0.3%）  */
+/*  レアモンスター（1%）  */
 ///////////////////////////////////////////////////////////////////////////////////
 
 //0.3%の確率で（スライム）のレアモンスターが出現
 function slime() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'レッドスライム';
         enemy.hp = 150;
@@ -5175,7 +5175,7 @@ function slime() {
 
 //0.3%の確率で（ゾンビ）のレアモンスターが出現
 function darkNight() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'ダークナイト';
         enemy.hp = 350;
@@ -5191,7 +5191,7 @@ function darkNight() {
 
 //0.3%の確率で（レッドドラゴン）のレアモンスターが出現
 function dragon() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'ホワイトドラゴン';
         enemy.hp = 700;
@@ -5207,7 +5207,7 @@ function dragon() {
 
 //0.3%の確率で（フレイモン）のレアモンスターが出現
 function azure() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'アズリオン';
         enemy.hp = 1200;
@@ -5223,7 +5223,7 @@ function azure() {
 
 //0.3%の確率で（雪男）のレアモンスターが出現
 function frost() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'フロストタイラント';
         enemy.hp = 600;
@@ -5239,7 +5239,7 @@ function frost() {
 
 //0.03%の確率で（フングリード）のレアモンスターが出現
 function morbasylisk() {
-    let rare = (Math.random() < 0.003);
+    let rare = (Math.random() < 0.01);
     if (rare) {
         enemy.name = 'モルバジリスク';
         enemy.hp = 960;
