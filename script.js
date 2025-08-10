@@ -6251,16 +6251,17 @@ async function saveGameTower() {
     }
 }
 
-async function saveRanking() {
+async function saveRanking(uid) {
     try {
         const uniqueBadges = [...new Set(player.badges)];
-        await setDoc(doc(db, "ranking", playerId), {
+        await setDoc(doc(db, "ranking", uid), {
             name: player.name,
             level: player.level,
             badges: uniqueBadges,
+            visible: true, // 初回は必ず表示
             reachedAt: serverTimestamp()
         }, { merge: true });
-        console.log("✅ ランキング保存成功");
+        console.log(`✅ ランキング保存成功 ranking/${uid}`);
     } catch (e) {
         console.error("❌ ランキング保存エラー:", e);
     }
