@@ -512,26 +512,38 @@
 </body>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  // Firebase v9 CDN
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import {
     getFirestore,
     collection,
     query,
-    where,          
+    where,
     orderBy,
     limit,
     getDocs
   } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-  const firebaseConfig = { /* ← 今のままでOK */ };
-  const app = initializeApp(firebaseConfig);
+  // ← あなたの本物の設定を入れる（The Legend of the Hero RPG）
+  const firebaseConfig = {
+    apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
+    authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
+    projectId: "the-legend-of-the-hero-rpg",
+    storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
+    messagingSenderId: "229539309178",
+    appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
+    measurementId: "G-FZXYLBMPX3"
+  };
+
+  // ★ すでに初期化済みなら再利用（duplicate-app対策）
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
   async function loadRanking() {
     const rankingList = document.getElementById("rankingList");
     rankingList.innerHTML = "";
 
-    // ★ 非表示ユーザーを除外
+    // 非表示ユーザーを除外
     const q = query(
       collection(db, "ranking"),
       where("visible", "==", true),
