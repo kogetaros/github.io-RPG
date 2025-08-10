@@ -509,6 +509,30 @@
             <button class="titleEndBtn" onclick="showTowerTitle()">タイトルへ</button>
         </div>
     </div>
+      <!-- メンテナンス中オーバーレイ -->
+  <div id="maintenance-overlay" style="
+    position:fixed; inset:0; display:none; z-index:99999;
+    background:rgba(0,0,0,0.9); color:white;
+    align-items:center; justify-content:center;
+    font-size:24px; text-align:center; padding:20px;">
+    🔧 ただいまメンテナンス中です。<br>
+    しばらくお待ちください。
+  </div>
+
+  <script>
+    // trueにするとゲームを止める
+    const MAINTENANCE = true;
+
+    if (MAINTENANCE) {
+      const overlay = document.getElementById('maintenance-overlay');
+      overlay.style.display = 'flex';
+      // 操作ブロック
+      window.addEventListener('keydown', e => e.preventDefault(), {capture:true});
+      window.addEventListener('click',  e => e.preventDefault(), {capture:true});
+      window.addEventListener('touchstart', e => e.preventDefault(), {capture:true});
+    }
+  </script>
+
 </body>
 
 <script type="module">
