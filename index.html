@@ -512,46 +512,52 @@
 </body>
 
 <script type="module">
-    // Firebase v9 CDN
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import {
-        getFirestore,
-        collection,
-        query,
-        orderBy,
-        limit,
-        getDocs
-    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,          
+    orderBy,
+    limit,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
-        authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
-        projectId: "the-legend-of-the-hero-rpg",
-        storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
-        messagingSenderId: "229539309178",
-        appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
-        measurementId: "G-FZXYLBMPX3"
-    };
+  const firebaseConfig = { /* ← 今のままでOK */ };
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  async function loadRanking() {
+    const rankingList = document.getElementById("rankingList");
+    rankingList.innerHTML = "";
 
-    async function loadRanking() {
-        const rankingList = document.getElementById("rankingList");
-        rankingList.innerHTML = "";
+    // ★ 非表示ユーザーを除外
+    const q = query(
+      collection(db, "ranking"),
+      where("visible", "==", true),
+      orderBy("level", "desc"),
+      limit(10)
+    );
 
-        const q = query(collection(db, "ranking"), orderBy("level", "desc"), limit(10));
-        const snapshot = await getDocs(q);
-
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const li = document.createElement("li");
-            li.textContent = `${data.name} : Lv.${data.level}`;
-            rankingList.appendChild(li);
-        });
+    try {
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) {
+        rankingList.innerHTML = "<li>ランキングはまだありません</li>";
+        return;
+      }
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.name ?? "名無し"} : Lv.${data.level ?? "-"}`;
+        rankingList.appendChild(li);
+      });
+    } catch (e) {
+      console.error("ランキング取得エラー:", e);
+      rankingList.innerHTML = "<li>読み込みに失敗しました</li>";
     }
+  }
 
-    window.onload = loadRanking;
+  window.onload = loadRanking;
 </script>
 
 <script type="module" src="script.js"></script>
