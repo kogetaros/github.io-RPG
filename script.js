@@ -18,6 +18,22 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+const auth = getAuth(); // すでに initializeApp 済みの app を自動利用
+
+async function ensureAuth() {
+  if (!auth.currentUser) {
+    await signInAnonymously(auth);
+  }
+  return auth.currentUser.uid;
+}
+
+
+
+
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
     authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
@@ -234,45 +250,65 @@ function changePlayerName() {
 /////////////////////////////////////////////////////////////////////////
 
 async function saveGame() {
-    const saveData = {
-        player: {
-            name: player.name,
-            level: player.level,
-            maxHP: player.maxHP,
-            hp: player.hp,
-            attack: player.attack,
-            bonus: player.bonus,
-            coin: player.coin,
-            stage: player.stage,
-            hpPotion: player.hpPotion,
-            pwPotion: player.pwPotion,
-            hpupPotion: player.hpupPotion,
-            eternalPotion: player.eternalPotion,
-            points: player.points,
-            badges: [...new Set(player.badges)],
-        },
-        flg: { ...flg }
-    };
+  // 1) 必ず認証して uid を取得
+  const uid = await ensureAuth();
 
-    // localStorage に保存
-    localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
+  // 2) 保存データをまとめる
+  const saveData = {
+    player: {
+      name: player.name,
+      level: player.level,
+      maxHP: player.maxHP,
+      hp: player.hp,
+      attack: player.attack,
+      bonus: player.bonus,
+      coin: player.coin,
+      stage: player.stage,
+      hpPotion: player.hpPotion,
+      pwPotion: player.pwPotion,
+      hpupPotion: player.hpupPotion,
+      eternalPotion: player.eternalPotion,
+      points: player.points,
+      badges: [...new Set(player.badges)],
+    },
+    flg: { ...flg }
+  };
 
-    // Firestore に保存（安全に player と flg を分けて）
-    try {
-        await setDoc(doc(db, "players", playerId), {
-            player: saveData.player,
-            flg: saveData.flg,
-            updatedAt: serverTimestamp()
-        }, { merge: true });
-        console.log("✅ Firestore保存成功");
-    } catch (e) {
-        console.error("❌ Firestore保存エラー:", e);
-    }
+  // 3) localStorage に保存（今まで通り）
+  localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
 
-    // ランキング更新
-    await saveRanking();
+  // 4) Firestore に保存（自分の doc だけ）
+  try {
+    await setDoc(doc(db, "players", uid), {
+      player: saveData.player,
+      flg: saveData.flg,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    console.log("✅ Firestore保存成功 players/" + uid);
+  } catch (e) {
+    console.error("❌ Firestore保存エラー:", e);
+  }
 
-    alert("セーブしました！");
+  // 5) ランキング更新（同じ uid を使う）
+  await saveRanking(uid);
+
+  alert("セーブしました！");
+}
+
+// ランキング保存（本人は 'visible' は書かない）
+async function saveRanking(uid) {
+  try {
+    await setDoc(doc(db, "ranking", uid), {
+      name: String(player.name || "名無し").slice(0, 20),
+      level: Number.isInteger(player.level) ? player.level : 1,
+      badges: Array.isArray(player.badges) ? [...new Set(player.badges)] : [],
+      reachedAt: serverTimestamp()
+      // ※ visible は書かない（管理者だけが切替）
+    }, { merge: true });
+    console.log("✅ ランキング保存成功 ranking/" + uid);
+  } catch (e) {
+    console.error("❌ ランキング保存エラー:", e);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -303,75 +339,72 @@ function updateLevelBadge() {
 /*        ロード機能        */
 /////////////////////////////////////////////////////////////////////////
 
+// ===== ロード機能 =====
 async function loadGame() {
-    let saveData = null;
-    flg.tower = false;
+  let saveData = null;
+  flg.tower = false;
 
-    // Firestoreから読み込みを試みる
-    try {
-        const docRef = doc(db, "players", playerId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            saveData = docSnap.data();
-            console.log("✅ Firestoreからロード成功");
-        }
-    } catch (e) {
-        console.error("❌ Firestoreロードエラー:", e);
+  // ★ 必ずログインして UID を取る
+  const uid = await ensureAuth();
+
+  // Firestoreから読み込み（自分の doc だけ）
+  try {
+    const docRef  = doc(db, "players", uid);   // ← playerId ではなく uid
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      saveData = docSnap.data();
+      console.log("✅ Firestoreからロード成功 players/" + uid);
     }
+  } catch (e) {
+    console.error("❌ Firestoreロードエラー:", e);
+  }
 
-    // Firestoreがなければ localStorage を使う
-    if (!saveData) {
-        const data = localStorage.getItem("rpgSaveData");
-        if (!data) {
-            alert("セーブデータがありません。");
-            return;
-        }
-        saveData = JSON.parse(data);
-        console.log("localStorageからロード成功");
+  // Firestoreがなければ localStorage
+  if (!saveData) {
+    const data = localStorage.getItem("rpgSaveData");
+    if (!data) {
+      alert("⚠ セーブデータがありません。");
+      return;
     }
+    saveData = JSON.parse(data);
+    console.log("📦 localStorageからロード成功");
+  }
 
-    // プレイヤー復元
-    Object.assign(player, saveData.player || {});
+  // （以下は元のまま）
+  Object.assign(player, saveData.player || {});
+  Object.assign(flg, saveData.flg || {});
 
-    // フラグ復元（安全にマージ）
-    Object.assign(flg, saveData.flg || {});
+  document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
+  document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
+  document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
+  document.getElementById("extra4").style.display = (flg.extra4 && !flg.extra4Win) ? "block" : "none";
+  document.getElementById("extra5").style.display = (flg.extra5 && !flg.extra5Win) ? "block" : "none";
 
-    // ステージ表示の復元（例）
-    document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
-    document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
-    document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
-    document.getElementById("extra4").style.display = (flg.extra4 && !flg.extra4Win) ? "block" : "none";
-    document.getElementById("extra5").style.display = (flg.extra5 && !flg.extra5Win) ? "block" : "none";
+  if (flg.stage5) {
+    document.getElementById("kumo").style.display = "none";
+    document.getElementById("stage5").style.display = "block";
+    document.getElementById("stage6").style.display = "block";
+  }
+  if (flg.stage7) document.getElementById("stage7").style.display = "block";
+  if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
+    document.getElementById("stage19").style.display = "block";
+  }
+  if (flg.stageLastWin) document.getElementById('mapMoveToHeaven').style.display = "block";
+  if (flg.extra4Win) {
+    document.getElementById('mapMoveToUnderground').style.display = "block";
+    flg.stage15 = flg.stage16 = flg.stage17 = flg.stage18 = flg.stage19 = true;
+  }
 
-    if (flg.stage5) {
-        document.getElementById("kumo").style.display = "none";
-        document.getElementById("stage5").style.display = "block";
-        document.getElementById("stage6").style.display = "block";
-    }
-    if (flg.stage7) document.getElementById("stage7").style.display = "block";
-    if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
-        document.getElementById("stage19").style.display = "block";
-    }
+  if (!player.badges) player.badges = [];
+  ensureBadges();
+  updateLevelBadge();
 
-    if (flg.stageLastWin) {
-        document.getElementById('mapMoveToHeaven').style.display = "block";
-    }
-    if (flg.extra4Win) {
-        document.getElementById('mapMoveToUnderground').style.display = "block";
-        flg.stage15 = flg.stage16 = flg.stage17 = flg.stage18 = flg.stage19 = true;
-    }
+  document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
 
-    // バッジを整備
-    if (!player.badges) player.badges = [];
-    ensureBadges();
-    updateLevelBadge();
-
-    document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
-
-    updatePointsDisplay();
-    renderPlayer();
-    alert("セーブデータをロードしました！");
-    menuOpen();
+  updatePointsDisplay();
+  renderPlayer();
+  alert("セーブデータをロードしました！");
+  menuOpen();
 }
 
 /////////////////////////////////////////////////////////////////////////
