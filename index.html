@@ -391,7 +391,8 @@
         <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
     </div>
     <div id="board" style="display: none;">
-        <img class="shopMenu animate__animated animate__fadeIn" src="quest/掲示板.png" alt="背景" width='100%' height='550px'>
+        <img class="shopMenu animate__animated animate__fadeIn" src="quest/掲示板.png" alt="背景" width='100%'
+            height='550px'>
         <div id="questBoard"></div>
         <span><button class="backBtn" onclick="castleShow()">戻る</button></span>
     </div>
@@ -509,91 +510,72 @@
             <button class="titleEndBtn" onclick="showTowerTitle()">タイトルへ</button>
         </div>
     </div>
-      <!-- メンテナンス中オーバーレイ -->
-  <div id="maintenance-overlay" style="
+    <!-- メンテナンス中オーバーレイ -->
+    <div id="maintenance-overlay" style="
     position:fixed; inset:0; display:none; z-index:99999;
     background:rgba(0,0,0,0.9); color:white;
     align-items:center; justify-content:center;
     font-size:24px; text-align:center; padding:20px;">
-    🔧 ただいまメンテナンス中です。<br>
-    しばらくお待ちください。
-  </div>
+        ただいまメンテナンス中です。<br>
+        しばらくお待ちください。
+    </div>
 
-  <script>
-    // trueにするとゲームを止める
-    const MAINTENANCE = true;
+    <script>
+        // trueにするとゲームを止める
+        const MAINTENANCE = false;
 
-    if (MAINTENANCE) {
-      const overlay = document.getElementById('maintenance-overlay');
-      overlay.style.display = 'flex';
-      // 操作ブロック
-      window.addEventListener('keydown', e => e.preventDefault(), {capture:true});
-      window.addEventListener('click',  e => e.preventDefault(), {capture:true});
-      window.addEventListener('touchstart', e => e.preventDefault(), {capture:true});
-    }
-  </script>
-
+        if (MAINTENANCE) {
+            const overlay = document.getElementById('maintenance-overlay');
+            overlay.style.display = 'flex';
+            // 操作ブロック
+            window.addEventListener('keydown', e => e.preventDefault(), { capture: true });
+            window.addEventListener('click', e => e.preventDefault(), { capture: true });
+            window.addEventListener('touchstart', e => e.preventDefault(), { capture: true });
+        }
+    </script>
 </body>
 
 <script type="module">
-  // Firebase v9 CDN
-  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    orderBy,
-    limit,
-    getDocs
-  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    // Firebase v9 CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+        getFirestore,
+        collection,
+        query,
+        orderBy,
+        limit,
+        getDocs
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-  // ← あなたの本物の設定を入れる（The Legend of the Hero RPG）
-  const firebaseConfig = {
-    apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
-    authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
-    projectId: "the-legend-of-the-hero-rpg",
-    storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
-    messagingSenderId: "229539309178",
-    appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
-    measurementId: "G-FZXYLBMPX3"
-  };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
+        authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
+        projectId: "the-legend-of-the-hero-rpg",
+        storageBucket: "the-legend-of-the-hero-rpg.appspot.com",
+        messagingSenderId: "229539309178",
+        appId: "1:229539309178:web:e32420bdd694fc09c63dc3",
+        measurementId: "G-FZXYLBMPX3"
+    };
 
-  // ★ すでに初期化済みなら再利用（duplicate-app対策）
-  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  async function loadRanking() {
-    const rankingList = document.getElementById("rankingList");
-    rankingList.innerHTML = "";
+    async function loadRanking() {
+        const rankingList = document.getElementById("rankingList");
+        rankingList.innerHTML = "";
 
-    // 非表示ユーザーを除外
-    const q = query(
-      collection(db, "ranking"),
-      where("visible", "==", true),
-      orderBy("level", "desc"),
-      limit(10)
-    );
+        const q = query(collection(db, "ranking"), orderBy("level", "desc"), limit(10));
+        const snapshot = await getDocs(q);
 
-    try {
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        rankingList.innerHTML = "<li>ランキングはまだありません</li>";
-        return;
-      }
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement("li");
-        li.textContent = `${data.name ?? "名無し"} : Lv.${data.level ?? "-"}`;
-        rankingList.appendChild(li);
-      });
-    } catch (e) {
-      console.error("ランキング取得エラー:", e);
-      rankingList.innerHTML = "<li>読み込みに失敗しました</li>";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.textContent = `${data.name} : Lv.${data.level}`;
+            rankingList.appendChild(li);
+        });
     }
-  }
 
-  window.onload = loadRanking;
+    window.onload = loadRanking;
 </script>
 
 <script type="module" src="script.js"></script>
