@@ -18,22 +18,6 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
-const auth = getAuth(); // すでに initializeApp 済みの app を自動利用
-
-async function ensureAuth() {
-  if (!auth.currentUser) {
-    await signInAnonymously(auth);
-  }
-  return auth.currentUser.uid;
-}
-
-
-
-
-
-
 const firebaseConfig = {
     apiKey: "AIzaSyCsmpHXEvQNHNTMk1hqiCi-jOmsYBqvSzg",
     authDomain: "the-legend-of-the-hero-rpg.firebaseapp.com",
@@ -250,65 +234,45 @@ function changePlayerName() {
 /////////////////////////////////////////////////////////////////////////
 
 async function saveGame() {
-  // 1) 必ず認証して uid を取得
-  const uid = await ensureAuth();
+    const saveData = {
+        player: {
+            name: player.name,
+            level: player.level,
+            maxHP: player.maxHP,
+            hp: player.hp,
+            attack: player.attack,
+            bonus: player.bonus,
+            coin: player.coin,
+            stage: player.stage,
+            hpPotion: player.hpPotion,
+            pwPotion: player.pwPotion,
+            hpupPotion: player.hpupPotion,
+            eternalPotion: player.eternalPotion,
+            points: player.points,
+            badges: [...new Set(player.badges)],
+        },
+        flg: { ...flg }
+    };
 
-  // 2) 保存データをまとめる
-  const saveData = {
-    player: {
-      name: player.name,
-      level: player.level,
-      maxHP: player.maxHP,
-      hp: player.hp,
-      attack: player.attack,
-      bonus: player.bonus,
-      coin: player.coin,
-      stage: player.stage,
-      hpPotion: player.hpPotion,
-      pwPotion: player.pwPotion,
-      hpupPotion: player.hpupPotion,
-      eternalPotion: player.eternalPotion,
-      points: player.points,
-      badges: [...new Set(player.badges)],
-    },
-    flg: { ...flg }
-  };
+    // localStorage に保存
+    localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
 
-  // 3) localStorage に保存（今まで通り）
-  localStorage.setItem("rpgSaveData", JSON.stringify(saveData));
+    // Firestore に保存（安全に player と flg を分けて）
+    try {
+        await setDoc(doc(db, "players", playerId), {
+            player: saveData.player,
+            flg: saveData.flg,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("✅ Firestore保存成功");
+    } catch (e) {
+        console.error("❌ Firestore保存エラー:", e);
+    }
 
-  // 4) Firestore に保存（自分の doc だけ）
-  try {
-    await setDoc(doc(db, "players", uid), {
-      player: saveData.player,
-      flg: saveData.flg,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-    console.log("✅ Firestore保存成功 players/" + uid);
-  } catch (e) {
-    console.error("❌ Firestore保存エラー:", e);
-  }
+    // ランキング更新
+    await saveRanking();
 
-  // 5) ランキング更新（同じ uid を使う）
-  await saveRanking(uid);
-
-  alert("セーブしました！");
-}
-
-// ランキング保存（本人は 'visible' は書かない）
-async function saveRanking(uid) {
-  try {
-    await setDoc(doc(db, "ranking", uid), {
-      name: String(player.name || "名無し").slice(0, 20),
-      level: Number.isInteger(player.level) ? player.level : 1,
-      badges: Array.isArray(player.badges) ? [...new Set(player.badges)] : [],
-      reachedAt: serverTimestamp()
-      // ※ visible は書かない（管理者だけが切替）
-    }, { merge: true });
-    console.log("✅ ランキング保存成功 ranking/" + uid);
-  } catch (e) {
-    console.error("❌ ランキング保存エラー:", e);
-  }
+    alert("セーブしました！");
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -339,72 +303,75 @@ function updateLevelBadge() {
 /*        ロード機能        */
 /////////////////////////////////////////////////////////////////////////
 
-// ===== ロード機能 =====
 async function loadGame() {
-  let saveData = null;
-  flg.tower = false;
+    let saveData = null;
+    flg.tower = false;
 
-  // ★ 必ずログインして UID を取る
-  const uid = await ensureAuth();
-
-  // Firestoreから読み込み（自分の doc だけ）
-  try {
-    const docRef  = doc(db, "players", uid);   // ← playerId ではなく uid
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      saveData = docSnap.data();
-      console.log("✅ Firestoreからロード成功 players/" + uid);
+    // Firestoreから読み込みを試みる
+    try {
+        const docRef = doc(db, "players", playerId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            saveData = docSnap.data();
+            console.log("✅ Firestoreからロード成功");
+        }
+    } catch (e) {
+        console.error("❌ Firestoreロードエラー:", e);
     }
-  } catch (e) {
-    console.error("❌ Firestoreロードエラー:", e);
-  }
 
-  // Firestoreがなければ localStorage
-  if (!saveData) {
-    const data = localStorage.getItem("rpgSaveData");
-    if (!data) {
-      alert("⚠ セーブデータがありません。");
-      return;
+    // Firestoreがなければ localStorage を使う
+    if (!saveData) {
+        const data = localStorage.getItem("rpgSaveData");
+        if (!data) {
+            alert("セーブデータがありません。");
+            return;
+        }
+        saveData = JSON.parse(data);
+        console.log("localStorageからロード成功");
     }
-    saveData = JSON.parse(data);
-    console.log("📦 localStorageからロード成功");
-  }
 
-  // （以下は元のまま）
-  Object.assign(player, saveData.player || {});
-  Object.assign(flg, saveData.flg || {});
+    // プレイヤー復元
+    Object.assign(player, saveData.player || {});
 
-  document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
-  document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
-  document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
-  document.getElementById("extra4").style.display = (flg.extra4 && !flg.extra4Win) ? "block" : "none";
-  document.getElementById("extra5").style.display = (flg.extra5 && !flg.extra5Win) ? "block" : "none";
+    // フラグ復元（安全にマージ）
+    Object.assign(flg, saveData.flg || {});
 
-  if (flg.stage5) {
-    document.getElementById("kumo").style.display = "none";
-    document.getElementById("stage5").style.display = "block";
-    document.getElementById("stage6").style.display = "block";
-  }
-  if (flg.stage7) document.getElementById("stage7").style.display = "block";
-  if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
-    document.getElementById("stage19").style.display = "block";
-  }
-  if (flg.stageLastWin) document.getElementById('mapMoveToHeaven').style.display = "block";
-  if (flg.extra4Win) {
-    document.getElementById('mapMoveToUnderground').style.display = "block";
-    flg.stage15 = flg.stage16 = flg.stage17 = flg.stage18 = flg.stage19 = true;
-  }
+    // ステージ表示の復元（例）
+    document.getElementById("extra1").style.display = (flg.extra1 && !flg.extra1Win) ? "block" : "none";
+    document.getElementById("extra2").style.display = (flg.extra2 && !flg.extra2Win) ? "block" : "none";
+    document.getElementById("extra3").style.display = (flg.extra3 && !flg.extra3Win) ? "block" : "none";
+    document.getElementById("extra4").style.display = (flg.extra4 && !flg.extra4Win) ? "block" : "none";
+    document.getElementById("extra5").style.display = (flg.extra5 && !flg.extra5Win) ? "block" : "none";
 
-  if (!player.badges) player.badges = [];
-  ensureBadges();
-  updateLevelBadge();
+    if (flg.stage5) {
+        document.getElementById("kumo").style.display = "none";
+        document.getElementById("stage5").style.display = "block";
+        document.getElementById("stage6").style.display = "block";
+    }
+    if (flg.stage7) document.getElementById("stage7").style.display = "block";
+    if (flg.stage15Win && flg.stage16Win && flg.stage17Win && flg.stage18Win) {
+        document.getElementById("stage19").style.display = "block";
+    }
 
-  document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
+    if (flg.stageLastWin) {
+        document.getElementById('mapMoveToHeaven').style.display = "block";
+    }
+    if (flg.extra4Win) {
+        document.getElementById('mapMoveToUnderground').style.display = "block";
+        flg.stage15 = flg.stage16 = flg.stage17 = flg.stage18 = flg.stage19 = true;
+    }
 
-  updatePointsDisplay();
-  renderPlayer();
-  alert("セーブデータをロードしました！");
-  menuOpen();
+    // バッジを整備
+    if (!player.badges) player.badges = [];
+    ensureBadges();
+    updateLevelBadge();
+
+    document.getElementById("stageLast").style.display = (flg.stageLast && !flg.stageLastWin) ? "block" : "none";
+
+    updatePointsDisplay();
+    renderPlayer();
+    alert("セーブデータをロードしました！");
+    menuOpen();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -732,7 +699,7 @@ async function loadRotatingQuest() {
     }
 
     //2025年1月1日を基準日として、「今日から何日経ったか」
-    const baseDate = new Date(2025, 0, 1);
+    const baseDate = new Date(2025, 0, 9);
     //baseDateは2025年1月1日になる
     //現在の日付を取得
     const today = new Date();
@@ -5187,12 +5154,12 @@ function runAway() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-/*  レアモンスター（1%）  */
+/*  レアモンスター（0.3%）  */
 ///////////////////////////////////////////////////////////////////////////////////
 
 //0.3%の確率で（スライム）のレアモンスターが出現
 function slime() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'レッドスライム';
         enemy.hp = 150;
@@ -5208,7 +5175,7 @@ function slime() {
 
 //0.3%の確率で（ゾンビ）のレアモンスターが出現
 function darkNight() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'ダークナイト';
         enemy.hp = 350;
@@ -5224,7 +5191,7 @@ function darkNight() {
 
 //0.3%の確率で（レッドドラゴン）のレアモンスターが出現
 function dragon() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'ホワイトドラゴン';
         enemy.hp = 700;
@@ -5240,7 +5207,7 @@ function dragon() {
 
 //0.3%の確率で（フレイモン）のレアモンスターが出現
 function azure() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'アズリオン';
         enemy.hp = 1200;
@@ -5256,7 +5223,7 @@ function azure() {
 
 //0.3%の確率で（雪男）のレアモンスターが出現
 function frost() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'フロストタイラント';
         enemy.hp = 600;
@@ -5272,7 +5239,7 @@ function frost() {
 
 //0.03%の確率で（フングリード）のレアモンスターが出現
 function morbasylisk() {
-    let rare = (Math.random() < 0.01);
+    let rare = (Math.random() < 0.003);
     if (rare) {
         enemy.name = 'モルバジリスク';
         enemy.hp = 960;
@@ -6248,6 +6215,21 @@ async function saveGameTower() {
 
     } catch (e) {
         console.error("❌ セーブ失敗:", e);
+    }
+}
+
+async function saveRanking() {
+    try {
+        const uniqueBadges = [...new Set(player.badges)];
+        await setDoc(doc(db, "ranking", playerId), {
+            name: player.name,
+            level: player.level,
+            badges: uniqueBadges,
+            reachedAt: serverTimestamp()
+        }, { merge: true });
+        console.log("✅ ランキング保存成功");
+    } catch (e) {
+        console.error("❌ ランキング保存エラー:", e);
     }
 }
 
