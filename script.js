@@ -4083,7 +4083,13 @@ function updateDisplay() {
 
 //レベルアップに必要な経験値　 例：Lv1 → 101　Lv10 → 200　Lv100 → 10,100
 function getRequiredExp(level) {
-    return Math.floor(100 + level * level);
+    const baseLv400 = 100 + 400 * 400; // Lv400基準値
+    if (level <= 400) {
+        return Math.floor(100 + level * level);
+    } else {
+        let extra = level - 400;
+        return Math.floor(baseLv400 * Math.pow(1.2, extra)); // 1レベルごとに20%アップ
+    }
 }
 
 //プレイヤーの経験値を画面に反映し、経験値バーを更新
